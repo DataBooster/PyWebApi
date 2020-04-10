@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1022
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.PyPI", "PyWebApi.PyPI\PyWebApi.PyPI.pyproj", "{7249E236-DDFD-4902-8F5D-E38AB0E4D651}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{F7AC17AC-4CBD-4DD8-94E5-21DC54244474}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.IIS", "Sample\PyWebApi.IIS\PyWebApi.IIS.pyproj", "{5869E351-5ABC-4EBF-BD49-892170C0FCFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7249E236-DDFD-4902-8F5D-E38AB0E4D651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7249E236-DDFD-4902-8F5D-E38AB0E4D651}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7249E236-DDFD-4902-8F5D-E38AB0E4D651}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7249E236-DDFD-4902-8F5D-E38AB0E4D651}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD} = {F7AC17AC-4CBD-4DD8-94E5-21DC54244474}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C2FBDAEC-0FDE-4D17-B908-AA8C1DB16A5B}
+	EndGlobalSection
+EndGlobal
