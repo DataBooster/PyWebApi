@@ -32,6 +32,7 @@
     <Content Include="pack.bat" />
     <Content Include="requirements.txt" />
     <Content Include="setup.cfg" />
+    <Content Include="upload.bat" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
