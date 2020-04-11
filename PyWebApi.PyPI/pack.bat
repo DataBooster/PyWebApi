@@ -1,3 +1,8 @@
 @Echo off
 CD /d "%~dp0"
-env\Scripts\python.exe setup.py bdist_wheel --universal
+SET "THIS_SCRIPT_PATH=%~dp0env\Scripts\"
+SET EXISTS_IN_PATH=0
+FOR /F "delims=" %%i IN ('PATH ^| Find /C /I "%THIS_SCRIPT_PATH%"') DO SET EXISTS_IN_PATH=%%i 2>NUL
+If %EXISTS_IN_PATH%==0 SET "PATH=%THIS_SCRIPT_PATH%;%PATH%"
+
+Python.exe setup.py bdist_wheel --universal

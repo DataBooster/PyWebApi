@@ -1,35 +1,38 @@
 """
-Routes and views for the bottle application.
+    Routes for the sample PyWebApi Service.
 """
 
-from bottle import route, view
-from datetime import datetime
+from bottle import route, request, abort
+from pywebapi import execute, cors
 
-@route('/')
-@route('/home')
-@view('index')
-def home():
-    """Renders the home page."""
-    return dict(
-        year=datetime.now().year
-    )
 
-@route('/contact')
-@view('contact')
-def contact():
-    """Renders the contact page."""
-    return dict(
-        title='Contact',
-        message='Your contact page.',
-        year=datetime.now().year
-    )
+def authorize(func):
 
-@route('/about')
-@view('about')
-def about():
-    """Renders the about page."""
-    return dict(
-        title='About',
-        message='Your application description page.',
-        year=datetime.now().year
-    )
+    def wrapped(*args, **kwargs):
+        if not request.auth or not request.auth[0]:
+            abort(401, "The requested resource requires user authentication.")
+        return func(*args, **kwargs)
+
+    return wrapped
+
+
+@route('/whoami')
+@authorize
+def who_am_i():
+    return request.auth[0]
+
+
+def check_permission(app:str, user:str, module_func:str)->bool:
+    #TODO: add your implementation of permission checks
+    return True
+
+
+@route('/pyscripts/<app:str>/<path:path>')
+@authorize
+def execute_module_level_function(app:str, path:str):
+    user_name = request.auth[0]
+
+    if check_permission(app, request.auth[0], path):
+        return execute('d:\\user-script-root\\', request, {'actual_username': user_name})
+    else:
+        abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(path)}.")
