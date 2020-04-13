@@ -39,7 +39,7 @@ def check_permission(app_id:str, user_id:str, module_func:str) -> bool:
     return True
 
 
-@route(path='/pyscripts/<app_id>/<func_path:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+@route(path='/pys/<app_id>/<func_path:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
 @authorize
 def execute_module_level_function(app_id:str, func_path:str):
     user_name = _get_user()

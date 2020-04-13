@@ -190,6 +190,25 @@ class ModuleImporter(object):
 #region
 #
 def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
+    """ This is the main entry point for dynamically executing a function from a specified module path.
+
+        :param root:  The root directory for centrally organizing user modules.
+        :param routed_path:  The `path/module.function' path comes from URL routing, 
+            it indicates the relative path from the above root directory to the user module in the file system.
+        :param args_dict:  A argument dictionary or a list of argument dictionary to be passed to the invoking function,
+            it is usually passed from `RequestArguments.arguments` property.
+            * If the `args_dict` is a dictionary:
+                - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
+                - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
+                - Any extra arguments will be ignored without error.
+            * If the `args_dict` is a list of dictionaries:
+                - The specified function will be called in loop by using each argument dictionary in the list.
+
+        :return:  The result object of the module level function returned
+            * If the `args_dict` is a dictionary, the result of the function execution is returned;
+            * If the `args_dict` is a list of dictionaries, all results of multiple executions of the function will be wrapped into a list and returned together.
+                If any exception is thrown during the call loop, subsequent calls will be stopped
+    """
     public_root = util.full_path(root)
     if not os.path.isdir(public_root):
         raise NotADirectoryError(f'the root {repr(root)} of user modules is not configured as a valid file system directory')
@@ -278,6 +297,7 @@ class RequestArguments(object):
 
     @property
     def arguments(self) -> Union[Dict, List[Dict]]:
+        """ An argument dictionary or a list of dictionary that can be used to provide the required argument `args_dict` for `execute` function. """
         return self.arg_dict_list if len(self.arg_dict_list) > 1 else self.arg_dict_list[0]
 
     def override(self, override_dict:dict) -> Union[Dict, List[Dict]]:

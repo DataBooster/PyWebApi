@@ -9,11 +9,11 @@
 
     Homepage and documentation: https://github.com/DataBooster/PyWebApi
     Copyright (c) 2020 Abel Cheng
-    License: MIT (see LICENSE for details)
+    License: MIT
 """
 
 import bottle
 
 from .func import execute, ModuleImporter, RequestArguments
 
-__version__ = "0.1a0.dev5"
+__version__ = "0.1a0.dev6"

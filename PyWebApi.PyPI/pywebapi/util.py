@@ -5,7 +5,7 @@
 
     Homepage and documentation: https://github.com/DataBooster/PyWebApi
     Copyright (c) 2020 Abel Cheng
-    License: MIT (see LICENSE for details)
+    License: MIT
 """
 
 import os
