@@ -85,7 +85,7 @@ def bind_arguments(sig:inspect.Signature, args:dict) -> inspect.BoundArguments:
     return inspect.BoundArguments(sig, out_args)
 
 
-def __one_call(func, sig:inspect.Signature, args:dict):
+def _one_call(func, sig:inspect.Signature, args:dict):
     bound_arguments = bind_arguments(sig, args)
     return func(*bound_arguments.args, **bound_arguments.kwargs)
 
@@ -94,7 +94,7 @@ def _bulk_call(func, sig:inspect.Signature, args_list:list):
     i = 0
     for args in args_list:
         if isinstance(args, dict):
-            yield __one_call(func, sig, args)
+            yield _one_call(func, sig, args)
         elif args is None:
             yield None
         else:
@@ -172,7 +172,7 @@ class ModuleImporter(object):
             sig = inspect.signature(module_level_function)
 
             if isinstance(args, dict):
-                return __one_call(module_level_function, sig, args)
+                return _one_call(module_level_function, sig, args)
             elif isinstance(args, list):
                 if args:
                     return list(_bulk_call(module_level_function, sig, args))
