@@ -18,7 +18,7 @@ from . import util
 
 
 ####################################################################################################
-# This region implements flexible function arguments binding.
+# bind_arguments - implements flexible function arguments binding.
 #region
 #
 def bind_arguments(sig:inspect.Signature, args:dict) -> inspect.BoundArguments:
@@ -106,7 +106,7 @@ def _bulk_call(func, sig:inspect.Signature, args_list:list):
 
 
 ####################################################################################################
-# This class implements dynamic module loading.
+# ModuleImporter - implements dynamic module loading.
 #region
 #
 class ModuleImporter(object):
@@ -186,7 +186,7 @@ class ModuleImporter(object):
 
 
 ####################################################################################################
-# This region implements the main entrance: execute(...).
+# execute - implements the main entrance: execute(...).
 #region
 #
 def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
@@ -194,7 +194,7 @@ def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
     if not os.path.isdir(public_root):
         raise NotADirectoryError(f'the root {repr(root)} of user modules is not configured as a valid file system directory')
 
-    module_func = util.extract_path_info(request.path)
+    module_func = util.extract_path_info(routed_path)
     work_dir = os.path.normpath(os.path.join(public_root, module_func.directory))
     if not os.path.isdir(work_dir):
         raise NotADirectoryError(f'the directory {repr(module_func.directory)} specified in the request URL path cannot be found in the file system')
@@ -209,7 +209,7 @@ def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
 
 
 ####################################################################################################
-# Merging of all arguments for function calls received from HTTP request.
+# RequestArguments - merges all arguments from JSON body and query string.
 #region
 #
 def _fill_dict_multi_value(arg_dict:dict, name:str, values):

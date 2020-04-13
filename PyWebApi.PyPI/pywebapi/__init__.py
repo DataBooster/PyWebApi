@@ -16,4 +16,4 @@ import bottle
 
 from .func import execute, ModuleImporter, RequestArguments
 
-__version__ = "0.1a0.dev3"
+__version__ = "0.1a0.dev4"
