@@ -5,13 +5,15 @@
 
 import os
 from bottle import route, request, abort
-from pywebapi import RequestArguments, execute, cors
-
+from pywebapi import RequestArguments, execute
+import json
 
 _user_script_root = os.getenv("USER_SCRIPT_ROOT")
 if not os.path.isabs(_user_script_root):
     _user_script_root = os.path.join(os.path.abspath(os.path.dirname(__file__)), _user_script_root)
 _user_script_root = os.path.normpath(_user_script_root)
+
+_server_debug = os.getenv("SERVER_DEBUG")
 
 
 def _get_user() -> str:
@@ -19,12 +21,10 @@ def _get_user() -> str:
 
 
 def authorize(func):
-
     def wrapped(*args, **kwargs):
-        if not _get_user():
+        if not _get_user() and _server_debug != 'VisualStudio':
             abort(401, "The requested resource requires user authentication.")
         return func(*args, **kwargs)
-
     return wrapped
 
 
@@ -34,20 +34,24 @@ def who_am_i():
     return _get_user()
 
 
-def check_permission(app:str, user:str, module_func:str) -> bool:
+def check_permission(app_id:str, user_id:str, module_func:str) -> bool:
     #TODO: add your implementation of permission checks
     return True
 
 
-@route(path='/pyscripts/<app>/<funcpath:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+@route(path='/pyscripts/<app_id>/<func_path:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
 @authorize
-def execute_module_level_function(app:str, funcpath:str):
+def execute_module_level_function(app_id:str, func_path:str):
     user_name = _get_user()
 
-    if check_permission(app, user_name, funcpath):
+    if check_permission(app_id, user_name, func_path):
         ra = RequestArguments(request)
         ra.override_value('actual_username', user_name)
 
-        return execute(_user_script_root, funcpath, ra.arguments)
+        return execute(_user_script_root, func_path, ra.arguments)
     else:
         abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(funcpath)}.")
+
+
+
+import pywebapi.cors

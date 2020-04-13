@@ -23,9 +23,9 @@ def wsgi_app():
 if __name__ == '__main__':
     HOST = os.environ.get('SERVER_HOST', 'localhost')
     try:
-        PORT = int(os.environ.get('SERVER_PORT', '8080'))
+        PORT = int(os.environ.get('SERVER_PORT', '6666'))
     except ValueError:
-        PORT = 8080
+        PORT = 6666
 
     # Starts a local test server.
     bottle.run(server='wsgiref', host=HOST, port=PORT)
