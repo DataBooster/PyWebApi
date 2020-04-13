@@ -20,7 +20,7 @@ from . import util
 ####################################################################################################
 # This region implements flexible function arguments binding.
 #region
-
+#
 def bind_arguments(sig:inspect.Signature, args:dict) -> inspect.BoundArguments:
     """ According to the signature of the function, create a mapping from the passed argument dictionary to the function parameters.
         This implementation is a variant of Signature.bind () in inspect module.
@@ -108,7 +108,7 @@ def _bulk_call(func, sig:inspect.Signature, args_list:list):
 ####################################################################################################
 # This class implements dynamic module loading.
 #region
-
+#
 class ModuleImporter(object):
     """ This class manages the context of a user module to be dynamically imported.
 
@@ -188,7 +188,7 @@ class ModuleImporter(object):
 ####################################################################################################
 # This region implements the main entrance: execute(...).
 #region
-
+#
 def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
     public_root = util.full_path(root)
     if not os.path.isdir(public_root):
@@ -209,9 +209,9 @@ def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
 
 
 ####################################################################################################
-# This region implements the merging of all arguments for function calls received from HTTP request.
+# Merging of all arguments for function calls received from HTTP request.
 #region
-
+#
 def _fill_dict_multi_value(arg_dict:dict, name:str, values):
     key = name.strip() if name else ''
     value = values[0] if isinstance(values, list) and len(values) == 1 else values
@@ -280,7 +280,7 @@ class RequestArguments(object):
     def arguments(self) -> Union[Dict, List[Dict]]:
         return self.arg_dict_list if len(self.arg_dict_list) > 1 else self.arg_dict_list[0]
 
-    def override(override_dict:dict) -> Union[Dict, List[Dict]]:
+    def override(self, override_dict:dict) -> Union[Dict, List[Dict]]:
         if override_dict and isinstance(override_dict, dict):
             for name, value in override_dict:
                 key = name.strip() if name else ''
@@ -290,7 +290,7 @@ class RequestArguments(object):
 
         return self.arguments
 
-    def override_value(key:str, value) -> Union[Dict, List[Dict]]:
+    def override_value(self, key:str, value) -> Union[Dict, List[Dict]]:
         for arg_dict in self.arg_dict_list:
             arg_dict[key] = value
 
