@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 """
     Routes for the sample PyWebApi Service.
 """
 
 import os
 from bottle import route, request, abort
-from pywebapi import execute, cors
+from pywebapi import RequestArguments, execute, cors
 
 
 _user_script_root = os.getenv("USER_SCRIPT_ROOT")
@@ -44,6 +45,9 @@ def execute_module_level_function(app:str, funcpath:str):
     user_name = _get_user()
 
     if check_permission(app, user_name, funcpath):
-        return execute(_user_script_root, request, {'actual_username': user_name})
+        ra = RequestArguments(request)
+        ra.override_value('actual_username', user_name)
+
+        return execute(_user_script_root, funcpath, ra.arguments)
     else:
         abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(funcpath)}.")

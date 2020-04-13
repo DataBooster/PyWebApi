@@ -46,22 +46,11 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="test\" />
     <Folder Include="pywebapi\" />
-    <Folder Include="test\test_directory\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="pywebapi\cors.py" />
-    <Compile Include="pywebapi\main.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pywebapi\module_importer.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pywebapi\request_arguments.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pywebapi\response_formatter.py">
+    <Compile Include="pywebapi\func.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="pywebapi\util.py">
@@ -69,10 +58,7 @@
     </Compile>
     <Compile Include="pywebapi\__init__.py" />
     <Compile Include="setup.py" />
-    <Compile Include="test\test_app.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="test\test_directory\test_module.py">
+    <Compile Include="test_app.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
