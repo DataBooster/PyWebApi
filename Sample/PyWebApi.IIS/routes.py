@@ -4,7 +4,7 @@
 """
 
 import os
-from bottle import route, request, abort
+from bottle import route, request, response, abort
 from pywebapi import RequestArguments, execute, cors
 
 
@@ -28,8 +28,18 @@ def authorize(func):
     return wrapped
 
 
-@route(path='/whoami', method=['GET', 'POST'])
+def enable_cors(func):
+    def wrapped(*args, **kwargs):
+        if cors.enable_cors(request, response):
+            return None
+        return func(*args, **kwargs)
+    return wrapped
+
+
+
+@route(path='/whoami', method=['GET', 'POST', 'OPTIONS'])
 @authorize
+@enable_cors
 def who_am_i():
     return _get_user()
 
@@ -39,8 +49,9 @@ def check_permission(app_id:str, user_id:str, module_func:str) -> bool:
     return True
 
 
-@route(path='/pys/<app_id>/<func_path:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+@route(path='/pys/<app_id>/<func_path:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
 @authorize
+@enable_cors
 def execute_module_level_function(app_id:str, func_path:str):
     user_name = _get_user()
 
@@ -51,6 +62,3 @@ def execute_module_level_function(app_id:str, func_path:str):
         return execute(_user_script_root, func_path, ra.arguments)
     else:
         abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(funcpath)}.")
-
-
-
