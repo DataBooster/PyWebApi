@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """
     func.py
-    This module implements the main APIs.
+    This is the main module of the package.
 
     Homepage and documentation: https://github.com/DataBooster/PyWebApi
     Copyright (c) 2020 Abel Cheng
-    License: MIT (see LICENSE for details)
+    License: MIT (See LICENSE file in the repository root for details)
 """
+
 import os
 import inspect
 import importlib

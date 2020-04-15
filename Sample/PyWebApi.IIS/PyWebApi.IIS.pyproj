@@ -13,7 +13,7 @@
     <WorkingDirectory>.</WorkingDirectory>
     <LaunchProvider>Web launcher</LaunchProvider>
     <OutputPath>.</OutputPath>
-    <WebBrowserUrl>http://localhost</WebBrowserUrl>
+    <WebBrowserUrl>http://localhost/pys/test_app/test_directory/test_module.module_level_function?=15&amp;%20=2&amp;%20%20=3</WebBrowserUrl>
     <PythonDebugWebServerCommandArguments>--debug $(CommandLineArguments)</PythonDebugWebServerCommandArguments>
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>PyWebApi.IIS</Name>
@@ -22,7 +22,7 @@
     <Environment>USER_SCRIPT_ROOT=.\user-script-root\
 SERVER_DEBUG=VisualStudio
 </Environment>
-    <WebBrowserPort>6666</WebBrowserPort>
+    <WebBrowserPort>8080</WebBrowserPort>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

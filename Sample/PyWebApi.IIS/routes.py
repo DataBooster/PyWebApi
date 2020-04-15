@@ -5,8 +5,8 @@
 
 import os
 from bottle import route, request, abort
-from pywebapi import RequestArguments, execute
-import json
+from pywebapi import RequestArguments, execute, cors
+
 
 _user_script_root = os.getenv("USER_SCRIPT_ROOT")
 if not os.path.isabs(_user_script_root):
@@ -54,4 +54,3 @@ def execute_module_level_function(app_id:str, func_path:str):
 
 
 
-import pywebapi.cors
