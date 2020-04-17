@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="pywebapi\cors.py" />
+    <Compile Include="pywebapi\fmtr.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="pywebapi\func.py">
       <SubType>Code</SubType>
     </Compile>

@@ -43,13 +43,12 @@ def enable_cors(request:Request, response:Response, allow_credentials:bool=True,
         cors_method = request.get_header('Access-Control-Request-Method')
         if cors_method:
             response.set_header('Access-Control-Allow-Methods', cors_method)
+            if max_age:
+                response.set_header('Access-Control-Max-Age', str(max_age))
             is_preflight = True
 
         cors_headers = request.get_header('Access-Control-Request-Headers')
         if cors_headers:
             response.set_header('Access-Control-Allow-Headers', cors_headers)
-
-        if max_age:
-            response.set_header('Access-Control-Max-Age', str(max_age))
 
     return is_preflight

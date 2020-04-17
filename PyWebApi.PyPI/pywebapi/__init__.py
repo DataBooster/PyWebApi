@@ -15,5 +15,6 @@
 import bottle
 
 from .func import execute, ModuleImporter, RequestArguments
+from .fmtr import MediaTypeFormatter, MediaTypeFormatterManager
 
-__version__ = "0.1a0.dev7"
+__version__ = "0.1a0.dev8"
