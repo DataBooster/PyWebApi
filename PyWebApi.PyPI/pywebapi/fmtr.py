@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
     fmtr.py
-    This module implements the conversion from the result object returned by the function to target media types.
+    This module implements the conversion from the result object returned by the function to expected media types.
 
     Homepage and documentation: https://github.com/DataBooster/PyWebApi
     Copyright (c) 2020 Abel Cheng
@@ -144,4 +144,4 @@ class MediaTypeFormatterManager(object):
         if isinstance(response_headers, dict):
             response_headers['Content-Type'] = [media_type]
 
-        return formatter.format(obj, media_type, kwargs)
+        return formatter.format(obj, media_type, **kwargs)

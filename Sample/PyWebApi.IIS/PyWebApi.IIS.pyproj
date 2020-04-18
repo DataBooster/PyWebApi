@@ -34,7 +34,7 @@ SERVER_DEBUG=VisualStudio
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.py" />
-    <Compile Include="JsonFormatter.py">
+    <Compile Include="json_fmtr.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="routes.py" />

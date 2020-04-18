@@ -6,7 +6,7 @@
 import os
 from bottle import route, request, response, abort
 from pywebapi import RequestArguments, execute, cors, MediaTypeFormatterManager
-from JsonFormatter import JsonFormatter
+from json_fmtr import JsonFormatter
 
 
 _user_script_root = os.getenv("USER_SCRIPT_ROOT")
