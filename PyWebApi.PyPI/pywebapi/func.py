@@ -116,7 +116,6 @@ class ModuleImporter(object):
         :param directory:  The directory of being imported user module - the relative path from the configured root directory of all user modules.
         :param module_name:  The module name to be imported.
     """
-
     def __init__(self, directory:str, module_name:str):
         self.__orig_cwd = os.getcwd()
         self.__scope_cwd = util.full_path(directory)

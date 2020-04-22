@@ -32,7 +32,7 @@ class MediaTypeFormatter(metaclass=ABCMeta):
 
 
     def can_support_media_types(this, media_types:str) -> set:
-        """ This function can be used to discover which media types expected by the request can be supported by this MediaTypeFormatter class
+        """ This method can be used to discover which media types expected by the request can be supported by this MediaTypeFormatter class
 
             :param media_types:  The media type(s) expected by current request - it usually comes from the 'Accept' header, separated by commas between multiple media types.
             :return:  An intersection set between the media types expected by the request and the media types supported by this class.
@@ -54,7 +54,7 @@ class MediaTypeFormatter(metaclass=ABCMeta):
 
     @abstractmethod
     def format(self, obj, media_type:str, **kwargs):
-        """ This function provides a concrete implementation of converting the original result object to the target media type content
+        """ This method provides a concrete implementation of converting the original result object to the target media type content
 
             :param obj:  The original result object.
             :param media_type:  The target media type.
@@ -69,7 +69,6 @@ class MediaTypeFormatterManager(object):
 
         :param default_formatter:  The default MediaTypeFormatter can be registered when initializing this manager class, or it can be registered separately later.
     """
-
     def __init__(self, default_formatter:MediaTypeFormatter=None):
         self._register = []
         self._default_formatter = None
@@ -79,7 +78,7 @@ class MediaTypeFormatterManager(object):
 
 
     def register(self, new_formatter:MediaTypeFormatter, set_as_default:False):
-        """ This function is used to register a new MediaTypeFormatter to the MediaTypeFormatterManager. 
+        """ This method is used to register a new MediaTypeFormatter to the MediaTypeFormatterManager. 
             If the media types supported by the newly registered MediaTypeFormatter can cover an existing one, the old one will be replaced by the new one.
 
             :param new_formatter:  A new MediaTypeFormatter to be registered.
@@ -130,7 +129,7 @@ class MediaTypeFormatterManager(object):
 
 
     def respond_as(self, obj, media_types:str, response_headers:dict, **kwargs):
-        """ This function picks a registered MediaTypeFormatter which matches the media type expected by the request, 
+        """ This method picks a registered MediaTypeFormatter which matches the media type expected by the request, 
             and converts the original result object to the target media type content
 
             :param obj:  The original result object.
