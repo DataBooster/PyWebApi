@@ -1,3 +1,4 @@
 bottle
 wfastcgi
 pywebapi
+jsonpickle

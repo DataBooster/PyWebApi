@@ -160,3 +160,4 @@ _ReSharper*/
 $tf*/
 packages/*/
 *.nupkg
+.vs/*/

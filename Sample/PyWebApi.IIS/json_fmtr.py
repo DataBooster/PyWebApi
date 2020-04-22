@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+    json_fmtr.py
+    This module implements a MediaTypeFormatter with JSON response.
+
+    Homepage and documentation: https://github.com/DataBooster/PyWebApi
+    Copyright (c) 2020 Abel Cheng
+    License: MIT
+"""
 
 from jsonpickle import dumps
 from pywebapi import MediaTypeFormatter

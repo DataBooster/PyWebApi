@@ -6,11 +6,17 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.PyPI", "PyWebApi.PyPI\PyWebApi.PyPI.pyproj", "{7249E236-DDFD-4902-8F5D-E38AB0E4D651}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{F7AC17AC-4CBD-4DD8-94E5-21DC54244474}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.IIS", "Sample\PyWebApi.IIS\PyWebApi.IIS.pyproj", "{5869E351-5ABC-4EBF-BD49-892170C0FCFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserApps", "UserApps", "{1A1E573F-1382-4AB0-9FE6-5331B5F95D66}"
 	ProjectSection(SolutionItems) = preProject
 		Sample\PyWebApi.IIS\user-script-root\test_directory\test_module.py = Sample\PyWebApi.IIS\user-script-root\test_directory\test_module.py
 	EndProjectSection
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.IIS", "Sample\PyWebApi.IIS\PyWebApi.IIS.pyproj", "{5869E351-5ABC-4EBF-BD49-892170C0FCFD}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MdxReader", "Sample\UserApps\MdxReader\MdxReader.pyproj", "{ADC55014-753C-41C9-AA62-32D29CEB7248}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdomdClient_From_NuGet", "Sample\UserApps\AdomdClient_From_NuGet\AdomdClient_From_NuGet.csproj", "{92BA630D-18B4-448C-B9D6-10698C74EEEE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,12 +32,21 @@ Global
 		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADC55014-753C-41C9-AA62-32D29CEB7248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADC55014-753C-41C9-AA62-32D29CEB7248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5869E351-5ABC-4EBF-BD49-892170C0FCFD} = {F7AC17AC-4CBD-4DD8-94E5-21DC54244474}
+		{1A1E573F-1382-4AB0-9FE6-5331B5F95D66} = {F7AC17AC-4CBD-4DD8-94E5-21DC54244474}
+		{ADC55014-753C-41C9-AA62-32D29CEB7248} = {1A1E573F-1382-4AB0-9FE6-5331B5F95D66}
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE} = {1A1E573F-1382-4AB0-9FE6-5331B5F95D66}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2FBDAEC-0FDE-4D17-B908-AA8C1DB16A5B}
