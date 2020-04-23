@@ -52,7 +52,7 @@ class AdomdClient(object):
             self._connection.Close()
 
 
-    def query(self, command_text:str, result_model:str='ListOfDict', column_mapping:dict={}) -> list:
+    def execute(self, command_text:str, result_model:str='ListOfDict', column_mapping:dict={}) -> list:
         model = result_model.lower().strip()
 
         if model == 'dictoflist':
@@ -63,6 +63,10 @@ class AdomdClient(object):
             result_set_class = ListOfList
 
         cmd = AdomdCommand(command_text, self._connection)
+        all_results = []
 
         with DbDataReader(cmd.ExecuteReader()) as reader:
-            return reader.read_all_results(result_set_class, trim_func=trim_mdx_column_name, column_mapping=column_mapping)
+            all_results = reader.read_all_results(result_set_class, trim_func=trim_mdx_column_name, column_mapping=column_mapping)
+
+        # In most cases, there will be only one result set, which can be taken directly from the list.
+        return all_results[0] if all_results and len(all_results) == 1 else all_results

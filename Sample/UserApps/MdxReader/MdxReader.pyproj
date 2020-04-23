@@ -28,6 +28,7 @@
     <Compile Include="query.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="simple_rest_client.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />

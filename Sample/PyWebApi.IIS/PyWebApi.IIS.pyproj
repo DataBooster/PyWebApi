@@ -38,6 +38,7 @@ SERVER_DEBUG=VisualStudio
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="routes.py" />
+    <Compile Include="simplejson.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />

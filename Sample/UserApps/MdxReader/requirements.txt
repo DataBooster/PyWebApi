@@ -1,2 +1,4 @@
 dbdatareader
 pythonnet
+jsonpickle
+requests-negotiate-sspi
