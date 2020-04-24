@@ -29,9 +29,6 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="dbdatareader\pack.bat" />
-    <Content Include="dbdatareader\setup.cfg" />
-    <Content Include="dbdatareader\upload.bat" />
     <Content Include="pack.bat" />
     <Content Include="requirements.txt" />
     <Content Include="setup.cfg" />
@@ -49,14 +46,9 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="dbdatareader\" />
     <Folder Include="pywebapi\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dbdatareader\dbdatareader.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="dbdatareader\setup.py" />
     <Compile Include="pywebapi\cors.py" />
     <Compile Include="pywebapi\fmtr.py">
       <SubType>Code</SubType>

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>adc55014-753c-41c9-aa62-32d29ceb7248</ProjectGuid>
+    <ProjectGuid>da5ba1e0-95bc-48cd-b94f-eb972f0a602e</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>
     </StartupFile>
@@ -10,10 +10,9 @@
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>MdxReader</Name>
-    <RootNamespace>MdxReader</RootNamespace>
+    <Name>Utilities.PyPI</Name>
+    <RootNamespace>Utilities.PyPI</RootNamespace>
     <InterpreterId>MSBuild|env|$(MSBuildProjectFullPath)</InterpreterId>
-    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -24,13 +23,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="adomd_client.py" />
-    <Compile Include="query.py">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="pack.bat" />
     <Content Include="requirements.txt" />
+    <Content Include="setup.cfg" />
+    <Content Include="upload.bat" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="env\">
@@ -42,6 +38,12 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="dbdatareader.py" />
+    <Compile Include="setup_simple_rest_call.py" />
+    <Compile Include="setup_dbdatareader.py" />
+    <Compile Include="simple_rest_call.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

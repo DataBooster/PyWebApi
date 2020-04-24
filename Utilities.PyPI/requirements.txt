@@ -1,0 +1,7 @@
+pip
+setuptools
+wheel
+twine
+jsonpickle
+python-dateutil
+requests-negotiate-sspi
