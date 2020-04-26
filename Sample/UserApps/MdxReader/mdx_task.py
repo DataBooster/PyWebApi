@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    run_mdx.py
+    mdx_task.py
     The main function - run_query(...) Runs a MDX query and returns the result, 
     or forward the result to DbWebApi (for bulk insert/update) and then send a notification to somewhere.
 
@@ -22,22 +22,22 @@ def run_query(connection_string:str, command_text:str, result_model:str='ListOfD
             result = client.execute(command_text, result_model, column_mapping)
 
         if pass_result_to_url:
-            if isinstance(mdx_result, dict) and more_payload:
-                result.update(more_payload)
+            if isinstance(result, dict) and more_args:
+                result.update(more_args)
 
             result = request_json(pass_result_to_url, result)
 
-        if notification_url:
-            request_json(notification_url, {'result': result})
+        if notify_url:
+            request_json(notify_url, {'result': result})
 
         return result
 
     except Exception as e:
-        if notification_url:
+        if notify_url:
             if notify_args is None:
                 notify_args = {}
-            notify_args.update({'result': result, 'error': e})
+            notify_args.update({'error': e, 'result': result})
 
-            request_json(notification_url, notify_args)
+            request_json(notify_url, notify_args)
         else:
             raise

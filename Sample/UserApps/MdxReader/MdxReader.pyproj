@@ -25,7 +25,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="adomd_client.py" />
-    <Compile Include="run_mdx.py" />
+    <Compile Include="mdx_task.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
