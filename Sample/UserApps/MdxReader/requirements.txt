@@ -1,4 +1,3 @@
 dbdatareader
 pythonnet
-jsonpickle
-requests-negotiate-sspi
+simple-rest-call

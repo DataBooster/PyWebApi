@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """
     Routes for the sample PyWebApi Service.
+
+    This module was originally shipped as an example code from https://github.com/DataBooster/PyWebApi, licensed under the MIT license.
+    Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
+    The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
 
 import os

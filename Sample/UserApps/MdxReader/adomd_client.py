@@ -4,9 +4,9 @@
     This module encapsulates Microsoft.AnalysisServices.AdomdClient as a Python context manager, 
     also presents an example of using dbdatareader to read query results into an expectation model.
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT
+    This module was originally shipped as an example code from https://github.com/DataBooster/PyWebApi, licensed under the MIT license.
+    Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
+    The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
 import re
 from dbdatareader import DbDataReader, DictOfList, ListOfDict, ListOfList

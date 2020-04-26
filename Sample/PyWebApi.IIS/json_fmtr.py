@@ -3,9 +3,9 @@
     json_fmtr.py
     This module implements a MediaTypeFormatter with JSON response.
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT
+    This module was originally shipped as an example code from https://github.com/DataBooster/PyWebApi, licensed under the MIT license.
+    Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
+    The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
 
 from jsonpickle import dumps

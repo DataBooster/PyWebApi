@@ -28,6 +28,7 @@
     <Compile Include="query.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="run_mdx.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />

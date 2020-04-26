@@ -1,0 +1,43 @@
+# -*- coding: utf-8 -*-
+"""
+    run_mdx.py
+    The main function - run_query(...) Runs a MDX query and returns the result, 
+    or forward the result to DbWebApi (for bulk insert/update) and then send a notification to somewhere.
+
+    This module was originally shipped as an example code from https://github.com/DataBooster/PyWebApi, licensed under the MIT license.
+    Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
+    The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
+"""
+from adomd_client import AdomdClient
+from simple_rest_call import request_json
+
+
+def run_query(connection_string:str, command_text:str, result_model:str='ListOfDict', column_mapping:dict={},
+              pass_result_to_url:str=None, more_args:dict=None, notify_url:str=None, notify_args:dict=None):
+
+    result = {}
+
+    try:
+        with AdomdClient(connection_string) as client:
+            result = client.execute(command_text, result_model, column_mapping)
+
+        if pass_result_to_url:
+            if isinstance(mdx_result, dict) and more_payload:
+                result.update(more_payload)
+
+            result = request_json(pass_result_to_url, result)
+
+        if notification_url:
+            request_json(notification_url, {'result': result})
+
+        return result
+
+    except Exception as e:
+        if notification_url:
+            if notify_args is None:
+                notify_args = {}
+            notify_args.update({'result': result, 'error': e})
+
+            request_json(notification_url, notify_args)
+        else:
+            raise
