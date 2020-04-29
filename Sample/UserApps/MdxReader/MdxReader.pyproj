@@ -28,7 +28,9 @@
     <Compile Include="mdx_task.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="pywebapi.pth" />
+    <Content Include="pywebapi.pth">
+      <Publish>True</Publish>
+    </Content>
     <Content Include="requirements.txt" />
   </ItemGroup>
   <ItemGroup>

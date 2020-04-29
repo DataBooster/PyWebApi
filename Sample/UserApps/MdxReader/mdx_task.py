@@ -12,7 +12,7 @@ from adomd_client import AdomdClient
 from simple_rest_call import request_json
 
 
-def run_query(connection_string:str, command_text:str, result_model:str='ListOfDict', column_mapping:dict={},
+def run_query(connection_string:str, command_text:str, result_model:str='DictOfList', column_mapping:dict={},
               pass_result_to_url:str=None, more_args:dict=None, notify_url:str=None, notify_args:dict=None):
 
     result = {}
