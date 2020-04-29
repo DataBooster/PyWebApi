@@ -35,9 +35,10 @@ def full_path(path:str) -> str:
     if path:
         if not os.path.isabs(path):
             path = os.path.abspath(path)
-        return os.path.normpath(path)
     else:
-        return os.getcwd()
+        path = os.getcwd()
+
+    return os.path.normpath(path)
 
 
 def same_path(path1:str, path2:str) -> bool:
@@ -50,6 +51,21 @@ def same_path(path1:str, path2:str) -> bool:
             return os.path.samefile(path1, path2)
         except FileNotFoundError:
             return False
+
+
+def get_sys_path_as_set(sys_path:list=None) -> set:
+    if not sys_path:
+        sys_path = sys.path
+
+    path_set = set()
+    for item in sys_path:
+        try:
+            if os.path.exists(item):
+                path_set.add(full_path(item))
+        except TypeError:
+            continue
+
+    return path_set
 
 
 def __can_add_into_sys_path(path:str) -> bool:
@@ -86,6 +102,18 @@ def remove_sys_path(path:str) -> bool:
 
     return False
 
+
+def remove_sys_path_set(path_set:set) -> set:
+    removed = set()
+
+    if path_set:
+        i = len(sys.path) - 1
+        while i > 0:
+            if full_path(sys.path[i]) in path_set:
+                removed.add(sys.path.pop(i))
+            i -= 1
+
+    return removed
 
 
 def extend_or_append(iterable:list, item):

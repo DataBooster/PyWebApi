@@ -9,6 +9,7 @@
 """
 
 import os
+import site
 import inspect
 import importlib
 from collections import Iterable, OrderedDict
@@ -118,32 +119,41 @@ class ModuleImporter(object):
     """
     def __init__(self, directory:str, module_name:str):
         self.__orig_cwd = os.getcwd()
-        self.__scope_cwd = util.full_path(directory)
         self.__cwd_chg = False
-        self.__sys_path_chg = False
 
-        if not util.same_path(self.__scope_cwd, self.__orig_cwd):
-            try:
-                os.chdir(self.__scope_cwd)
-            except FileNotFoundError as err:
-                raise NotADirectoryError(str(err).replace(' the file ', ' the directory '))
-            else:
-                self.__cwd_chg = True
+        if directory:
+            self.__scope_cwd = util.full_path(directory)
 
-        if util.insert_sys_path(self.__scope_cwd):
-            self.__sys_path_chg = True
+            if not util.same_path(self.__scope_cwd, self.__orig_cwd):
+                try:
+                    os.chdir(self.__scope_cwd)
+                except FileNotFoundError as err:
+                    raise NotADirectoryError(str(err).replace(' the file ', ' the directory '))
+                else:
+                    self.__cwd_chg = True
 
-        self.module = importlib.import_module(module_name)
+            orig_sys_path_set = util.get_sys_path_as_set()
+
+            util.insert_sys_path(self.__scope_cwd)  # Insert this directory into sys.path at the 1st position
+            site.addsitedir(self.__scope_cwd)       # Handle .pth files in this directory
+            self.module = importlib.import_module(module_name)
+
+            self.__added_sys_path_set = util.get_sys_path_as_set().difference(orig_sys_path_set)
+        else:
+            self.__scope_cwd = self.__orig_cwd
+            self.module = importlib.import_module(module_name)
+            self.__added_sys_path_set = set()
+
 
     def __enter__(self):
         return self
+
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         if self.__cwd_chg and util.same_path(os.getcwd(), self.__scope_cwd):
             os.chdir(self.__orig_cwd)
 
-        if self.__sys_path_chg:
-            util.remove_sys_path(self.__scope_cwd)
+        util.remove_sys_path_set(self.__added_sys_path_set)
 
 
     def invoke(self, func_name:str, args:Union[Dict, List[Dict]]={}):
