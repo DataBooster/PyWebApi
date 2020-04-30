@@ -58,10 +58,10 @@ def get_sys_path_as_set(sys_path:list=None) -> set:
         sys_path = sys.path
 
     path_set = set()
-    for item in sys_path:
+    for p in sys_path:
         try:
-            if os.path.exists(item):
-                path_set.add(full_path(item))
+            if p and p != '.' and os.path.exists(p):
+                path_set.add(full_path(p))
         except TypeError:
             continue
 
@@ -69,8 +69,8 @@ def get_sys_path_as_set(sys_path:list=None) -> set:
 
 
 def __can_add_into_sys_path(path:str) -> bool:
-    if path and os.path.exists(path):
-        return not any(same_path(p, path) for p in sys.path)
+    if path and path != '.' and os.path.exists(path):
+        return not any(same_path(p, path) for p in sys.path if p and p != '.')
     else:
         return False
 
