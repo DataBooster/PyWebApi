@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    util.py
+    _util.py
     This module implements some utility functions commonly used in this library.
 
     Homepage and documentation: https://github.com/DataBooster/PyWebApi
@@ -68,39 +68,41 @@ def get_sys_path_as_set(sys_path:list=None) -> set:
     return path_set
 
 
-def __can_add_into_sys_path(path:str) -> bool:
-    if path and path != '.' and os.path.exists(path):
-        return not any(same_path(p, path) for p in sys.path if p and p != '.')
-    else:
+def insert_sys_path(path:str, known_paths:set) -> bool:
+    """ Insert the new path into sys.path right after '' or '.', otherwise in the first position. """
+    if not path or path == '.':
         return False
 
+    i = cnt = len(sys.path)
 
-def append_sys_path(path:str) -> bool:
-    if __can_add_into_sys_path(path):
-        sys.path.append(path)
-        return True
+    if known_paths:
+        if path in known_paths:
+            return False
+
+        i = 0
+        while i < cnt:
+            p = sys.path[i]
+            if not p or p == '.':
+                break
+            i += 1
     else:
-        return False
+        r = cnt - 1
+        while r >= 0:
+            p = sys.path[r]
+            if p and p != '.':
+                if path == full_path(p):
+                    return False
+            else:
+                i = r
+            r -= 1
 
-
-def insert_sys_path(path:str, index:int=1) -> bool:
-    if __can_add_into_sys_path(path) and index > 0:
-        sys.path.insert(index, path)
-        return True
+    if i < cnt:
+        i += 1
     else:
-        return False
+        i = 0
 
-
-def remove_sys_path(path:str) -> bool:
-    if path:
-        i = len(sys.path) - 1
-        while i > 0:
-            if same_path(sys.path[i], path):
-                sys.path.pop(i)
-                return True
-            i -= 1
-
-    return False
+    sys.path.insert(i, path)
+    return True
 
 
 def remove_sys_path_set(path_set:set) -> set:
@@ -109,7 +111,8 @@ def remove_sys_path_set(path_set:set) -> set:
     if path_set:
         i = len(sys.path) - 1
         while i > 0:
-            if full_path(sys.path[i]) in path_set:
+            p = sys.path[i]
+            if p and p != '.' and full_path(p) in path_set:
                 removed.add(sys.path.pop(i))
             i -= 1
 

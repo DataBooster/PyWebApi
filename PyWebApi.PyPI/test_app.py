@@ -4,7 +4,7 @@ import os
 import sys
 import unittest
 
-from pywebapi import ModuleImporter, util
+from pywebapi import ModuleImporter, _util as util
 
 
 class TestMain(unittest.TestCase):
@@ -46,6 +46,22 @@ class TestMain(unittest.TestCase):
         #self.assertEqual(util.extract_path_info('ghi.func'), ('', 'ghi', 'func'))
         #self.assertEqual(util.extract_path_info('.func'), ('', '', 'func'))
         #self.assertEqual(util.extract_path_info('./'), ('', '', ''))
+
+
+    def test_insert_sys_path(self):
+        s = util.get_sys_path_as_set()
+        p1 = util.full_path('')
+        self.assertFalse(util.insert_sys_path(p1, None))
+        self.assertFalse(util.insert_sys_path(p1, s))
+        self.assertFalse(util.insert_sys_path(p1, set()))
+        sys.path.insert(1, '')
+        sys.path.insert(3, '.')
+        p2 = util.full_path(r'..\Sample\PyWebApi.IIS\user-script-root\MdxReader')
+        self.assertTrue(util.insert_sys_path(p2, None))
+        s = util.get_sys_path_as_set()
+        self.assertFalse(util.insert_sys_path(p2, s))
+        p3 = util.full_path(r'..\Sample\PyWebApi.IIS\user-script-root\test_directory')
+        self.assertTrue(util.insert_sys_path(p3, s))
 
 
     def test_invoke_overall(self):

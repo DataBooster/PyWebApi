@@ -16,7 +16,7 @@ from collections import Iterable, OrderedDict
 from typing import Union, Dict, List
 
 from bottle import Request, FormsDict
-from . import util
+from . import _util as util
 
 
 ####################################################################################################
@@ -133,11 +133,11 @@ class ModuleImporter(object):
                     self.__cwd_chg = True
 
             orig_sys_path_set = util.get_sys_path_as_set()
-
-            util.insert_sys_path(self.__scope_cwd)  # Insert this directory into sys.path at the 1st position
-            site.addsitedir(self.__scope_cwd)       # Handle .pth files in this directory
+            # Insert this directory into sys.path
+            util.insert_sys_path(self.__scope_cwd, orig_sys_path_set)       # right after '' or '.', or at the first position
+            site.addsitedir(self.__scope_cwd)                               # handle .pth files in this directory
             self.module = importlib.import_module(module_name)
-
+            # Save changes for recovery on exit
             self.__added_sys_path_set = util.get_sys_path_as_set().difference(orig_sys_path_set)
         else:
             self.__scope_cwd = self.__orig_cwd

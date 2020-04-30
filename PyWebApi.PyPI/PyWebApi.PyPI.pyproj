@@ -56,7 +56,7 @@
     <Compile Include="pywebapi\func.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="pywebapi\util.py">
+    <Compile Include="pywebapi\_util.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="pywebapi\__init__.py" />
