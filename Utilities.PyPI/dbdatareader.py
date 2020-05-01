@@ -154,6 +154,52 @@ class ListOfDict(ListOfList):
         return self.result_set
 
 
+class SqlTvp(ListOfDict):
+    """ This container class inherited from iresultset can be used to load data as 'Table-Valued Parameters' for SQL Server:
+            {
+                'TableValuedParam':
+                    [
+                        {'Column_A': value_a1,  'Column_B': value_b1, 'Column_C': value_c1, ... },
+                        {'Column_A': value_a2,  'Column_B': value_b2, 'Column_C': value_c2, ... },
+                        {'Column_A': value_a3,  'Column_B': value_b3, 'Column_C': value_c3, ... }
+                        ...
+                    ]
+            }
+        :param trim_func:  A function used to map each incoming original column name to the corresponding simple name.
+                           For example, trims "[Some Dimension]...[Column Name A].[MEMBER_CAPTION]" to "Column Name A"
+        :param column_mapping:  A specific mapping dictionary can be used to customize irregular column name mapping.
+                                For example, {'Column Name A': 'Branch', 'Useless Col2': ''}
+                                Mapping a column name to empty string (or None) - often used to indicate that column 
+                                does not need to appear in the final rendering of data.
+                                Special Note: A empty key in the map is used to specify the name of the table-valued parameter. 
+    """
+
+    @property
+    def result(self):
+        """ This property renders the received data as the following structure:
+            {
+                'TableValuedParam':
+                    [
+                        {'Column_A': value_a1,  'Column_B': value_b1, 'Column_C': value_c1, ... },
+                        {'Column_A': value_a2,  'Column_B': value_b2, 'Column_C': value_c2, ... },
+                        {'Column_A': value_a3,  'Column_B': value_b3, 'Column_C': value_c3, ... }
+                        ...
+                    ]
+            }
+            Note: The actual name of 'TableValuedParam' depends on the value of the empty key in the column mapping passed in the class initialization.
+        """
+        tvp = ''
+        if self._column_mapping:
+            tvp = self._column_mapping.get('', '').strip()
+            if not tvp:
+                tvp = self._column_mapping.get(None, '').strip()
+
+        if not tvp:
+            tvp = 'TableValuedParam'    # default name
+
+        return {tvp: self.result_set}
+
+
 class DictOfList(ListOfList):
     """ This container class inherited from iresultset can be used to load data as following structure:
             {
@@ -294,4 +340,4 @@ class DbDataReader(object):
 
 
 
-__version__ = "0.1a1.dev2"
+__version__ = "0.1a2"
