@@ -1,14 +1,33 @@
 # -*- coding: utf-8 -*-
 """
-    simple_rest_call
+simple_rest_call
 
-    This module wraps Requests(https://requests.readthedocs.io/) into a simple call, 
-    specifically for JSON-request and JSON-response with datetime support. By default, 
-    Windows single sign-on authentication is used for convenience in enterprise environment.
+This module wraps `Requests <https://requests.readthedocs.io/>`_ into a simple call, 
+specifically for JSON-request and JSON-response with datetime support. By default, 
+Windows single sign-on authentication is used for convenience in enterprise environment.
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT
+.. code-block:: python
+
+    request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwargs)
+
+:url:  The URL for the RESTful call.
+:data:  The payload to be passed in the request body. Any incoming Python object will be encoded as JSON content
+        except it is already a string or bytes. ``Content-Type: application/json; charset=utf-8`` will be added into 
+        the request header if the object is converted to JSON inside this function.
+:method:  (default: ``POST``) Method for the request: ``GET``, ``POST``, ``PUT``, ``PATCH``, ``DELETE``, ``OPTIONS``, or ``HEAD``.
+:auth:  *(The user's default credentials are used for Windows single sign-on by default)* Auth tuple to enable Basic/Digest/Custom HTTP Auth.
+:kwargs:  (optional) Please refer to https://requests.readthedocs.io for other optional arguments.
+:return:  A JSON decoded object if the response content type is a valid JSON, otherwise the text content will be tried to return.
+
+|
+
+A quick example can be found from https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/mdx_task.py
+
+|
+
+| Homepage and documentation: https://github.com/DataBooster/PyWebApi
+| Copyright (c) 2020 Abel Cheng
+| License: MIT
 """
 from requests import request
 from requests.structures import CaseInsensitiveDict
@@ -58,11 +77,11 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
         :param url:  The URL for the RESTful call.
         :param data:  The payload to be passed in the request body. Any incoming Python object will be encoded as JSON content
-                      except it is already a string or bytes. "Content-Type: application/json; charset=utf-8" will be added into 
+                      except it is already a string or bytes. ``Content-Type: application/json; charset=utf-8`` will be added into 
                       the request header if the object is converted to JSON inside this function.
         :param method:  (Default: ``POST``) Method for the request: ``GET``, ``POST``, ``PUT``, ``PATCH``, ``DELETE``, ``OPTIONS``, or ``HEAD``.
         :param auth:  (The user's default credentials are used for Windows single sign-on by default) Auth tuple to enable Basic/Digest/Custom HTTP Auth.
-        :param **kwargs:  (optional) Please refer to https://requests.readthedocs.io for other optional arguments.
+        :param kwargs:  (optional) Please refer to https://requests.readthedocs.io for other optional arguments.
         :return:  A JSON decoded object if the response content type is a valid JSON, otherwise the text content will be tried to return.
     """
     explicitly_to_json = False
@@ -93,5 +112,4 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
 
 
-__version__ = "0.1a1.dev2"
-
+__version__ = "0.1a5"

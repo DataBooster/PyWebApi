@@ -9,7 +9,7 @@
     The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
 import re
-from dbdatareader import DbDataReader, DictOfList, ListOfDict, ListOfList
+from dbdatareader import DbDataReader, DictOfList, ListOfDict, ListOfList, SqlTvp
 
 import clr
 clr.AddReference('Microsoft.AnalysisServices.AdomdClient')
@@ -59,6 +59,8 @@ class AdomdClient(object):
             result_set_class = DictOfList
         elif model == 'listofdict':
             result_set_class = ListOfDict
+        elif model == 'sqltvp':
+            result_set_class = SqlTvp
         else:
             result_set_class = ListOfList
 

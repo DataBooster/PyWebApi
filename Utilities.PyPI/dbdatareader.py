@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-    dbDataReader - Data Reader for .NET IDataReader
+dbDataReader - Data Reader for .NET IDataReader
 
-    dbDataReader is a simple data reader for reading .NET System.Data.IDataReader-like forward-only streams.
-    The returned data model depends on the type of data container passed in. So far, 3 built-in container classes 
-    - ListOfList, ListOfDict and DictOfList are shipped with this package.
-    Please refer to the MDX query reader example in 
-    https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/adomd_client.py
-    for quick details.
+----
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT
+**dbDataReader** is a simple data reader for reading .NET ``System.Data.IDataReader``-like forward-only streams.
+The returned data model depends on the type of data container passed in.
+
+4 built-in container classes 
+- ``ListOfList``, ``DictOfList``, ``ListOfDict`` and ``SqlTvp`` are shipped with this package.
+Please refer to the MDX reader example in 
+https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/adomd_client.py
+for quick details.
+
+|
+
+| Homepage and documentation: https://github.com/DataBooster/PyWebApi
+| Copyright (c) 2020 Abel Cheng
+| License: MIT
 """
 
 from abc import ABCMeta, abstractmethod
@@ -46,6 +52,9 @@ class IResultSet(metaclass=ABCMeta):
 
 class ListOfList(IResultSet):
     """ This container class inherited from iresultset can be used to load data as following structure:
+
+    .. code-block:: python
+
         {
             'column_names': [a-list-of-column-name], 
             'value_matrix': [
@@ -56,10 +65,12 @@ class ListOfList(IResultSet):
                             ]
         }
 
+----
+
         :param trim_func:  A function used to map each incoming original column name to the corresponding simple name.
-                           For example, trims "[Some Dimension]...[Column Name A].[MEMBER_CAPTION]" to "Column Name A"
+                           For example, trims "``[Some Dimension]...[Column Name A].[MEMBER_CAPTION]``" to "``Column Name A``"
         :param column_mapping:  A specific mapping dictionary can be used to customize irregular column name mapping.
-                                For example, {'Column Name A': 'Branch', 'Useless Col2': ''}
+                                For example, ``{'Column Name A': 'Branch', 'Useless Col2': ''}``
                                 Mapping a column name to empty string (or None) - often used to indicate that column 
                                 does not need to appear in the final rendering of data.
     """
@@ -92,6 +103,9 @@ class ListOfList(IResultSet):
     @property
     def result(self):
         """ This property renders the received data as the following structure:
+
+    .. code-block:: python
+
             {
                 'column_names': [a-list-of-column-name], 
                 'value_matrix': [
@@ -107,6 +121,9 @@ class ListOfList(IResultSet):
 
 class ListOfDict(ListOfList):
     """ This container class inherited from iresultset can be used to load data as following structure:
+
+    .. code-block:: python
+
             [
                 {'Column_A': value_a1,  'Column_B': value_b1, 'Column_C': value_c1, ... },
                 {'Column_A': value_a2,  'Column_B': value_b2, 'Column_C': value_c2, ... },
@@ -114,10 +131,12 @@ class ListOfDict(ListOfList):
                 ...
             ]
 
+----
+
         :param trim_func:  A function used to map each incoming original column name to the corresponding simple name.
-                           For example, trims "[Some Dimension]...[Column Name A].[MEMBER_CAPTION]" to "Column Name A"
+                           For example, trims "``[Some Dimension]...[Column Name A].[MEMBER_CAPTION]``" to "``Column Name A``"
         :param column_mapping:  A specific mapping dictionary can be used to customize irregular column name mapping.
-                                For example, {'Column Name A': 'Branch', 'Useless Col2': ''}
+                                For example, ``{'Column Name A': 'Branch', 'Useless Col2': ''}``
                                 Mapping a column name to empty string (or None) - often used to indicate that column 
                                 does not need to appear in the final rendering of data.
     """
@@ -144,6 +163,9 @@ class ListOfDict(ListOfList):
     @property
     def result(self):
         """ This property renders the received data as the following structure:
+
+    .. code-block:: python
+
             [
                 {'Column_A': value_a1,  'Column_B': value_b1, 'Column_C': value_c1, ... },
                 {'Column_A': value_a2,  'Column_B': value_b2, 'Column_C': value_c2, ... },
@@ -156,6 +178,9 @@ class ListOfDict(ListOfList):
 
 class SqlTvp(ListOfDict):
     """ This container class inherited from iresultset can be used to load data as 'Table-Valued Parameters' for SQL Server:
+
+    .. code-block:: python
+
             {
                 'TableValuedParam':
                     [
@@ -165,10 +190,13 @@ class SqlTvp(ListOfDict):
                         ...
                     ]
             }
+
+----
+
         :param trim_func:  A function used to map each incoming original column name to the corresponding simple name.
-                           For example, trims "[Some Dimension]...[Column Name A].[MEMBER_CAPTION]" to "Column Name A"
+                           For example, trims "``[Some Dimension]...[Column Name A].[MEMBER_CAPTION]``" to "``Column Name A``"
         :param column_mapping:  A specific mapping dictionary can be used to customize irregular column name mapping.
-                                For example, {'Column Name A': 'Branch', 'Useless Col2': ''}
+                                For example, ``{'Column Name A': 'Branch', 'Useless Col2': ''}``
                                 Mapping a column name to empty string (or None) - often used to indicate that column 
                                 does not need to appear in the final rendering of data.
                                 Special Note: A empty key in the map is used to specify the name of the table-valued parameter. 
@@ -177,6 +205,9 @@ class SqlTvp(ListOfDict):
     @property
     def result(self):
         """ This property renders the received data as the following structure:
+
+    .. code-block:: python
+
             {
                 'TableValuedParam':
                     [
@@ -186,6 +217,9 @@ class SqlTvp(ListOfDict):
                         ...
                     ]
             }
+
+----
+
             Note: The actual name of 'TableValuedParam' depends on the value of the empty key in the column mapping passed in the class initialization.
         """
         tvp = ''
@@ -202,6 +236,9 @@ class SqlTvp(ListOfDict):
 
 class DictOfList(ListOfList):
     """ This container class inherited from iresultset can be used to load data as following structure:
+
+    .. code-block:: python
+
             {
                 'Column_A': [value_a1, value_a2, value_a3, ...],
                 'Column_B': [value_b1, value_b2, value_b3, ...],
@@ -209,10 +246,12 @@ class DictOfList(ListOfList):
                 ...
             }
 
+----
+
         :param trim_func:  A function used to map each incoming original column name to the corresponding simple name.
-                           For example, trims "[Some Dimension]...[Column Name A].[MEMBER_CAPTION]" to "Column Name A"
+                           For example, trims "``[Some Dimension]...[Column Name A].[MEMBER_CAPTION]``" to "``Column Name A``"
         :param column_mapping:  A specific mapping dictionary can be used to customize irregular column name mapping.
-                                For example, {'Column Name A': 'Branch', 'Useless Col2': ''}
+                                For example, ``{'Column Name A': 'Branch', 'Useless Col2': ''}``
                                 Mapping a column name to empty string (or None) - often used to indicate that column 
                                 does not need to appear in the final rendering of data.
     """
@@ -248,6 +287,9 @@ class DictOfList(ListOfList):
     @property
     def result(self):
         """ This property renders the received data as the following structure:
+
+    .. code-block:: python
+
             {
                 'Column_A': [value_a1, value_a2, value_a3, ...],
                 'Column_B': [value_b1, value_b2, value_b3, ...],
@@ -340,4 +382,4 @@ class DbDataReader(object):
 
 
 
-__version__ = "0.1a2"
+__version__ = "0.1a6"
