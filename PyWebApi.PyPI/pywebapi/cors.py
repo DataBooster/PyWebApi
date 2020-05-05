@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
-"""
-    cors.py
-    This module implements a simplified method of CORS (Cross-Origin Resource Sharing Standard).
+"""cors.py
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT (See LICENSE file in the repository root for details)
+This module implements a simplified method of CORS (Cross-Origin Resource Sharing Standard).
+
+| Homepage and documentation: https://github.com/DataBooster/PyWebApi
+| Copyright (c) 2020 Abel Cheng
+| License: MIT (See LICENSE file in the repository root for details)
 """
 
 from bottle import Request, Response
 
 
 def enable_cors(request:Request, response:Response, allow_credentials:bool=True, max_age:int=86400) -> bool:
-    """ This function detects whether the request is a cross-origin request or a preflight request based on certain characteristic headers, 
-        and then adds the corresponding response headers as needed.
+    """
+This function detects whether the request is a cross-origin request or 
+a preflight request based on certain characteristic headers, 
+and then adds the corresponding response headers as needed.
 
-        :param request:  The bottle.request object (current request).
-        :param response:  The bottle.response object.
-        :param allow_credentials: A bool flag indicates whether to send the response header "Access-Control-Allow-Credentials: true", if the request is a cross-origin request.
-        :param max_age:   The number of seconds that the results of the preflight request can be cached, if the request is a preflight request.
-        :return:  A Boolean value tells the caller whether the request is just a preflight request, so no further processing is required.
+    :param request: The bottle.request object (current request).
+    :param response: The bottle.response object.
+    :param allow_credentials: A bool flag indicates whether to send the response header "Access-Control-Allow-Credentials: true", if the request is a cross-origin request.
+    :param max_age: The number of seconds that the results of the preflight request can be cached, if the request is a preflight request.
+    :return: A Boolean value tells the caller whether the request is just a preflight request, so no further processing is required.
     """
     is_preflight = False
 

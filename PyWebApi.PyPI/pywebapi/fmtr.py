@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-    fmtr.py
-    This module implements the conversion from the result object returned by the function to expected media types.
+"""fmtr.py
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT (See LICENSE file in the repository root for details)
+This module implements the conversion from the result object returned by the function to expected media types.
+
+| Homepage and documentation: https://github.com/DataBooster/PyWebApi
+| Copyright (c) 2020 Abel Cheng
+| License: MIT (See LICENSE file in the repository root for details)
 """
 
 from collections import Iterable
@@ -22,20 +22,20 @@ def _str_iterable_to_set(str_iterable) -> set:
 
 
 class MediaTypeFormatter(metaclass=ABCMeta):
-    """ This is the abstract base class for the concrete class of MediaTypeFormatter """
+    """This is the abstract base class for the concrete class of MediaTypeFormatter"""
 
     @property
     @abstractmethod
     def supported_media_types(self) -> Iterable:
-        """ This property should return a list of media types supported by this class """
+        """This property should return a list of media types supported by this class"""
         pass
 
 
     def can_support_media_types(this, media_types:str) -> set:
-        """ This method can be used to discover which media types expected by the request can be supported by this MediaTypeFormatter class
+        """This method can be used to discover which media types expected by the request can be supported by this MediaTypeFormatter class
 
-            :param media_types:  The media type(s) expected by current request - it usually comes from the 'Accept' header, separated by commas between multiple media types.
-            :return:  An intersection set between the media types expected by the request and the media types supported by this class.
+    :param media_types: The media type(s) expected by current request - it usually comes from the ``Accept`` header, separated by commas between multiple media types.
+    :return: An intersection set between the media types expected by the request and the media types supported by this class.
         """
         supported_media_types = this.supported_media_types
         if not supported_media_types:
@@ -54,20 +54,20 @@ class MediaTypeFormatter(metaclass=ABCMeta):
 
     @abstractmethod
     def format(self, obj, media_type:str, **kwargs):
-        """ This method provides a concrete implementation of converting the original result object to the target media type content
+        """This method provides a concrete implementation of converting the original result object to the target media type content
 
-            :param obj:  The original result object.
-            :param media_type:  The target media type.
-            :param kwargs:  Other optional keyworded arguments will be passed to the provider that implements the format conversion.
-            :return:  The converted content for response
+    :param obj: The original result object.
+    :param media_type: The target media type.
+    :param kwargs: Other optional keyworded arguments will be passed to the provider that implements the format conversion.
+    :return: The converted content for response.
         """
         pass
 
 
 class MediaTypeFormatterManager(object):
-    """ This class manages all media type formatters that will be needed for responses. Pick the appropriate media type formatter for each request.
+    """This class manages all media type formatters that will be needed for responses. Pick the appropriate media type formatter for each request.
 
-        :param default_formatter:  The default MediaTypeFormatter can be registered when initializing this manager class, or it can be registered separately later.
+    :param default_formatter: The default MediaTypeFormatter can be registered when initializing this manager class, or it can be registered separately later.
     """
     def __init__(self, default_formatter:MediaTypeFormatter=None):
         self._register = []
@@ -78,11 +78,11 @@ class MediaTypeFormatterManager(object):
 
 
     def register(self, new_formatter:MediaTypeFormatter, set_as_default:False):
-        """ This method is used to register a new MediaTypeFormatter to the MediaTypeFormatterManager. 
-            If the media types supported by the newly registered MediaTypeFormatter can cover an existing one, the old one will be replaced by the new one.
+        """This method is used to register a new MediaTypeFormatter to the MediaTypeFormatterManager. 
+    If the media types supported by the newly registered MediaTypeFormatter can cover an existing one, the old one will be replaced by the new one.
 
-            :param new_formatter:  A new MediaTypeFormatter to be registered.
-            :param set_as_default:  A boolean value indicates whether this formatter is set as the default formatter.
+    :param new_formatter: A new MediaTypeFormatter to be registered.
+    :param set_as_default: A boolean value indicates whether this formatter is set as the default formatter.
         """
         if not isinstance(new_formatter, MediaTypeFormatter):
             raise TypeError("The class of 'new_formatter' to be registered must be inherited from the abstract base class MediaTypeFormatter")
@@ -108,7 +108,7 @@ class MediaTypeFormatterManager(object):
 
     @property
     def default_formatter(self) -> MediaTypeFormatter:
-        """ The default media type formatter """
+        """The default media type formatter"""
         if self._default_formatter:
             return self._default_formatter
         else:
@@ -129,14 +129,14 @@ class MediaTypeFormatterManager(object):
 
 
     def respond_as(self, obj, media_types:str, response_headers:dict, **kwargs):
-        """ This method picks a registered MediaTypeFormatter which matches the media type expected by the request, 
-            and converts the original result object to the target media type content
+        """This method picks a registered MediaTypeFormatter which matches the media type expected by the request, 
+    and converts the original result object to the target media type content
 
-            :param obj:  The original result object.
-            :param media_types:  The media type(s) expected by current request - it usually comes from the 'Accept' header, separated by commas between multiple media types.
-            :param response_headers:  the response.headers.dict - if this argument is a dict container, the final matched media type information will be set back to the 'Content-Type' header.
-            :param kwargs:  Other optional keyworded arguments will be passed to the provider that implements the format conversion.
-            :return:  The converted content for response
+    :param obj: The original result object.
+    :param media_types: The media type(s) expected by current request - it usually comes from the ``Accept`` header, separated by commas between multiple media types.
+    :param response_headers: the response.headers.dict - if this argument is a dict container, the final matched media type information will be set back to the ``Content-Type`` header.
+    :param kwargs: Other optional keyworded arguments will be passed to the provider that implements the format conversion.
+    :return: The converted content for response.
         """
         formatter, media_type = self._get_formatter(media_types)
 

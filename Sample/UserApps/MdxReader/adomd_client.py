@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    adomd_client.py
+"""adomd_client.py
+
     This module encapsulates Microsoft.AnalysisServices.AdomdClient as a Python context manager, 
     also presents an example of using dbdatareader to read query results into an expectation model.
 

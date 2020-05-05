@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-    mdx_task.py
+"""mdx_task.py
+
     The main function - run_query(...) Runs a MDX query and returns the result, 
     or forward the result to DbWebApi (for bulk insert/update) and then send a notification to somewhere.
 

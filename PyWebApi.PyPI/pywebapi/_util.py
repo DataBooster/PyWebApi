@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-    _util.py
-    This module implements some utility functions commonly used in this library.
+"""_util.py
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT (See LICENSE file in the repository root for details)
+This module implements some utility functions commonly used in this library.
+
+| Homepage and documentation: https://github.com/DataBooster/PyWebApi
+| Copyright (c) 2020 Abel Cheng
+| License: MIT (See LICENSE file in the repository root for details)
 """
 
 import os

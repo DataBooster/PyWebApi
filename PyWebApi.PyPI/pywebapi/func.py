@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""
-    func.py
-    This is the main module of the package.
+"""func.py
 
-    Homepage and documentation: https://github.com/DataBooster/PyWebApi
-    Copyright (c) 2020 Abel Cheng
-    License: MIT (See LICENSE file in the repository root for details)
+This is the main module of the package.
+
+| Homepage and documentation: https://github.com/DataBooster/PyWebApi
+| Copyright (c) 2020 Abel Cheng
+| License: MIT (See LICENSE file in the repository root for details)
 """
 
 import os
@@ -24,16 +24,18 @@ from . import _util as util
 #region
 #
 def bind_arguments(sig:inspect.Signature, args:dict) -> inspect.BoundArguments:
-    """ According to the signature of the function, create a mapping from the passed argument dictionary to the function parameters.
-        This implementation is a variant of Signature.bind () in inspect module.
+    """According to the signature of the function, create a mapping from the passed argument dictionary to the function parameters.
+    This implementation is a variant of Signature.bind () in inspect module.
 
-        :param sig:  The signature of the function.
-        :param args:  A argument dictionary to be passed to the function.
-            - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
-            - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
-            - Any extra arguments will be ignored without error.
-        :return:  A BoundArguments object.
-        :raise TypeError:  if any required parameter can not be found from the passed arguments
+    :param sig: The signature of the function.
+    :param args: A argument dictionary to be passed to the function.
+
+                 - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
+                 - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
+                 - Any extra arguments will be ignored without error.
+
+    :return: A BoundArguments object.
+    :raise TypeError: If any required parameter can not be found from the passed arguments.
     """
     in_pos_args = []
     in_kw_args = {}
@@ -112,10 +114,10 @@ def _bulk_call(func, sig:inspect.Signature, args_list:list):
 #region
 #
 class ModuleImporter(object):
-    """ This class manages the context of a user module to be dynamically imported.
+    """This class manages the context of a user module to be dynamically imported.
 
-        :param directory:  The directory of being imported user module - the relative path from the configured root directory of all user modules.
-        :param module_name:  The module name to be imported.
+    :param directory: The directory of being imported user module - the relative path from the configured root directory of all user modules.
+    :param module_name: The module name to be imported.
     """
     def __init__(self, directory:str, module_name:str):
         self.__orig_cwd = os.getcwd()
@@ -157,20 +159,24 @@ class ModuleImporter(object):
 
 
     def invoke(self, func_name:str, args:Union[Dict, List[Dict]]={}):
-        """ Invoke a module level function in current context.
+        """Invoke a module level function in current context.
 
-            :param func_name:  The module level function name.
-            :param args:  A argument dictionary or a list of argument dictionary to be passed to the invoking function.
-                * If the args is a dictionary:
-                    - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
-                    - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
-                    - Any extra arguments will be ignored without error.
-                * If the args is a list of dictionaries:
-                    - This function will be called in loop by using each argument dictionary in the list.
-            :return:  The result object of the module level function returned
-                * If the args is a dictionary, the result of the function execution is returned;
-                * If the args is a list of dictionaries, all results of multiple executions of the function will be wrapped into a list and returned together.
-                    If any exception is thrown during the call loop, subsequent calls will be stopped
+    :param func_name: The module level function name.
+    :param args: A argument dictionary or a list of argument dictionary to be passed to the invoking function.
+
+        * If the args is a dictionary:
+            - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
+            - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
+            - Any extra arguments will be ignored without error.
+        * If the args is a list of dictionaries:
+            - This function will be called in loop by using each argument dictionary in the list.
+
+    :return: The result object of the module level function returned.
+
+        * If the args is a dictionary, the result of the function execution is returned;
+        * If the args is a list of dictionaries, all results of multiple executions of the function will be wrapped into a list and returned together.
+
+        If any exception is thrown during the call loop, subsequent calls will be stopped.
         """
         try:
             module_level_function = getattr(self.module, func_name)
@@ -200,24 +206,27 @@ class ModuleImporter(object):
 #region
 #
 def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
-    """ This is the main entry point for dynamically executing a function from a specified module path.
+    """This is the main entry point for dynamically executing a function from a specified module path.
 
-        :param root:  The root directory for centrally organizing user modules.
-        :param routed_path:  The `path/module.function' path comes from URL routing, 
-            it indicates the relative path from the above root directory to the user module in the file system.
-        :param args_dict:  A argument dictionary or a list of argument dictionary to be passed to the invoking function,
-            it is usually passed from `RequestArguments.arguments` property.
-            * If the `args_dict` is a dictionary:
-                - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
-                - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
-                - Any extra arguments will be ignored without error.
-            * If the `args_dict` is a list of dictionaries:
-                - The specified function will be called in loop by using each argument dictionary in the list.
+    :param root: The root directory for centrally organizing user modules.
+    :param routed_path: The ``path/module.function`` path comes from URL routing, 
+        it indicates the relative path from the above root directory to the user module in the file system.
+    :param args_dict: A argument dictionary or a list of argument dictionary to be passed to the invoking function,
+        it is usually passed from ``RequestArguments.arguments`` property.
 
-        :return:  The result object of the module level function returned
-            * If the `args_dict` is a dictionary, the result of the function execution is returned;
-            * If the `args_dict` is a list of dictionaries, all results of multiple executions of the function will be wrapped into a list and returned together.
-                If any exception is thrown during the call loop, subsequent calls will be stopped
+        * If the ``args_dict`` is a dictionary:
+            - Named arguments are bound to keyword parameters defined by the function - Case Sensitive Matching;
+            - All values listed ​​in the empty key (or blank key) are sequentially bound to positional parameters;
+            - Any extra arguments will be ignored without error.
+        * If the ``args_dict`` is a list of dictionaries:
+            - The specified function will be called in loop by using each argument dictionary in the list.
+
+    :return: The result object of the module level function returned.
+
+        * If the ``args_dict`` is a dictionary, the result of the function execution is returned;
+        * If the ``args_dict`` is a list of dictionaries, all results of multiple executions of the function will be wrapped into a list and returned together.
+
+        If any exception is thrown during the call loop, subsequent calls will be stopped.
     """
     public_root = util.full_path(root)
     if not os.path.isdir(public_root):
@@ -283,20 +292,25 @@ def _init_dict_list(json_obj) -> List[Dict]:
 
 
 class RequestArguments(object):
-    """ This class is used to gather all arguments information from the request body (if JSON) and the URL query string,
-        then merge them into a dictionary or a list of dictionary.
+    """This class is used to gather all arguments information from the request body (if JSON) and the URL query string,
+    then merge them into a dictionary or a list of dictionary.
 
-        :param request:  The request object passed from bottle.
+    :param request: The request object passed from bottle.
 
-        .. note::
-            Arguments from the request body (if it is JSON) are dominant, and arguments from the query string are supplementary.
-            Only arguments in the body (if it is JSON) can determine whether the request is a single function call or a loop of calls on the same function.
-            - If the body JSON is a dictionary, this request will be treated as a single call to the function.
-              Arguments are primarily picked from the JSON dictionary (those values listed ​​in empty key or blank key are treated as positional arguments, 
-              and values of empty key from query string will be extended together), then named arguments can be picked from query string only if they 
-              do not exist in the JSON body.
-            - If the body JSON is a list of dictionaries, this request will be treated as calling the same function in a loop for each argument dictionary.
-              Other arguments in the query string are added to current argument dictionary for each function call (same way as above)。
+    .. note::
+
+        Arguments from the request body (if it is JSON) are dominant, and arguments from the query string are supplementary.
+        Only arguments in the body (if it is JSON) can determine whether the request is a single function call or a loop of calls on the same function.
+    
+        - If the body JSON is a dictionary, this request will be treated as a single call to the function.
+    
+          Arguments are primarily picked from the JSON dictionary (those values listed ​​in empty key or blank key are treated as positional arguments, 
+          and values of empty key from query string will be extended together), then named arguments can be picked from query string only if they 
+          do not exist in the JSON body.
+    
+        - If the body JSON is a list of dictionaries, this request will be treated as calling the same function in a loop for each argument dictionary.
+    
+        Other arguments in the query string are added to current argument dictionary for each function call (same way as above).
     """
     def __init__(self, request:Request):
         self.request = request
@@ -307,7 +321,7 @@ class RequestArguments(object):
 
     @property
     def arguments(self) -> Union[Dict, List[Dict]]:
-        """ An argument dictionary or a list of dictionary that can be used to provide the required argument `args_dict` for `execute` function. """
+        """An argument dictionary or a list of dictionary that can be used to provide the required argument `args_dict` for `execute` function."""
         return self.arg_dict_list if len(self.arg_dict_list) > 1 else self.arg_dict_list[0]
 
     def override(self, override_dict:dict) -> Union[Dict, List[Dict]]:
