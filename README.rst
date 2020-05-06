@@ -8,7 +8,7 @@ The repository provides:
 
     1. A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
 
-    2. A sample server **PyWebApi for IIS** (https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS). It can be easily customized to your own PyWebApi Server.
+    2. A sample `PyWebApi Server (for IIS) <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_. It can be easily customized to your own PyWebApi Server.
 
     3. Some sample user-apps/user-modules:
 
@@ -43,5 +43,25 @@ The quickest way to build your own PyWebApi Server is to use the source code of 
 Sample PyWebApi Server (for IIS)
 --------------------------------
 
+1. **Setup**
+
+    https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, 
+	which is a  normal Python `Bottle <https://bottlepy.org/>`_ web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, 
+	and recreate the virtual environment from ``requirements.txt``. 
+
+    The following documents are helpful if you are not familiar with setting up a Python web application on IIS:
+
+    - `Configure Python web apps for IIS <https://docs.microsoft.com/en-us/visualstudio/python/configure-web-apps-for-iis-windows>`_
+    - `FastCGI \<fastCgi\> <https://docs.microsoft.com/en-us/iis/configuration/system.webserver/fastcgi/>`_
+    - `WFastCGI <https://pypi.org/project/wfastcgi/>`_
 
 
+2. **Configure**
+
+
+3. **Customize**
+
+
+	Although this sample server is hosted in IIS as a complete working example, 
+	the source code is pure Python and does not depend on any features specific to IIS or Windows platforms.
+	It can be easily applied to any platform that supports Python(3+).
