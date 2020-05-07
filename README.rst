@@ -45,21 +45,71 @@ Sample PyWebApi Server (for IIS)
 
 1. **Setup**
 
-    https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, 
-	which is a  normal Python `Bottle <https://bottlepy.org/>`_ web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, 
-	and recreate the virtual environment from ``requirements.txt``. 
+	https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, which is a  normal Python `Bottle <https://bottlepy.org/>`_ web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, and recreate the virtual environment from ``requirements.txt``. 
 
     The following documents are helpful if you are not familiar with setting up a Python web application on IIS:
+        - `Configure Python web apps for IIS <https://docs.microsoft.com/en-us/visualstudio/python/configure-web-apps-for-iis-windows>`_
+        - `FastCGI \<fastCgi\> <https://docs.microsoft.com/en-us/iis/configuration/system.webserver/fastcgi/>`_
+        - `WFastCGI <https://pypi.org/project/wfastcgi/>`_
 
-    - `Configure Python web apps for IIS <https://docs.microsoft.com/en-us/visualstudio/python/configure-web-apps-for-iis-windows>`_
-    - `FastCGI \<fastCgi\> <https://docs.microsoft.com/en-us/iis/configuration/system.webserver/fastcgi/>`_
-    - `WFastCGI <https://pypi.org/project/wfastcgi/>`_
+    Some Considerations:
+        - Where to install the PyWebApi Server?
+        - Physical directory in the file system? (for the website and for user scripts)
+        - Virtual/Application directory in the IIS system?
+        - Which identity (service account) will be used for the application pool?
+        - Permissions to the correct account
+
+    ``Anonymous Authentication`` (to allow `CORS <https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS>`__ `Preflight <https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request>`__) and ``Windows Authentication`` need to be **Enabled** in IIS level. After handling CORS, anonymous authentication will be blocked in web application level.
+
+    |
+
+    **Configure** - ``web.config``:
+
+        `Enabling wfastcgi <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#enabling-wfastcgi>`__ is one of the crucial step above if we are using `WFastCGI <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi>`__ as the `route handler <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#route-handlers>`__ .
+
+        .. code:: shell
+        
+            wfastcgi-enable
+    
+        The output of wfastcgi-enable will be used to replace below value of scriptProcessor:
+    
+        .. code:: xml
+        
+          <system.webServer>
+            <handlers>
+              <add name="PythonHandler" path="*" verb="*" modules="FastCgiModule"
+                   scriptProcessor="D:\wwwroot\PyWebApi\env\Scripts\python.exe|D:\wwwroot\PyWebApi\env\Lib\site-packages\wfastcgi.py"
+                   resourceType="Unspecified" requireAccess="Script"/>
+            </handlers>
+          </system.webServer>
+
+        Modify the ``SCRIPT_NAME`` entry in the <appSettings> section to the Virtual/Application directory (ApplicationPath) you installed in IIS, do NOT put a slash ``/`` at the end of the path here. However, if the service is installed on the root of a website, this entry can be removed.
+
+        .. code:: xml
+
+          <appSettings>
+            <add key="WSGI_HANDLER" value="app.wsgi_app()"/>
+            <add key="WSGI_LOG" value="D:\wwwroot\PyWebApi\log\wfastcgi.log"/>
+            <add key="SCRIPT_NAME" value="/PyWebApi"/>
+            <add key="USER_SCRIPT_ROOT" value=".\user-script-root\"/>
+            <add key="SERVER_DEBUG" value="IIS"/>
+          </appSettings>
+
+        Modify the value of the ``USER_SCRIPT_ROOT`` entry to the container location where all user modules will be organized, 
+        it is a local file system path which can be an absolute path, or a relative path - relative to the root of the web application 
+		(where this ``web.config`` file is located).
+
+		``WSGI_LOG`` is an optional entry for WFastCGI to write its logging information to a file. This entry should be removed from the production.
+		(After the web app is setup properly, this log does not capture many application-level errors.)
 
 
-2. **Configure**
+    **Troubleshooting**:
+
+    - 
 
 
-3. **Customize**
+
+#. **Customize**
 
 
 	Although this sample server is hosted in IIS as a complete working example, 
