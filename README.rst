@@ -1,4 +1,4 @@
-########
+﻿########
 PyWebApi
 ########
 
@@ -45,7 +45,7 @@ Sample PyWebApi Server (for IIS)
 
 1. **Setup**
 
-	https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, which is a  normal Python `Bottle <https://bottlepy.org/>`_ web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, and recreate the virtual environment from ``requirements.txt``. 
+    https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, which is a  normal Python `Bottle <https://bottlepy.org/>`_ web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, and recreate the virtual environment from ``requirements.txt``. 
 
     The following documents are helpful if you are not familiar with setting up a Python web application on IIS:
         - `Configure Python web apps for IIS <https://docs.microsoft.com/en-us/visualstudio/python/configure-web-apps-for-iis-windows>`_
@@ -97,10 +97,10 @@ Sample PyWebApi Server (for IIS)
 
         Modify the value of the ``USER_SCRIPT_ROOT`` entry to the container location where all user modules will be organized, 
         it is a local file system path which can be an absolute path, or a relative path - relative to the root of the web application 
-		(where this ``web.config`` file is located).
+        (where this ``web.config`` file is located).
 
-		``WSGI_LOG`` is an optional entry for WFastCGI to write its logging information to a file. This entry should be removed from the production.
-		(After the web app is setup properly, this log does not capture many application-level errors.)
+        ``WSGI_LOG`` is an optional entry for WFastCGI to write its logging information to a file. This entry should be removed from the production.
+        (After the web app is setup properly, this log does not capture many application-level errors.)
 
 
     **Troubleshooting**:
@@ -112,6 +112,6 @@ Sample PyWebApi Server (for IIS)
 #. **Customize**
 
 
-	Although this sample server is hosted in IIS as a complete working example, 
-	the source code is pure Python and does not depend on any features specific to IIS or Windows platforms.
-	It can be easily applied to any platform that supports Python(3+).
+    Although this sample server is hosted in IIS as a complete working example, 
+    the source code is pure Python and does not depend on any features specific to IIS or Windows platforms.
+    It can be easily applied to any platform that supports Python(3+).
