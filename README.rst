@@ -18,8 +18,8 @@ The repository provides:
 
 #.  Some utility PyPI packages:
 
-    +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET IDataReader
-    +   **simple-rest-call** (https://pypi.org/project/simple-rest-call/) - wraps Requests into a simple call
+    +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
+    +   **simple-rest-call** (https://pypi.org/project/simple-rest-call/) - wraps `Requests <https://requests.readthedocs.io/>`__ into a simple call
 
 |
 
@@ -27,12 +27,15 @@ The repository provides:
 
 PyWebApi Server
 ===============
-Just copy any ordinary Python module (and its dependent components) to an organized container (directory) in a PyWebApi Server and it will become a RESTfull service immediately. There is no need to write any code or configuration to become a RESTfull service.
+Just copy any ordinary Python module (and its dependent components) to an organized container (directory) in a PyWebApi Server and it will become a RESTfull service immediately. 
+There is no need to write any code or configuration to become a RESTfull service.
 
-Any authorized HTTP client can invoke module level functions. Input arguments of your function can be passed in request body by JSON (recommended) or in URL query-string.
-If the client further wraps a batch of arguments sets into an array as the request JSON, the server will sequentially call the function by each argument set in the array, and wrap all the result objects in a more outer array before return to the client.
+Any authorized HTTP client can invoke module level functions. Input arguments of your function can be passed in request body by JSON (recommended) or in URL query-string. 
+If the client further wraps a batch of arguments sets into an array as the request JSON, the server will sequentially call the function by each argument set in the array, 
+and wrap all the result objects in a more outer array before return to the client.
 
-The quickest way to build your own PyWebApi Server is to use the source code of the sample server (`PyWebApi for IIS <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_) as a prototype for custom modification and improvement.
+The quickest way to build your own PyWebApi Server is to use the source code of the sample server (`PyWebApi for IIS <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_) 
+as a prototype for custom modification and improvement.
 
 
 Sample PyWebApi Server (for IIS)
@@ -40,7 +43,8 @@ Sample PyWebApi Server (for IIS)
 
 #.  **Setup**
 
-    https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, which is a  normal Python `Bottle <https://bottlepy.org/>`_ web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, and recreate the virtual environment from ``requirements.txt``. 
+    https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS contains the complete code of the sample server, which is a  normal Python `Bottle <https://bottlepy.org/>`_ 
+    web application. The project file ``PyWebApi.IIS.pyproj`` can be opened by Visual Studio if you like, and recreate the virtual environment from ``requirements.txt``. 
 
     The following documents are helpful if you are not familiar with setting up a Python web application on IIS:
 
@@ -56,13 +60,14 @@ Sample PyWebApi Server (for IIS)
     -   Which identity (service account) will be used for the application pool?
     -   Permissions to the correct account
 
-    ``Anonymous Authentication`` (to allow `CORS <https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS>`__ `Preflight <https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request>`__) and ``Windows Authentication`` need to be **Enabled** in IIS level. After handling CORS, anonymous authentication will be blocked in web application level.
+    ``Anonymous Authentication`` (to allow `CORS <https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS>`__ `Preflight <https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request>`__) 
+    and ``Windows Authentication`` need to be Enabled in IIS level. After handling CORS, anonymous authentication will be blocked in web application level.
 
-    |
 
     **Configure** - ``web.config``:
 
-    -   `Enabling wfastcgi <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#enabling-wfastcgi>`__ is one of the crucial step above if we are using `WFastCGI <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi>`__ as the `route handler <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#route-handlers>`__ .
+    -   `Enabling wfastcgi <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#enabling-wfastcgi>`__ is one of the crucial step above if we are using 
+        `WFastCGI <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi>`__ as the `route handler <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#route-handlers>`__ .
 
         .. code:: shell
         
@@ -80,7 +85,8 @@ Sample PyWebApi Server (for IIS)
             </handlers>
           </system.webServer>
 
-    -   Modify the ``SCRIPT_NAME`` entry in the <appSettings> section to the Virtual/Application directory (ApplicationPath) you installed in IIS, do NOT put a slash ``/`` at the end of the path here. However, if the service is installed on the root of a website, this entry can be removed.
+    -   Modify the ``SCRIPT_NAME`` entry in the <appSettings> section to the Virtual/Application directory (ApplicationPath) you installed in IIS, 
+        do NOT put a slash ``/`` at the end of the path here. However, if the web app is installed on the root of a website, this entry can be removed.
 
         .. code:: xml
 
@@ -106,7 +112,7 @@ Sample PyWebApi Server (for IIS)
 
 
 
-#. **Customize**
+#.  **Customize**
 
 
     Although this sample server is hosted in IIS as a complete working example, 
