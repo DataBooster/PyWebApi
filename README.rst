@@ -63,8 +63,9 @@ Sample PyWebApi Server (for IIS)
     ``Anonymous Authentication`` (to allow `CORS <https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS>`__ `Preflight <https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request>`__) 
     and ``Windows Authentication`` need to be Enabled in IIS level. After handling CORS, anonymous authentication will be blocked in web application level.
 
+    |
 
-    **Configure** - ``web.config``:
+    **Configure**: -- ``web.config``
 
     -   `Enabling wfastcgi <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#enabling-wfastcgi>`__ is one of the crucial step above if we are using 
         `WFastCGI <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi>`__ as the `route handler <https://github.com/microsoft/PTVS/tree/master/Python/Product/WFastCgi#route-handlers>`__ .
@@ -98,21 +99,56 @@ Sample PyWebApi Server (for IIS)
             <add key="SERVER_DEBUG" value="IIS"/>
           </appSettings>
 
+    .. user_script_root
+
     -   Modify the value of the ``USER_SCRIPT_ROOT`` entry to the container location where all user modules will be organized, 
         it is a local file system path which can be an absolute path, or a relative path - relative to the root of the web application 
         (where this ``web.config`` file is located).
 
-    -   ``WSGI_LOG`` is an optional entry for WFastCGI to write its logging information to a file. This entry should be removed from the production.
+    -   ``WSGI_LOG`` is an optional entry for WFastCGI to write its logging information to a file. This entry should be removed from production.
         (After the web app is setup properly, this log does not capture many application-level errors.)
 
 
     **Troubleshooting**:
 
-    - 
+    -   ``whoami`` can be used to verify that the server has been setup properly or not. - E.g. http://ourteam.company.com/PyWebApi/whoami. 
+        The actual URL depends on where you install it, and its URL routing is defined in `route.py <https://github.com/DataBooster/PyWebApi/blob/master/Sample/PyWebApi.IIS/routes.py>`_ -- 
+        ``@route(path='/whoami', ...)``. It should return your Windows username if you are currently logged in with a domain account.
 
+    -   If the initial setup is not smooth, many causes are often related to lack of permissions. Check Windows Event Viewer for more clues.
 
 
 #.  **Customize**
+
+    a.  Authentication
+
+        Since this sample is hosted on IIS, it simply receives the authentication result passed by IIS.
+        If you need other authentication methods not provided by IIS, you should find the corresponding authentication plug-in 
+        (for `Bottle <https://bottlepy.org/docs/dev/tutorial.html#plugins>`__) or implement it yourself.
+
+    #.  Authorization
+
+        Most companies have their own enterprise-level authorization services. The placeholder function ``check_permission(...)`` in 
+        `route.py <https://github.com/DataBooster/PyWebApi/blob/master/Sample/PyWebApi.IIS/routes.py>`_ provides a junction box to 
+        integrate with your authorization service.
+
+        .. code-block:: python
+
+            def check_permission(app_id:str, user_id:str, module_func:str) -> bool:
+                #TODO: add your implementation of permission checks
+                return True
+
+        Arguments:
+
+        - **app_id**: This is the app category indicated in the requesting URL - matched by the ``<app_id>`` wildcard in ``@route(path='/pys/<app_id>/<func_path:path>', ...)``. If your enterprise's authorization implementation does not require this concept, this parameter and the corresponding ``<app_id>`` wildcard in the URL route should be removed together.
+
+        - **user_id**: This is the client user identity passed by IIS authentication.
+        - **module_func**: This is the `USER_SCRIPT_ROOT <#user_script_root>`_ relative logical path to the current request ``module.function``, it is the matching ``<func_path:path>`` (in ``@route(path='/pys/<app_id>/<func_path:path>', ...)``) from the request URL.
+
+        Return: According to the above conditions, 
+
+        - ``True`` should be returned if you want to allow the requesting module-level function to be executed;
+        - ``False`` should be returned if you want to reject the request.
 
 
     Although this sample server is hosted in IIS as a complete working example, 
