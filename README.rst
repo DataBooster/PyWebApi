@@ -12,9 +12,9 @@ The repository provides:
 
     *   A MDX query transponder (https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader)
 
-        i)  It forwards a MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
-        #)  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
-        #)  (optional) Sends a notification about the final result or error.
+        a.  It forwards a MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
+        #.  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
+        #.  (optional) Sends a notification about the final result or error.
 
 #.  Some utility PyPI packages:
 
@@ -86,6 +86,7 @@ Sample PyWebApi Server (for IIS)
             </handlers>
           </system.webServer>
 
+        .. _script-name:
     -   Modify the ``SCRIPT_NAME`` entry in the <appSettings> section to the Virtual/Application directory (ApplicationPath) you installed in IIS, 
         do NOT put a slash ``/`` at the end of the path here. However, if the web app is installed on the root of a website, this entry can be removed.
 
@@ -99,8 +100,7 @@ Sample PyWebApi Server (for IIS)
             <add key="SERVER_DEBUG" value="IIS"/>
           </appSettings>
 
-    .. user_script_root
-
+        .. _user-script-root:
     -   Modify the value of the ``USER_SCRIPT_ROOT`` entry to the container location where all user modules will be organized, 
         it is a local file system path which can be an absolute path, or a relative path - relative to the root of the web application 
         (where this ``web.config`` file is located).
@@ -109,9 +109,9 @@ Sample PyWebApi Server (for IIS)
         (After the web app is setup properly, this log does not capture many application-level errors.)
 
 
-    **Troubleshooting**:
+    **Troubleshoot**:
 
-    -   ``whoami`` can be used to verify that the server has been setup properly or not. - E.g. http://ourteam.company.com/PyWebApi/whoami. 
+    -   ``whoami`` can be used to verify that the server has been setup properly or not. - E.g. ``http://ourteam.company.com/PyWebApi/whoami``. 
         The actual URL depends on where you install it, and its URL routing is defined in `route.py <https://github.com/DataBooster/PyWebApi/blob/master/Sample/PyWebApi.IIS/routes.py>`_ -- 
         ``@route(path='/whoami', ...)``. It should return your Windows username if you are currently logged in with a domain account.
 
@@ -140,17 +140,50 @@ Sample PyWebApi Server (for IIS)
 
         Arguments:
 
-        - **app_id**: This is the app category indicated in the requesting URL - matched by the ``<app_id>`` wildcard in ``@route(path='/pys/<app_id>/<func_path:path>', ...)``. If your enterprise's authorization implementation does not require this concept, this parameter and the corresponding ``<app_id>`` wildcard in the URL route should be removed together.
+        - **app_id**: This is the app category indicated in the requesting URL - matched by the ``<app_id>`` wildcard in ``@route(path='/pys/<app_id>/<module_func:path>', ...)``. If your enterprise's authorization implementation does not require this concept, this parameter and the corresponding ``<app_id>`` wildcard in the URL route should be removed together.
 
         - **user_id**: This is the client user identity passed by IIS authentication.
-        - **module_func**: This is the `USER_SCRIPT_ROOT <#user_script_root>`_ relative logical path to the current request ``module.function``, it is the matching ``<func_path:path>`` (in ``@route(path='/pys/<app_id>/<func_path:path>', ...)``) from the request URL.
+        - **module_func**: This is the `USER_SCRIPT_ROOT <user-script-root_>`_ relative logical path to the current request ``module.function``, it is the matching ``<module_func:path>`` (in ``@route(path='/pys/<app_id>/<module_func:path>', ...)``) from the request URL.
 
-        Return: According to the above conditions, 
+        **Return**: According to the above conditions, 
 
         - ``True`` should be returned if you want to allow the requesting module-level function to be executed;
         - ``False`` should be returned if you want to reject the request.
 
 
-    Although this sample server is hosted in IIS as a complete working example, 
-    the source code is pure Python and does not depend on any features specific to IIS or Windows platforms.
-    It can be easily applied to any platform that supports Python(3+).
+    #.  Logging
+
+        There are many efficient logging packages, and you can find logging plugins for Bottle directly from `PyPi <https://pypi.org/>`_, 
+        or implement one yourself.
+
+    #.  Migration
+
+        Although this sample server is hosted in IIS as a complete working example, 
+        the source code is pure Python and does not depend on any features specific to IIS or Windows platforms.
+        It can be easily applied to any platform that supports Python(3+).
+
+Deploy User Modules/Scripts:
+----------------------------
+
+#.  **Copy to Server**
+
+    Deploying user modules/scripts is a simple copying.
+    Copy the user module and its dependent files to a planned path directory under `USER_SCRIPT_ROOT <user-script-root_>`_ in the server.
+    This path (relative to `USER_SCRIPT_ROOT <user-script-root_>`_) determines what URL path the client should use to call the functions.
+
+    For example,
+
+    If we copy the module mdx_task (``mdx_task.py`` and all dependent files) to the relative path ``utilities\mdxreader\`` (in Windows) or ``utilities/mdxreader/`` (in UNIX) under `USER_SCRIPT_ROOT <user-script-root_>`_,
+    then the client should use ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdxreader/mdx_task.run_query`` to invoke the ``run_query`` function of the ``mdx_task`` module. Breakdown as:
+
+    -   ``/PyWebApi`` -- the Virtual/Application directory (ApplicationPath) installed in IIS, and also the value of the configuration item `SCRIPT_NAME <script-name_>`_;
+    -   ``/pys/`` -- the static segment in ``@route(path='/pys/<app_id>/<module_func:path>', ...)``；
+    -   ``etl`` -- matched by the ``<app_id>`` wildcard;
+    -   ``utilities/mdxreader/`` -- the relative path where the user module is located;
+    -   ``mdx_task`` -- the user module (``mdx_task.py``);
+    -   ``run_query`` -- the module-level function to be invoked;
+
+
+#.  **Grant Permissions**
+
+    All client users (or group account) who will invoke the user-module-function, need to be granted permissions in your authorization system.

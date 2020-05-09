@@ -48,18 +48,18 @@ def check_permission(app_id:str, user_id:str, module_func:str) -> bool:
     return True
 
 
-@route(path='/pys/<app_id>/<func_path:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
+@route(path='/pys/<app_id>/<module_func:path>', method=['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'])
 @authorize_cors
-def execute_module_level_function(app_id:str, func_path:str):
+def execute_module_level_function(app_id:str, module_func:str):
     user_name = _get_user()
 
-    if check_permission(app_id, user_name, func_path):
+    if check_permission(app_id, user_name, module_func):
         ra = RequestArguments(request)
         ra.override_value('actual_username', user_name)
 
         media_types = request.get_header('Accept', 'application/json')
 
-        raw_result = execute(_user_script_root, func_path, ra.arguments)
+        raw_result = execute(_user_script_root, module_func, ra.arguments)
         fmt_result = _mediatype_formatter_manager.respond_as(raw_result, media_types, response.headers.dict)
 
         return fmt_result
