@@ -176,7 +176,7 @@ Deploy User Modules/Scripts:
 
         Breakdown:
 
-        -   ``/PyWebApi`` -- the Virtual/Application directory (ApplicationPath) installed in IIS, and also the value of the configuration item `SCRIPT_NAME <script-name_>`_;
+        -   ``/PyWebApi`` -- the virtual/application directory (ApplicationPath) installed in IIS, and it's also the value of the appSettings item `SCRIPT_NAME <script-name_>`_ in ``web.config``;
         -   ``/pys/`` -- the static segment in ``@route(path='/pys/<app_id>/<module_func:path>', ...)``;
         -   ``etl`` -- matched by the ``<app_id>`` wildcard;
         -   ``utilities/mdxreader/`` -- the relative path where the user module is located;
