@@ -12,7 +12,7 @@ The repository provides:
 
     *   A MDX query transponder (https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader)
 
-        a.  It forwards a MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
+        i.  It forwards a MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
         #.  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
         #.  (optional) Sends a notification about the final result or error.
 
@@ -171,10 +171,10 @@ Deploy User Modules/Scripts:
     Copy the user module and its dependent files to a planned path directory under `USER_SCRIPT_ROOT <user-script-root_>`_ in the server.
     This path (relative to `USER_SCRIPT_ROOT <user-script-root_>`_) determines what URL path the client should use to call the functions.
 
-    For example,
+    For example, if we copy the module mdx_task (``mdx_task.py`` and all dependent files) to the relative path ``utilities\mdxreader\`` (in Windows) or ``utilities/mdxreader/`` (in UNIX) under `USER_SCRIPT_ROOT <user-script-root_>`_,
+    then the client should use ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdxreader/mdx_task.run_query`` to invoke the ``run_query`` function of the ``mdx_task`` module.
 
-    If we copy the module mdx_task (``mdx_task.py`` and all dependent files) to the relative path ``utilities\mdxreader\`` (in Windows) or ``utilities/mdxreader/`` (in UNIX) under `USER_SCRIPT_ROOT <user-script-root_>`_,
-    then the client should use ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdxreader/mdx_task.run_query`` to invoke the ``run_query`` function of the ``mdx_task`` module. Breakdown as:
+    Breakdown:
 
     -   ``/PyWebApi`` -- the Virtual/Application directory (ApplicationPath) installed in IIS, and also the value of the configuration item `SCRIPT_NAME <script-name_>`_;
     -   ``/pys/`` -- the static segment in ``@route(path='/pys/<app_id>/<module_func:path>', ...)``；

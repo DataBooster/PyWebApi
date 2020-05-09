@@ -64,4 +64,4 @@ def execute_module_level_function(app_id:str, module_func:str):
 
         return fmt_result
     else:
-        abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(funcpath)}.")
+        abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(module_func)}.")
