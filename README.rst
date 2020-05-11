@@ -34,6 +34,8 @@ Any authorized HTTP client can invoke module level functions. Input arguments of
 If the client further wraps a batch of arguments sets into an array as the request JSON, the server will sequentially call the function by each argument set in the array, 
 and wrap all the result objects in a more outer array before return to the client.
 
+.. image:: docs/overview.png
+
 The quickest way to build your own PyWebApi Server is to use the source code of the sample server (`PyWebApi for IIS <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_) 
 as a prototype for custom modification and improvement.
 
