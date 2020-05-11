@@ -183,6 +183,28 @@ Deploy User Modules/Scripts:
         -   ``mdx_task`` -- the user module (``mdx_task.py``);
         -   ``run_query`` -- the module-level function to be invoked;
 
+    **.pth file**
+
+    If some dependent library packages are not copied into the same directory as the user main entry module, 
+    and you do not want to install them in the global virtual environment of the website. 
+    Then you need to put a ``.pth`` file (E.g. ``pywebapi.pth``) in the directory of the user main entry module, 
+    so that the Python runtime knows where to find those dependent library packages.
+
+    The ``.pth`` file only takes effect within the scope of the user entry module in the same directory.
+    Its contents are additional paths (one per line) to be added to Python’s search path.
+    Each line in the file should be a relative path, relative to the directory where the ``.pth`` file is located.
+    Non-existing paths, blank lines and lines beginning with # are skipped. 
+
+    Example `pywebapi.pth <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/pywebapi.pth>`_:
+
+    ::
+
+        env\Lib\site-packages
+        env\Lib\site-packages\win32
+        env\Lib\site-packages\win32\lib
+        
+        #copy pywintypes??.dll from env\Lib\site-packages\pywin32_system32 to env\Lib\site-packages\win32\lib
+
 
 #.  **Grant Permissions**
 
