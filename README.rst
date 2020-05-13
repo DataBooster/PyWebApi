@@ -212,7 +212,7 @@ Deploy User Modules/Scripts:
 
     All client users (or group account) who will invoke the user-module-function, need to be granted permissions in your authorization system.
 
-   Take the above URL as an example, 
+    Take the above URL as an example, 
 
     .. code-block:: JSON
 
