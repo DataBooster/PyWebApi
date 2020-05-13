@@ -211,3 +211,15 @@ Deploy User Modules/Scripts:
 #.  **Grant Permissions**
 
     All client users (or group account) who will invoke the user-module-function, need to be granted permissions in your authorization system.
+
+   Take the above URL as an example, 
+
+    .. code-block:: JSON
+
+        {
+            "app_id": "etl",
+            "action": "utilities/mdxreader/mdx_task.run_query",
+            "account": "user ID/name or group account/role"
+        }
+
+    These elements can be essential stuff for an authorization entry.
