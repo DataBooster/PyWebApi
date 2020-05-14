@@ -8,7 +8,7 @@ The repository provides:
 
 #.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
 #.  A sample `PyWebApi Server (for IIS) <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_. It can be easily customized to your own PyWebApi Server.
-#.  Some sample user-apps/user-modules/user-scripts.
+#.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts:_>`__.
 #.  Some utility PyPI packages:
 
     +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
@@ -222,8 +222,6 @@ Deploy User Modules/Scripts:
 ----
 
 |
-
-----
 
 Sample User Apps/Modules/Scripts:
 ---------------------------------
