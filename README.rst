@@ -8,7 +8,7 @@ The repository provides:
 
 #.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
 #.  A sample `PyWebApi Server (for IIS) <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_. It can be easily customized to your own PyWebApi Server.
-#.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts:_>`__.
+#.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts_>`__.
 #.  Some utility PyPI packages:
 
     +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
@@ -221,15 +221,14 @@ Deploy User Modules/Scripts:
 
 ----
 
-|
-
-Sample User Apps/Modules/Scripts:
----------------------------------
+Sample User Apps/Modules/Scripts
+--------------------------------
 
 *   `MdxReader <https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader>`_
 
     This sample user app is a practical Python app that acts as an MDX query dispatcher:
 
-    1.  It forwards an MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
+    #.  It forwards an MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
     #.  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
     #.  (optional) Sends a notification about the final result or error.
+
