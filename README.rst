@@ -8,14 +8,7 @@ The repository provides:
 
 #.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
 #.  A sample `PyWebApi Server (for IIS) <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_. It can be easily customized to your own PyWebApi Server.
-#.  Some sample user-apps/user-modules:
-
-    *   A MDX query transponder (https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader)
-
-        a.  It forwards a MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
-        #.  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
-        #.  (optional) Sends a notification about the final result or error.
-
+#.  Some sample user-apps/user-modules/user-scripts.
 #.  Some utility PyPI packages:
 
     +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
@@ -160,7 +153,7 @@ Sample PyWebApi Server (for IIS)
 
     #.  Migration
 
-        Although this sample server is hosted in IIS as a complete working example, 
+        Although this sample server is hosted on IIS as a complete working example, 
         the source code is pure Python and does not depend on any features specific to IIS or Windows platforms.
         It can be easily applied to any platform that supports Python(3+).
 
@@ -219,7 +212,26 @@ Deploy User Modules/Scripts:
         {
             "app_id": "etl",
             "action": "utilities/mdxreader/mdx_task.run_query",
-            "account": "user ID/name or group account/role"
+            "account": "user id/name or group account/role"
         }
 
     These elements can be essential stuff for an authorization entry.
+
+|
+
+----
+
+|
+
+----
+
+Sample User Apps/Modules/Scripts:
+---------------------------------
+
+*   `MdxReader <https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader>`_
+
+    This sample user app is a practical Python app that acts as an MDX query dispatcher:
+
+    1.  It forwards an MDX query (received as JSON from the HTTP client) to a specified OLAP, and then convert the query result to the specified model;
+    #.  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
+    #.  (optional) Sends a notification about the final result or error.
