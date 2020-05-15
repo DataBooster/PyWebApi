@@ -7,7 +7,7 @@ PyWebApi is a micro-framework for Python RESTfulization. It turns Python(3+) mod
 The repository provides:
 
 #.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
-#.  A sample `PyWebApi Server (for IIS) <https://github.com/DataBooster/PyWebApi/tree/master/Sample/PyWebApi.IIS>`_. It can be easily customized to your own PyWebApi Server.
+#.  A sample `PyWebApi Server (for IIS) <Sample PyWebApi Server (for IIS)_>`__. It can be easily customized to your own PyWebApi Server.
 #.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts_>`__.
 #.  Some utility PyPI packages:
 
@@ -232,3 +232,4 @@ Sample User Apps/Modules/Scripts
     #.  (optional) Sends the above results to a database (`DbWebApi <https://github.com/DataBooster/DbWebApi>`_) for storage or further processing;
     #.  (optional) Sends a notification about the final result or error.
 
+.. image:: docs/mdxreader.png
