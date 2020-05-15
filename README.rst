@@ -233,3 +233,17 @@ Sample User Apps/Modules/Scripts
     #.  (optional) Sends a notification about the final result or error.
 
 .. image:: docs/mdxreader.png
+
+.. code-block:: python
+
+
+.. code-block:: python
+
+    def run_query(connection_string:str, command_text:str, result_model:str='DictOfList', column_mapping:dict={},
+                  pass_result_to_url:str=None, more_args:dict=None,
+                  notify_url:str=None, notify_args:dict=None):
+
+..
+
+ |  The signature of the entry function determines the JSON structure of the request body payload:
+
