@@ -290,7 +290,7 @@ Sample User Apps/Modules/Scripts
 
         -   '**ListOfDict**' is also a commonly used ``result_model``, it looks like:
 
-            .. code-block:: python
+            .. code-block:: JSON
 
                 [
                     {"Column_A": value_a1,  "Column_B": value_b1, "Column_C": value_c1, ... },
@@ -301,7 +301,7 @@ Sample User Apps/Modules/Scripts
 
         -   There is another built-in ``result_model``: '**ListOfList**', which separates the column header from the value matrix, it looks like:
 
-            .. code-block:: python
+            .. code-block:: JSON
 
                 {
                     "column_names": ["Column_A", "Column_B", "Column_C", ...], 
@@ -312,6 +312,8 @@ Sample User Apps/Modules/Scripts
                                         ...
                                     ]
                 }
+
+            .
 
         ``column_mapping``
 
