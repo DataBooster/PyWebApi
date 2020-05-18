@@ -259,7 +259,7 @@ Sample User Apps/Modules/Scripts
 
         -   As the default value of the ``result_model`` argument suggests ('**DictOfList**'), the result structural model received by the client will be a dictionary of array, like:
 
-            .. code-block:: JSON
+            .. code-block:: python
         
                 {
                     "Column_A": [value_a1, value_a2, value_a3, ...],
@@ -276,7 +276,7 @@ Sample User Apps/Modules/Scripts
         -   If you want to pass the whole result directly to a `Table-Valued Parameter <https://github.com/DataBooster/DbWebApi#table-valued-parameters>`__ of a SQL Server stored procedure, 
             it is suitable to set the ``result_model`` parameter to '**SqlTvp**', and the result structure looks like:
 
-            .. code-block:: JSON
+            .. code-block:: python
 
                 {
                     "TableValuedParam":
@@ -290,7 +290,7 @@ Sample User Apps/Modules/Scripts
 
         -   '**ListOfDict**' is also a commonly used ``result_model``, it looks like:
 
-            .. code-block:: JSON
+            .. code-block:: python
 
                 [
                     {"Column_A": value_a1,  "Column_B": value_b1, "Column_C": value_c1, ... },
@@ -301,7 +301,7 @@ Sample User Apps/Modules/Scripts
 
         -   There is another built-in ``result_model``: '**ListOfList**', which separates the column header from the value matrix, it looks like:
 
-            .. code-block:: JSON
+            .. code-block:: python
 
                 {
                     "column_names": ["Column_A", "Column_B", "Column_C", ...], 
