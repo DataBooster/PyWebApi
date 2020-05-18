@@ -243,7 +243,79 @@ Sample User Apps/Modules/Scripts
                   pass_result_to_url:str=None, more_args:dict=None,
                   notify_url:str=None, notify_args:dict=None):
 
-..
+-   -   Arguments:
 
- |  The signature of the entry function determines the JSON structure of the request body payload:
+        The signature of the entry function determines the JSON structure of the request body payload.
+        The first two arguments (``connection_string`` and ``command_text``) are required. For example,
 
+        .. code-block:: JSON
+
+            {
+                "connection_string": "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600",
+                "command_text": "WITH ... SELECT ... ON COLUMNS, ... ON ROWS FROM ... WHERE ..."
+            }
+
+        ``result_model``
+
+        -   As the default value of the ``result_model`` argument suggests ('**DictOfList**'), the result structural model received by the client will be a dictionary of array, like:
+
+            .. code-block:: JSON
+        
+                {
+                    "Column_A": [value_a1, value_a2, value_a3, ...],
+                    "Column_B": [value_b1, value_b2, value_b3, ...],
+                    "Column_C": [value_c1, value_c2, value_c3, ...],
+                    ...
+                }
+        
+            This model can be directly passed to Oracle (`PL/SQL Associative Array Parameters <https://github.com/DataBooster/DbWebApi#associative-array-parameters>`__) for storage or further processing. 
+            Please see `PL/SQL Associative Array Parameters <https://github.com/DataBooster/DbWebApi#associative-array-parameters>`__ for more details;
+
+            .
+
+        -   If you want to pass the whole result directly to a `Table-Valued Parameter <https://github.com/DataBooster/DbWebApi#table-valued-parameters>`__ of a SQL Server stored procedure, 
+            it is suitable to set the ``result_model`` parameter to '**SqlTvp**', and the result structure looks like:
+
+            .. code-block:: JSON
+
+                {
+                    "TableValuedParam":
+                        [
+                            {"Column_A": value_a1,  "Column_B": value_b1, "Column_C": value_c1, ... },
+                            {"Column_A": value_a2,  "Column_B": value_b2, "Column_C": value_c2, ... },
+                            {"Column_A": value_a3,  "Column_B": value_b3, "Column_C": value_c3, ... },
+                            ...
+                        ]
+                }
+
+        -   '**ListOfDict**' is also a commonly used ``result_model``, it looks like:
+
+            .. code-block:: python
+
+                [
+                    {"Column_A": value_a1,  "Column_B": value_b1, "Column_C": value_c1, ... },
+                    {"Column_A": value_a2,  "Column_B": value_b2, "Column_C": value_c2, ... },
+                    {"Column_A": value_a3,  "Column_B": value_b3, "Column_C": value_c3, ... }
+                    ...
+                ]
+
+        -   There is another built-in ``result_model``: '**ListOfList**', which separates the column header from the value matrix, it looks like:
+
+            .. code-block:: python
+
+                {
+                    "column_names": ["Column_A", "Column_B", "Column_C", ...], 
+                    "value_matrix": [
+                                        [value_a1, value_b1, value_c1, ...], 
+                                        [value_a2, value_b2, value_c2, ...], 
+                                        [value_a3, value_b3, value_c3, ...], 
+                                        ...
+                                    ]
+                }
+
+        ``column_mapping``
+
+        MDX result column headers are often not valid identifiers for most languages. The ``column_mapping`` argument is used to specify the name mapping for certain columns 
+        (other columns not specified in the mapping dictionary will be returned as is. If a column header is mapped to an empty name, the corresponding column will be filtered out from the return). 
+        This is especially useful when passing the entire result of MDX directly to a stored procedure in a database. 
+        It allows you to map MDX column names to input parameter names of the stored procedure.
