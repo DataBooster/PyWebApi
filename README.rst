@@ -321,3 +321,29 @@ Sample User Apps/Modules/Scripts
         (other columns not specified in the mapping dictionary will be returned as is. If a column header is mapped to an empty name, the corresponding column will be filtered out from the return). 
         This is especially useful when passing the entire result of MDX directly to a stored procedure in a database. 
         It allows you to map MDX column names to input parameter names of the stored procedure.
+
+        .
+
+        ``pass_result_to_url``
+
+        Rather than just returning the MDX results to the HTTP client, the optional argument ``pass_result_to_url`` can be used to 
+        forward these result data directly to a database stored procedure for storage or further processing. The stored procedure is exposed as a URL 
+        through `DbWebApi <https://github.com/DataBooster/DbWebApi>`_, such as ``http://dbwebapi.dev.com/oradev/the_schema.etl_package.load_mdx_result`` 
+        *(example for Oracle)* or ``http://dbwebapi.dev.com/sqldev/the_db.dbo.load_mdx_result`` *(example for SQL Server)*. 
+        For details about the `DbWebApi <https://github.com/DataBooster/DbWebApi>`_, please see https://github.com/DataBooster/DbWebApi/wiki.
+
+        ``more_args``
+
+        Other than above MDX result data, your stored procedure may require more input parameters. 
+        The ``more_args`` argument (a dictionary) allows you to prepare all other input parameters required by the stored procedure into the dictionary.
+
+        .
+
+        ``notify_url``
+
+        Sometimes we may need to send a notification to somewhere when above process get completed or an error is encountered. 
+        The ``notify_url`` argument allows you to specify the URL of the notification destination *(it must also be a RESTful service)*.
+
+        ``notify_args``
+
+        This is also a dictionary, any items it carries will be passed to the notification service as input arguments.
