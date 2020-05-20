@@ -236,9 +236,6 @@ Sample User Apps/Modules/Scripts
 
 .. code-block:: python
 
-
-.. code-block:: python
-
     def run_query(connection_string:str, command_text:str, result_model:str='DictOfList', column_mapping:dict={},
                   pass_result_to_url:str=None, more_args:dict=None,
                   notify_url:str=None, notify_args:dict=None):
@@ -346,4 +343,52 @@ Sample User Apps/Modules/Scripts
 
         ``notify_args``
 
-        This is also a dictionary, any items it carries will be passed to the notification service as input arguments.
+        This is also a dictionary. In general, any items it carries will be passed to the notification service as input arguments.
+        However, if we want to include detailed result data and/or error information in the notification,
+        then what parameter name(s) does the notification service use to receive them?
+        We make a convention to use two special keys in this dictionary to indicate these two particular parameter names:
+
+        -   '``[=]``' key: the value of this special key indicates the parameter name through which the notification service will receive detailed **result data**. 
+            *(this is optional) If not specified, detailed result data will not be sent to the notification service;*
+
+        -   '``[!]``' key: the value of this special key indicates the parameter name through which the notification service will receive detailed **error information**. 
+            *(this is optional) If not specified, detailed error information will not be sent to the notification service; 
+            in this case, the notification itself cannot tell whether the process has completed successfully or encountered any errors,
+            then the notification service may require some other channel to know whether the process succeeded or failed.*
+
+        |
+
+        Let's end this section with an example payload that covers as many options as possible:
+
+        .. code-block:: JSON
+
+            {
+                "connection_string": "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600",
+                "command_text": "WITH ... SELECT ... ON COLUMNS, ... ON ROWS FROM ... WHERE ...",
+
+                "result_model": "SqlTvp",
+                "column_mapping": {
+                                      "Column X Caption": "inProductType",
+                                      "Column Y Caption": "inSalesAmount",
+                                      "Column Z Caption": ""
+                                  },
+
+                "pass_result_to_url": "http://dbwebapi.dev.com/sqldev/the_db.dbo.load_mdx_result",
+                "more_args": {
+                                 "inAsOfDate": "2020-05-01"
+                             },
+
+                "notify_url": "http://notification.dev.com/send_message",
+                "notify_args": {
+                                   "[=]": "inResult",
+                                   "[!]": "inError",
+                                   "inBatchId": 123456,
+                                   "inAsOfDate": "2020-05-01"
+                               }
+            }
+
+        |
+
+----
+
+|
