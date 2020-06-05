@@ -6,9 +6,9 @@ task_grouping - Task Grouping
 
 This module provides a basic class library for task grouping, mainly includes 2 classes:
 
-*   TaskContainer - 
+*   TaskContainer - Organizes a batch of task groups, including the serial/parallel structures, and carries the arguments information for each task unit to run.
 
-*   ITaskLoader - 
+*   ITaskLoader - This is an abstract base class for implementing a concrete loader class to load a task tree from Dict/JSON to TaskContainer.
 
 |
 
