@@ -4,7 +4,11 @@ task_grouping - Task Grouping
 
 ----
 
+This module provides a basic class library for task grouping, mainly includes 2 classes:
 
+*   TaskContainer - 
+
+*   ITaskLoader - 
 
 |
 
@@ -32,14 +36,26 @@ class TaskContainer(object):
 
         self.merge_fn = merge_fn
 
-        self.check_group()
 
+    @property
+    def task_group(self):
+        return self.__task_group
 
-    def check_group(self):
-        if self.task_group:
-            for t in self.task_group:
-                self._check_task_type(t)
-                t.check_group()
+    @task_group.setter
+    def task_group(self, group):
+        if group is None:
+            self.__task_group = None
+        elif isinstance(group, list):
+            if len(group) < 1:
+                raise ValueError("task_group cannot be empty")
+
+            for t in group:
+                if not isinstance(t, TaskContainer):
+                    raise TypeError("each task context must be an instance of the TaskContainer class")
+
+            self.__task_group = group
+        else:
+            raise TypeError("task_group must be a list of TaskContainer")
 
 
     def run(self, pipeargs:dict={}):
@@ -59,10 +75,12 @@ class TaskContainer(object):
 
             if isinstance(pipeargs, iterable):
                 pipe_args = {}
+
                 for p in pipeargs:
                     d = self._pipe_in(p)
                     if d:
                         pipe_args.update(d)
+
                 return pipe_args
 
         return {}
@@ -87,16 +105,10 @@ class TaskContainer(object):
             return None
 
 
-    def _check_task_type(self, task):
-       if not isinstance(task, TaskContainer):
-          raise TypeError("each task context must be an instance of the TaskContainer class")
-
-
     def _serial_run(self, pipeargs:dict={}):
         serial_results = []
 
         for task in self.task_group:
-            self._check_task_type(task)
             pipeargs = result = task.run(pipeargs)
             serial_results.append(result)
 
@@ -107,7 +119,6 @@ class TaskContainer(object):
         task_list = []
 
         for task in self.task_group:
-            self._check_task_type(task)
             task_list.append(self.thread_pool.submit(task.run, pipeargs))
 
         parallel_results = []
@@ -125,8 +136,21 @@ class ITaskLoader(metaclass=ABCMeta):
         pass
 
 
+    @abstractmethod
+    def extract_single_task(self, task_node:Dict[str, Any]) -> Tuple[tuple, Dict[str, Any]]:
+        pass
+
+    @abstractmethod
+    def extract_serial_group(self, task_node:Dict[str, Any]) -> List[Dict[str, Any]]:
+        pass
+
+    @abstractmethod
+    def extract_parallel_group(self, task_node:Dict[str, Any]) -> List[Dict[str, Any]]:
+        pass
+
+
     def create_single_task(self, *args, **kwargs) -> TaskContainer:
-        task = create_base_container()
+        task = self.create_base_container()
         task.pos_args = args
         task.kw_args = kwargs
         task.parallel = False
@@ -135,27 +159,42 @@ class ITaskLoader(metaclass=ABCMeta):
         return task
 
 
-    def _create_group_task(self, task_group:List[TaskContainer]) -> TaskContainer:
+    def create_group_task(self, task_group:List[TaskContainer], parallel:bool=False) -> TaskContainer:
         if not task_group:
             raise ValueError("the task_group cannot be empty")
 
-        task = create_base_container()
+        task = self.create_base_container()
         task.task_group = task_group
         task.func = None
 
-        task.check_group()
+        task.parallel = parallel if len(task_group) > 1 else False
         return task
 
 
-    def create_serial_group(self, task_group:List[TaskContainer]) -> TaskContainer:
-        task = self._create_group_task(task_group)
-        task.parallel = False
-        return task
+    def load(self, task_tree:Dict[str, Any]) -> TaskContainer:
+        if not isinstance(task_tree, dict):
+            raise TypeError("task_tree argument must be a dictionary type: Dict[str, Any]")
+
+        leaf = self.extract_single_task(task_tree)
+        if leaf is not None:
+            if not isinstance(leaf, tuple) or len(leaf) != 2 or not isinstance(leaf[0], tuple) or not isinstance(leaf[1], dict):
+                raise TypeError("extract_single_task must return Tuple[tuple, Dict[str, Any]] if the current node is a leaf task, otherwise it must return None.")
+            return self.create_single_task(*leaf[0], **leaf[1])
+
+        serial = self.extract_serial_group(task_tree)
+        if serial is not None:
+            if not isinstance(serial, list) or len(serial) < 1 or not isinstance(serial[0], dict):
+                raise TypeError("extract_serial_group must return List[Dict[str, Any]] if the current node is a serial group, otherwise it must return None.")
+            return self.create_group_task([self.load(t) for t in serial], False)
+
+        parallel = self.extract_parallel_group(task_tree)
+        if parallel is not None:
+            if not isinstance(parallel, list) or len(parallel) < 1 or not isinstance(parallel[0], dict):
+                raise TypeError("extract_parallel_group must return List[Dict[str, Any]] if the current node is a parallel group, otherwise it must return None.")
+            return self.create_group_task([self.load(t) for t in parallel], True)
+
+        raise TypeError(f"current node of task_tree is not a leaf task, serial task group or parallel task group.\n{repr(task_tree)}")
 
 
-    def create_parallel_group(self, task_group:List[TaskContainer], timeout:float=None) -> TaskContainer:
-        task = self._create_group_task(task_group)
-        task.parallel = True if len(task_group) > 1 else False
-        task.timeout = timeout
-        return task
 
+__version__ = "0.1a0.dev1"
