@@ -239,7 +239,7 @@ Otherwise, ``None`` should be returned.
 
     :param task_group: A list of subtasks, each subtask is presented as a ``TaskContainer``.
 
-    :param parallel: A Boolean value indicates that its first-level subtasks should be executed in parallel (True value) or serial (False value).
+    :param parallel: A Boolean value indicates that its first-level subtasks should be executed in parallel (``True`` value) or serial (``False`` value).
     :return: An instance of ``TaskContainer``
         """
         if not task_group:

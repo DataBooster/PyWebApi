@@ -43,6 +43,9 @@
     <Compile Include="dbdatareader.py" />
     <Compile Include="setup_simple_rest_call.py" />
     <Compile Include="setup_dbdatareader.py" />
+    <Compile Include="setup_task_grouping.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="simple_rest_call.py" />
     <Compile Include="task_grouping.py">
       <SubType>Code</SubType>
