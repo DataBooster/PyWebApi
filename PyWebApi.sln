@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdomdClient_From_NuGet", "S
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Utilities.PyPI", "Utilities.PyPI\Utilities.PyPI.pyproj", "{DA5BA1E0-95BC-48CD-B94F-EB972F0A602E}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ServicesGrouping", "Sample\UserApps\ServicesGrouping\ServicesGrouping.pyproj", "{3531393B-7964-486F-B517-BDDF01EB96DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,8 @@ Global
 		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA5BA1E0-95BC-48CD-B94F-EB972F0A602E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA5BA1E0-95BC-48CD-B94F-EB972F0A602E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3531393B-7964-486F-B517-BDDF01EB96DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3531393B-7964-486F-B517-BDDF01EB96DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +55,7 @@ Global
 		{1A1E573F-1382-4AB0-9FE6-5331B5F95D66} = {F7AC17AC-4CBD-4DD8-94E5-21DC54244474}
 		{ADC55014-753C-41C9-AA62-32D29CEB7248} = {1A1E573F-1382-4AB0-9FE6-5331B5F95D66}
 		{92BA630D-18B4-448C-B9D6-10698C74EEEE} = {1A1E573F-1382-4AB0-9FE6-5331B5F95D66}
+		{3531393B-7964-486F-B517-BDDF01EB96DA} = {1A1E573F-1382-4AB0-9FE6-5331B5F95D66}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C2FBDAEC-0FDE-4D17-B908-AA8C1DB16A5B}
