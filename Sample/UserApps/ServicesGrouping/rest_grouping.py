@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 """rest_grouping.py
 
-    This module implements ``RestTaskLoader`` class, which is used to load a group of RESTful services (call tasks) from a JSON payload into ``TaskContainer``.
+    This module implements:
+
+    *   ``RestTaskLoader`` class, which is used to load a group of RESTful services (call tasks) from a JSON payload into ``TaskContainer``.
+
+    *   ``call_rest_group`` function, which is the main entry for the client to call a group of RESTful services.
 
     This module was originally shipped as an example code from https://github.com/DataBooster/PyWebApi, licensed under the MIT license.
     Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
@@ -74,3 +78,12 @@ class RestTaskLoader(ITaskLoader):
 
     def extract_parallel_group(self, task_node:Dict[str, Any]) -> List[Dict[str, Any]]:
         return task_node.get(_reserved_key_parallel_group)
+
+
+
+def call_rest_group(payload:Dict[str, Any]):
+    """the main entry for the client to call a group of RESTful services."""
+    with ThreadPoolExecutor(max_workers=32) as thread_pool:
+        loader = RestTaskLoader(thread_pool)
+        container = loader.load(payload)
+        return container.run()
