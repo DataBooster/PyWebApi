@@ -21,6 +21,7 @@ This module provides a basic class library for task grouping, includes 2 classes
 | License: MIT
 """
 
+from collections import Iterable
 from abc import ABCMeta, abstractmethod
 from typing import Union, List, Dict, Tuple, Callable, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -91,7 +92,10 @@ class TaskContainer(object):
             if isinstance(pipeargs, dict):
                 return pipeargs
 
-            if isinstance(pipeargs, iterable):
+            if isinstance(pipeargs, str):
+                return {}
+
+            if isinstance(pipeargs, Iterable):
                 pipe_args = {}
 
                 for p in pipeargs:
@@ -286,4 +290,4 @@ Otherwise, ``None`` should be returned.
 
 
 
-__version__ = "0.1a0.dev1"
+__version__ = "0.1a1"
