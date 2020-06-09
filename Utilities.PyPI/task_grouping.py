@@ -12,7 +12,7 @@ This module provides a basic class library for task grouping, includes 2 classes
 
 -   **ITaskLoader**
 
-    This is an abstract base class for implementing a concrete loader class to load a task tree from Dict/JSON to TaskContainer.
+    This is an abstract base class for implementing a concrete loader class to load a task tree from Dict/JSON to ``TaskContainer``.
 
 ----
 

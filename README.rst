@@ -13,6 +13,8 @@ The repository provides:
 
     +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
     +   **simple-rest-call** (https://pypi.org/project/simple-rest-call/) - wraps `Requests <https://requests.readthedocs.io/>`__ into a simple call
+    +   **task-grouping** (https://pypi.org/project/task-grouping/) - organizes a group of tasks with serial/parallel structure, 
+        carries the arguments for each task unit to run, and assembles all the results into the corresponding tree structure.
 
 |
 
@@ -81,7 +83,8 @@ Sample PyWebApi Server (for IIS)
             </handlers>
           </system.webServer>
 
-        .. _script-name:
+    .. _script-name:
+
     -   Modify the ``SCRIPT_NAME`` entry in the <appSettings> section to the Virtual/Application directory (ApplicationPath) you installed in IIS, 
         do NOT put a slash ``/`` at the end of the path here. However, if the web app is installed on the root of a website, this entry can be removed.
 
@@ -95,7 +98,8 @@ Sample PyWebApi Server (for IIS)
             <add key="SERVER_DEBUG" value="IIS"/>
           </appSettings>
 
-        .. _user-script-root:
+    .. _user-script-root:
+
     -   Modify the value of the ``USER_SCRIPT_ROOT`` entry to the container location where all user modules will be organized, 
         it is a local file system path which can be an absolute path, or a relative path - relative to the root of the web application 
         (where this ``web.config`` file is located).
@@ -223,6 +227,8 @@ Deploy User Modules/Scripts:
 
 Sample User Apps/Modules/Scripts
 --------------------------------
+
+.. _mdx-reader:
 
 *   `MdxReader <https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader>`_
 
@@ -392,3 +398,14 @@ Sample User Apps/Modules/Scripts
 ----
 
 |
+
+.. _services-grouping:
+
+*   `Services Grouping <https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/ServicesGrouping>`_
+
+    In practice, it's useful to encapsulate multiple related services into a service group and present them externally as a new service 
+    in order to avoid spreading too much local complexity to the larger scope of the system. In the past we had to write/generate some code or 
+    at least some scripts for each new service. Let us put aside the development and maintenance costs of these new codes/scripts themselves. 
+    The new configuration files/tables and the new setup and deployment brought by the new services keep increasing the maintenance complexity of the entire system.
+    From the perspective of each individual service, it seems that every configuration item is necessary; but from the perspective of the whole system, 
+    too many configuration items are repeated in different service nodes. The more redundant configuration, the more messy.
