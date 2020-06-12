@@ -409,3 +409,74 @@ Sample User Apps/Modules/Scripts
     The new configuration files/tables and the new setup and deployment brought by the new services keep increasing the maintenance complexity of the entire system.
     From the perspective of each individual service, it seems that every configuration item is necessary; but from the perspective of the whole system, 
     too many configuration items are repeated in different service nodes. The more redundant configuration, the more messy.
+
+    This sample user app offers a different new option that dynamically integrates a group of RESTful services as a **virtual service** through a descriptive JSON.
+
+    The following example integrates 6 REST services into a virtual service:
+
+    .. code-block:: JSON
+
+        {
+            "rest": {
+                "[+++]": [
+                    {
+                        "(://)": "http://service1",
+                        "(...)": {"svc1-arg1": "arg1 of service1 payload ..." }
+                    },
+                    {
+                        "(://)": "http://service2",
+                        "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." }
+                    },
+                    {
+                        "[###]": [
+                            {
+                                "(://)": "http://service3",
+                                "(...)": {"svc3-arg1": "arg1 of service3 payload ..." }
+                            },
+                            {
+                                "(://)": "http://service4",
+                                "(...)": {"svc4-arg1": "arg1 of service4 payload ..." }
+                            },
+                            {
+                                "(://)": "http://service5",
+                                "(...)": {"svc5-arg1": "arg1 of service5 payload ..." }
+                            }
+                        ]
+                    },
+                    {
+                        "(://)": "http://service6",
+                        "(...)": {"svc6-arg1": "arg1 of service6 payload ..." }
+                    }
+                ]
+            }
+        }
+    
+    And the corresponding schematic diagram for above example:
+
+    .. image:: docs/example-services-grouping.png
+
+    |
+
+    -   **Syntax**:
+
+        #.  Single Service (Leaf Service)
+
+            .. code-block:: JSON
+
+                {
+                    "(://)": "http://service1",
+                    "(...)": {"svc1-arg1": "arg1 of service1 payload ..." }
+                }
+
+            Or
+
+            .. code-block:: JSON
+
+                {
+                    "(://)": "http://service2",
+                    "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." }
+                }
+
+            +   "``(://)``": URL of the service call
+            +   "``(...)``": a dictionary of arguments (payload) to the service call
+            +   "``(.|.)``": merge the results of the previous service as pipeline arguments into the current arguments
