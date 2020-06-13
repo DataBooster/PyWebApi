@@ -501,7 +501,7 @@ Sample User Apps/Modules/Scripts
                 Every service unit in a serial group is executed/called one after another in sequence.
                 They need to be enclosed in a pair of square brackets ``[`` ``]`` as the value of the key "``[+++]``" in a JSON dictionary:
 
-                .. code-block:: JSON
+                .. code-block:: python
 
                     {
                         "[+++]": [ {Service Unit 1}, {Service Unit ...} ]
@@ -515,7 +515,7 @@ Sample User Apps/Modules/Scripts
 
                 They need to be enclosed in a pair of square brackets ``[`` ``]`` as the value of the key "``[###]``" in a JSON dictionary:
 
-                .. code-block:: JSON
+                .. code-block:: python
 
                     {
                         "[###]": [ {Service Unit 1}, {Service Unit ...} ]
