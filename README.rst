@@ -477,9 +477,9 @@ Sample User Apps/Modules/Scripts
                     "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." }
                 }
 
-            +   "``(://)``": URL of the service call
-            +   "``(...)``": a dictionary of arguments (payload) to the service call
-            +   "``(.|.)``": merge the results of the previous service as pipeline arguments into the current arguments
+            +   "``(://)``" - *Key : Value* - URL of the service call
+            +   "``(...)``" - *Key : Value* - a dictionary of arguments (payload) for the service call
+            +   "``(.|.)``" - *Key : Value* - merge the results of the previous service as pipeline arguments into the current arguments
 
             Each service is an executable/callable unit, let's have a convention to use a rounded rectangle as its graphical symbol.
 
