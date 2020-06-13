@@ -489,7 +489,7 @@ Sample User Apps/Modules/Scripts
 
         #.  Grouping Services
 
-            Let's use a regular rectangle as the graphical symbol for a group scope.
+            Let's wrap a rounded rectangle outside a regular rectangle as the graphical symbol for grouping services.
 
             .. image:: docs/grouping-symbol.png
 
@@ -526,3 +526,10 @@ Sample User Apps/Modules/Scripts
                     }
 
                 If a service in a parallel group accepts pipeline arguments, the results of the previous service outside the group will be merged into the arguments of this service.
+
+            |
+
+            The result objects of all service units in a service group will be packed into an array as the result of the whole group.
+
+            If the next service unit outside the group accepts the pipeline arguments, 
+            all the result dictionaries in current group will be overlaid one on top of the other in sequence as the pipeline arguments for the next external service.
