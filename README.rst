@@ -455,8 +455,6 @@ Sample User Apps/Modules/Scripts
 
     .. image:: docs/example-services-grouping.png
 
-    |
-
     -   **Syntax**:
 
         #.  Single Service (Leaf Service)
