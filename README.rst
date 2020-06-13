@@ -485,11 +485,15 @@ Sample User Apps/Modules/Scripts
 
             .. image:: docs/service-symbol.png
 
+            Or JSON abbreviation: ``{ }``
+
         #.  Grouping Services
 
             Let's use a regular rectangle as the graphical symbol for a group scope.
 
             .. image:: docs/grouping-symbol.png
+
+            Or JSON abbreviation: ``{[ ]}``
 
             A group cannot be empty, it must contain at least one service unit. 
             Each service unit can be a single service (leaf service) or a nested service group.
