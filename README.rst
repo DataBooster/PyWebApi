@@ -461,6 +461,8 @@ Sample User Apps/Modules/Scripts
 
         #.  Single Service (Leaf Service)
 
+            This is the most basic unit that constitutes a service group (virtual service). It requires a URL and a dictionary of arguments as the payload:
+
             .. code-block:: JSON
 
                 {
@@ -480,3 +482,45 @@ Sample User Apps/Modules/Scripts
             +   "``(://)``": URL of the service call
             +   "``(...)``": a dictionary of arguments (payload) to the service call
             +   "``(.|.)``": merge the results of the previous service as pipeline arguments into the current arguments
+
+            Each service is an executable/callable unit, let's have a convention to use a rounded rectangle as its graphical symbol.
+
+            .. image:: docs/service-symbol.png
+
+        #.  Grouping Services
+
+            Let's use a regular rectangle as the graphical symbol for a group scope.
+
+            .. image:: docs/grouping-symbol.png
+
+            A group cannot be empty, it must contain at least one service unit. 
+            Each service unit can be a single service (leaf service) or a nested service group.
+            Services within a group can be connected in series, parallel, or series-parallel. 
+            The two simplest connections are serial connection and parallel connection:
+
+            -   Series Grouping
+
+                Every service unit in a serial group is executed/called one after another in sequence.
+                They need to be enclosed in a pair of square brackets ``[`` ``]`` as the value of the key "``[+++]``" in a JSON dictionary:
+
+                .. code-block:: JSON
+
+                    {
+                        "[+++]": [ {Service Unit 1}, {Service Unit ...} ]
+                    }
+    
+                If a service in a serial group accepts pipeline arguments, the results of the immediately previous sibling service will be merged into the arguments of this service.
+
+            -   Parallel Grouping
+
+                All service units in a parallel group are executed/called concurrently in the same thread pool.
+
+                They need to be enclosed in a pair of square brackets ``[`` ``]`` as the value of the key "``[###]``" in a JSON dictionary:
+
+                .. code-block:: JSON
+
+                    {
+                        "[###]": [ {Service Unit 1}, {Service Unit ...} ]
+                    }
+
+                If a service in a parallel group accepts pipeline arguments, the results of the previous service outside the group will be merged into the arguments of this service.
