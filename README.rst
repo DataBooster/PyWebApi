@@ -467,7 +467,7 @@ Sample User Apps/Modules/Scripts
 
             This is the most basic unit that constitutes a service group (virtual service). It requires a URL, a dictionary of arguments as the payload, and an optional timeout seconds:
 
-            .. code-block:: JSON
+            .. code-block:: python
 
                 {
                     "(://)": "http://service1",
@@ -477,7 +477,7 @@ Sample User Apps/Modules/Scripts
 
             Or
 
-            .. code-block:: JSON
+            .. code-block:: python
 
                 {
                     "(://)": "http://service2",
@@ -488,7 +488,7 @@ Sample User Apps/Modules/Scripts
             +   "``(://)``" - *Key : Value* - "URL of the service call"
             +   "``(...)``" - *Key : Value* - {A dictionary of arguments (payload) for the service call}
             +   "``(.|.)``" - *Key : Value* - {Merge the results of the previous service as pipeline arguments into this dictionary of arguments}
-            +   "``(:/!)``" - *Key : Value* - timeout seconds (optional) How many seconds to wait for the REST service to respond before giving up
+            +   "``(:/!)``" - *Key : Value* - timeout seconds (optional) *How many seconds to wait for the REST service to respond before giving up*
 
             Each service is an executable/callable unit, let's have a convention to use a rounded rectangle as its graphical symbol.
 
