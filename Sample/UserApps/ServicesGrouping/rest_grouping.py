@@ -17,11 +17,16 @@ from task_grouping import TaskContainer, ITaskLoader
 from simple_rest_call import request_json
 
 
-_reserved_key_parallel_group : str = '[###]'
-_reserved_key_serial_group : str = '[+++]'
-_reserved_key_rest_url : str = '(://)'
-_reserved_key_payload : str = '(...)'
-_reserved_key_payload_with_pipe : str = '(.|.)'
+_reserved_key_parallel_group : str = "[###]"
+_reserved_key_serial_group : str = "[+++]"
+_reserved_key_rest_url : str = "(://)"
+_reserved_key_payload : str = "(...)"
+_reserved_key_payload_with_pipe : str = "(.|.)"
+_reserved_key_timeout : str = "(:/!)"
+
+
+def _task_func(url:str, data:dict=None, timeout:float=None):
+    return request_json(url, data, timeout=timeout)
 
 
 def _pipeargs_merge_fn(kw_args:Dict[str, Any], pipe_args:Dict[str, Any]) -> Dict[str, Any]:
@@ -43,13 +48,10 @@ class RestTaskLoader(ITaskLoader):
     """This class is used to load a group of RESTful services (call tasks) from a JSON payload into ``TaskContainer``"""
     def __init__(self, thread_pool:ThreadPoolExecutor):
         self.thread_pool = thread_pool
-        self.func = request_json
-        self.merge_fn = _pipeargs_merge_fn
-        self.timeout = None
 
 
     def create_base_container(self) -> TaskContainer:
-        return TaskContainer(self.func, self.merge_fn, self.thread_pool, **{'timeout':self.timeout})
+        return TaskContainer(_task_func, _pipeargs_merge_fn, self.thread_pool)
 
 
     def extract_single_task(self, task_node:Dict[str, Any]) -> Tuple[tuple, Dict[str, Any], bool]:
@@ -67,7 +69,9 @@ class RestTaskLoader(ITaskLoader):
             else:
                 with_pipe = False
 
-            return ((), {'url': url, 'data': data}, with_pipe)
+            timeout = task_node.get(_reserved_key_timeout)
+
+            return ((), {'url': url, 'data': data, 'timeout': timeout}, with_pipe)
         else:
             return None
 
@@ -80,10 +84,15 @@ class RestTaskLoader(ITaskLoader):
         return task_node.get(_reserved_key_parallel_group)
 
 
+    def load(self, task_tree:Dict[str, Any]) -> TaskContainer:
+        container = super().load(task_tree)
+        container.timeout = task_tree.get(_reserved_key_timeout)
+        return container
+
 
 def start(rest:Dict[str, Any]):
     """the main entry for the client to call a group of RESTful services."""
-    with ThreadPoolExecutor(max_workers=32) as thread_pool:
+    with ThreadPoolExecutor(max_workers=64) as thread_pool:
         loader = RestTaskLoader(thread_pool)
         container = loader.load(rest)
         return container.run()

@@ -421,31 +421,37 @@ Sample User Apps/Modules/Scripts
                 "[+++]": [
                     {
                         "(://)": "http://service1",
-                        "(...)": {"svc1-arg1": "arg1 of service1 payload ..." }
+                        "(...)": {"svc1-arg1": "arg1 of service1 payload ..." },
+                        "(:/!)": 600
                     },
                     {
                         "(://)": "http://service2",
-                        "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." }
+                        "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." },
+                        "(:/!)": 600
                     },
                     {
                         "[###]": [
                             {
                                 "(://)": "http://service3",
-                                "(...)": {"svc3-arg1": "arg1 of service3 payload ..." }
+                                "(...)": {"svc3-arg1": "arg1 of service3 payload ..." },
+                                "(:/!)": 1800
                             },
                             {
                                 "(://)": "http://service4",
-                                "(...)": {"svc4-arg1": "arg1 of service4 payload ..." }
+                                "(...)": {"svc4-arg1": "arg1 of service4 payload ..." },
+                                "(:/!)": 1800
                             },
                             {
                                 "(://)": "http://service5",
-                                "(...)": {"svc5-arg1": "arg1 of service5 payload ..." }
+                                "(...)": {"svc5-arg1": "arg1 of service5 payload ..." },
+                                "(:/!)": 1800
                             }
                         ]
                     },
                     {
                         "(://)": "http://service6",
-                        "(...)": {"svc6-arg1": "arg1 of service6 payload ..." }
+                        "(...)": {"svc6-arg1": "arg1 of service6 payload ..." },
+                        "(:/!)": 600
                     }
                 ]
             }
@@ -459,13 +465,14 @@ Sample User Apps/Modules/Scripts
 
         #.  Single Service (Leaf Service)
 
-            This is the most basic unit that constitutes a service group (virtual service). It requires a URL and a dictionary of arguments as the payload:
+            This is the most basic unit that constitutes a service group (virtual service). It requires a URL, a dictionary of arguments as the payload, and an optional timeout seconds:
 
             .. code-block:: JSON
 
                 {
                     "(://)": "http://service1",
-                    "(...)": {"svc1-arg1": "arg1 of service1 payload ..." }
+                    "(...)": {"svc1-arg1": "arg1 of service1 payload ..." },
+                    "(:/!)": timeout seconds
                 }
 
             Or
@@ -474,12 +481,14 @@ Sample User Apps/Modules/Scripts
 
                 {
                     "(://)": "http://service2",
-                    "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." }
+                    "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." },
+                    "(:/!)": timeout seconds
                 }
 
-            +   "``(://)``" - *Key : Value* - URL of the service call
-            +   "``(...)``" - *Key : Value* - a dictionary of arguments (payload) for the service call
-            +   "``(.|.)``" - *Key : Value* - merge the results of the previous service as pipeline arguments into the current arguments
+            +   "``(://)``" - *Key : Value* - "URL of the service call"
+            +   "``(...)``" - *Key : Value* - {A dictionary of arguments (payload) for the service call}
+            +   "``(.|.)``" - *Key : Value* - {Merge the results of the previous service as pipeline arguments into this dictionary of arguments}
+            +   "``(:/!)``" - *Key : Value* - timeout seconds (optional) How many seconds to wait for the REST service to respond before giving up
 
             Each service is an executable/callable unit, let's have a convention to use a rounded rectangle as its graphical symbol.
 

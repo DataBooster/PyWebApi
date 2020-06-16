@@ -14,6 +14,10 @@ This module provides a basic class library for task grouping, includes 2 classes
 
     This is an abstract base class for implementing a concrete loader class to load a task tree from Dict/JSON to ``TaskContainer``.
 
+For detailed usage, see the practice sample code: https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/rest_grouping.py
+
+and its product documentation: https://github.com/DataBooster/PyWebApi#services-grouping
+
 ----
 
 | Homepage and documentation: https://github.com/DataBooster/PyWebApi
@@ -290,4 +294,4 @@ Otherwise, ``None`` should be returned.
 
 
 
-__version__ = "0.1a1"
+__version__ = "0.1a2"
