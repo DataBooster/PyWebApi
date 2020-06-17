@@ -5,15 +5,22 @@ dbDataReader - Data Reader for .NET IDataReader
 ----
 
 **dbDataReader** is a simple data reader for reading .NET ``System.Data.IDataReader``-like forward-only streams.
+
 The returned data model depends on the type of data container passed in.
 
-4 built-in container classes 
-- ``ListOfList``, ``DictOfList``, ``ListOfDict`` and ``SqlTvp`` are shipped with this package.
-Please refer to the MDX reader example in 
-https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/adomd_client.py
-for quick details.
+4 built-in container classes:
 
-|
+-   ``ListOfList``
+-   ``DictOfList``
+-   ``ListOfDict``
+-   ``SqlTvp``
+
+are shipped with this package.
+
+Please refer to the `MDX Reader <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/adomd_client.py>`__ 
+example and its `product documentation <https://github.com/DataBooster/PyWebApi#mdx-reader>`__ for quick details.
+
+----
 
 | Homepage and documentation: https://github.com/DataBooster/PyWebApi
 | Copyright (c) 2020 Abel Cheng
@@ -383,4 +390,4 @@ forward-only stream into a Python context manager and read the data into the exp
 
 
 
-__version__ = "0.1a7"
+__version__ = "0.1a8"

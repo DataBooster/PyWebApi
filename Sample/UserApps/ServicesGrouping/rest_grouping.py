@@ -22,7 +22,7 @@ _reserved_key_serial_group : str = "[+++]"
 _reserved_key_rest_url : str = "(://)"
 _reserved_key_payload : str = "(...)"
 _reserved_key_payload_with_pipe : str = "(.|.)"
-_reserved_key_timeout : str = "(:/!)"
+_reserved_key_timeout : str = "(:!!)"
 
 
 def _task_func(url:str, data:dict=None, timeout:float=None):
@@ -54,6 +54,15 @@ class RestTaskLoader(ITaskLoader):
         return TaskContainer(_task_func, _pipeargs_merge_fn, self.thread_pool)
 
 
+    @staticmethod
+    def _get_timeout(task_node:Dict[str, Any])->float:
+        timeout = task_node.get(_reserved_key_timeout)
+        if isinstance(timeout, (int, float)) and timeout > 0:
+            return timeout
+        else:
+            return None
+
+
     def extract_single_task(self, task_node:Dict[str, Any]) -> Tuple[tuple, Dict[str, Any], bool]:
         url = task_node.get(_reserved_key_rest_url)
         if url:
@@ -69,8 +78,7 @@ class RestTaskLoader(ITaskLoader):
             else:
                 with_pipe = False
 
-            timeout = task_node.get(_reserved_key_timeout)
-
+            timeout = self._get_timeout(task_node)
             return ((), {'url': url, 'data': data, 'timeout': timeout}, with_pipe)
         else:
             return None
@@ -86,7 +94,7 @@ class RestTaskLoader(ITaskLoader):
 
     def load(self, task_tree:Dict[str, Any]) -> TaskContainer:
         container = super().load(task_tree)
-        container.timeout = task_tree.get(_reserved_key_timeout)
+        container.timeout = self._get_timeout(task_tree)
         return container
 
 
