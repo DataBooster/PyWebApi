@@ -43,13 +43,9 @@
     <Compile Include="dbdatareader.py" />
     <Compile Include="setup_simple_rest_call.py" />
     <Compile Include="setup_dbdatareader.py" />
-    <Compile Include="setup_task_grouping.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="setup_task_grouping.py" />
     <Compile Include="simple_rest_call.py" />
-    <Compile Include="task_grouping.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="task_grouping.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1145
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.IIS", "PyWebApi.IIS\PyWebApi.IIS.pyproj", "{5869E351-5ABC-4EBF-BD49-892170C0FCFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserApps", "UserApps", "{9A0F2FE6-ACEA-4F93-A798-E29ED344E246}"
+	ProjectSection(SolutionItems) = preProject
+		PyWebApi.IIS\user-script-root\test_directory\test_module.py = PyWebApi.IIS\user-script-root\test_directory\test_module.py
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdomdClient_From_NuGet", "UserApps\AdomdClient_From_NuGet\AdomdClient_From_NuGet.csproj", "{92BA630D-18B4-448C-B9D6-10698C74EEEE}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MdxReader", "UserApps\MdxReader\MdxReader.pyproj", "{ADC55014-753C-41C9-AA62-32D29CEB7248}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ServicesGrouping", "UserApps\ServicesGrouping\ServicesGrouping.pyproj", "{3531393B-7964-486F-B517-BDDF01EB96DA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5869E351-5ABC-4EBF-BD49-892170C0FCFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADC55014-753C-41C9-AA62-32D29CEB7248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADC55014-753C-41C9-AA62-32D29CEB7248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3531393B-7964-486F-B517-BDDF01EB96DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3531393B-7964-486F-B517-BDDF01EB96DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{92BA630D-18B4-448C-B9D6-10698C74EEEE} = {9A0F2FE6-ACEA-4F93-A798-E29ED344E246}
+		{ADC55014-753C-41C9-AA62-32D29CEB7248} = {9A0F2FE6-ACEA-4F93-A798-E29ED344E246}
+		{3531393B-7964-486F-B517-BDDF01EB96DA} = {9A0F2FE6-ACEA-4F93-A798-E29ED344E246}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {061DDA1B-510D-4D10-A7F9-82567C4C5D42}
+	EndGlobalSection
+EndGlobal

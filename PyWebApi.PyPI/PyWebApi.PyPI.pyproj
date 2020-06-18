@@ -50,20 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="pywebapi\cors.py" />
-    <Compile Include="pywebapi\fmtr.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pywebapi\func.py">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="pywebapi\_util.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="pywebapi\fmtr.py" />
+    <Compile Include="pywebapi\func.py" />
+    <Compile Include="pywebapi\_util.py" />
     <Compile Include="pywebapi\__init__.py" />
     <Compile Include="setup.py" />
-    <Compile Include="test_app.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="test_app.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 
