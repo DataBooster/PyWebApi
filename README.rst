@@ -543,6 +543,17 @@ Sample User Apps/Modules/Scripts
             If the next service unit outside the group accepts the pipeline arguments, 
             all the result dictionaries in current group will be overlaid one on top of the other in sequence as the pipeline arguments for the next external service.
 
+
+        Summary:
+
+        #.  A callable unit must be a JSON dictionary (enclosed by a pair of braces ``{`` ``}``), which can be one of the following:
+
+            *   Single Service (Leaf Service) ``{"(://)": "http://..."}``
+            *   Serial Service Group ``{"[+++]": [{...}, {...}, ...]}``
+            *   Parallel Service Group ``{"[###]": [{...}, {...}, ...]}``
+
+        #.  Each sub-unit within a group (enclosed by a pair of square brackets ``[`` ``]``) must be a callable unit ``{ }`` as above.
+
 |
 
 ----
