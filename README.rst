@@ -542,3 +542,21 @@ Sample User Apps/Modules/Scripts
 
             If the next service unit outside the group accepts the pipeline arguments, 
             all the result dictionaries in current group will be overlaid one on top of the other in sequence as the pipeline arguments for the next external service.
+
+|
+
+----
+
+Releases
+--------
+
+For customization, you can download all Sample Server and User Apps/Modules/Scripts from the `releases <https://github.com/DataBooster/PyWebApi/releases>`_ of this repository.
+
+*Initially, all projects in this repository were created in Visual Studio 2017 (with built-in Python 3.6.6). 
+If you are more comfortable using other IDE or other platform without IDE, please ignore the Visual Studio project files (.sln and .pyproj) safely 
+and organize them in your own way since they are just Python.*
+
+License
+-------
+
+Licensed under the `MIT <https://github.com/DataBooster/PyWebApi/blob/master/LICENSE>`_ license.

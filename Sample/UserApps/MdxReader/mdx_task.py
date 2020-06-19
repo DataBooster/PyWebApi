@@ -63,3 +63,7 @@ def run_query(connection_string:str, command_text:str, result_model:str='DictOfL
     except Exception as err:
         if not _notify(result, err, notify_url, notify_args):   # Send a notification with result data and/or error information
             raise
+
+
+
+__version__ = "0.1"

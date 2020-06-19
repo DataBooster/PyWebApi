@@ -104,3 +104,7 @@ def start(rest:Dict[str, Any]):
         loader = RestTaskLoader(thread_pool)
         container = loader.load(rest)
         return container.run()
+
+
+
+__version__ = "0.1"

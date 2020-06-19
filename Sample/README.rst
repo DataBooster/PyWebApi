@@ -9,7 +9,7 @@ PyWebApi
 
 |
 
-**Sample user-apps/user-modules/user-scripts**:
+**Sample user-apps/user-modules/user-scripts** :
 
 1. `MdxReader <https://github.com/DataBooster/PyWebApi#mdx-reader>`_
 ---------------------------------------------------------------------
