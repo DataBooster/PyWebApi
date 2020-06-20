@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.PyPI", "PyWebApi.PyPI\PyWebApi.PyPI.pyproj", "{7249E236-DDFD-4902-8F5D-E38AB0E4D651}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{F7AC17AC-4CBD-4DD8-94E5-21DC54244474}"
+	ProjectSection(SolutionItems) = preProject
+		Sample\publish-samples.bat = Sample\publish-samples.bat
+	EndProjectSection
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyWebApi.IIS", "Sample\PyWebApi.IIS\PyWebApi.IIS.pyproj", "{5869E351-5ABC-4EBF-BD49-892170C0FCFD}"
 EndProject
