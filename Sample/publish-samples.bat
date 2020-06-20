@@ -5,12 +5,14 @@ SET "DESTINATION=%~1"
 IF NOT EXIST "%DESTINATION%" GOTO USAGE
 
 CD /d "%~dp0"
-RoboCopy . "%DESTINATION%" /s /xf *.user publish.bat /xd __pycache__ env obj bin utilities .vs
-copy /y nul "%DESTINATION%\PyWebApi.IIS\log\wfastcgi.log" > nul
-Goto:Eof
+RoboCopy . "%DESTINATION%" /s /xf *.user publish-samples.bat /xd __pycache__ env obj bin utilities .vs
+Copy /y nul "%DESTINATION%\PyWebApi.IIS\log\wfastcgi.log" > nul
+Goto:eof
 
 :USAGE
+Echo:
 Echo Usage:
+Echo:
 Echo     publish-samples destination_directory
 Echo:
 Echo     The destination directory for publishing is required to exist.
