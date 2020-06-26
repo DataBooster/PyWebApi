@@ -8,6 +8,7 @@
     Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
     The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
+from time import sleep
 from adomd_client import AdomdClient
 from simple_rest_call import request_json
 
@@ -36,15 +37,36 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
         return False
 
 
-def run_query(connection_string:str, command_text:str, result_model:str='DictOfList', column_mapping:dict={},
-              pass_result_to_url:str=None, more_args:dict=None, notify_url:str=None, notify_args:dict=None):
+def run_query(connection_string:str, command_text:str,
+              result_model:str='DictOfList', column_mapping:dict={},
+              mdx_retries:int=1, delay_retry:float=10.0,
+              pass_result_to_url:str=None, more_args:dict=None,
+              notify_url:str=None, notify_args:dict=None):
 
     result = {}
+    retries = 0
+    max_retries = int(mdx_retries) if isinstance(mdx_retries, int) or isinstance(mdx_retries, str) else 0
+    delay = float(delay_retry) if isinstance(delay_retry, int) or isinstance(delay_retry, float) or isinstance(delay_retry, str) else 10.0
+    if delay < 1.0:
+        delay = 1.0
+
+    while True:
+        try:
+            with AdomdClient(connection_string) as client:
+                result = client.execute(command_text, result_model, column_mapping)
+            break
+
+        except Exception as err:
+            if retries < max_retries:
+                retries += 1
+                sleep(delay)
+            else:
+                if _notify(result, err, notify_url, notify_args):   # Send a notification with result data and/or error information
+                    return result
+                else:
+                    raise
 
     try:
-        with AdomdClient(connection_string) as client:
-            result = client.execute(command_text, result_model, column_mapping)
-
         if pass_result_to_url:
             if more_args:
                 if isinstance(result, dict):
@@ -56,13 +78,14 @@ def run_query(connection_string:str, command_text:str, result_model:str='DictOfL
 
             result = request_json(pass_result_to_url, result)   # Chain above result to DbWebApi for storage or further processing
 
-        _notify(result, None, notify_url, notify_args)          # Send a notification with result data
-
-        return result
-
     except Exception as err:
         if not _notify(result, err, notify_url, notify_args):   # Send a notification with result data and/or error information
             raise
+
+    else:
+        _notify(result, None, notify_url, notify_args)          # Send a notification with result data
+
+    return result
 
 
 
