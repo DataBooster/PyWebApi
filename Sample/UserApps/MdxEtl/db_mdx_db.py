@@ -26,12 +26,13 @@ _url_mdx_reader = _full_url("../mdxreader/mdx_task.run_query")
 _url_svc_grp = _full_url("../services_grouping/rest_grouping.start")
 
 
-def _check_dbwebapi(result:dict)->bool:
+def _check_dbwebapi(result:dict) -> bool:
     if result is None or not isinstance(result, dict):
         return False
+
     if 'ResultSets' in result and 'OutputParameters' in result and 'ReturnValue' in result:
         return True
-    else
+    else:
         return False
 
 
@@ -91,8 +92,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
 
             if callback_sp:
                 callback_url = urljoin(task_list_url, callback_sp)
-                parallel_tasks.append(
-                    {
+                parallel_tasks.append({
                         "(://)": _url_mdx_reader,
                         "(...)": {
                             "connection_string": mdx_conn_str,

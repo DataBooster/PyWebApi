@@ -8,7 +8,12 @@ The repository provides:
 
 #.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
 #.  A sample `PyWebApi Server (for IIS) <Sample PyWebApi Server (for IIS)_>`__. It can be easily customized to your own PyWebApi Server.
-#.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts_>`__.
+#.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts_>`__:
+
+    +   `MdxReader <mdx-reader_>`__
+    +   `Services Grouping <services-grouping_>`__
+    +   `MDX ETL <mdx-etl_>`__
+
 #.  Some utility PyPI packages:
 
     +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
@@ -230,7 +235,7 @@ Sample User Apps/Modules/Scripts
 
 .. _mdx-reader:
 
-*   `MdxReader <https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/MdxReader>`_
+*   `MdxReader <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/mdx_task.py>`_
 
     This sample user app is a practical Python app that acts as an MDX query dispatcher:
 
@@ -401,7 +406,7 @@ Sample User Apps/Modules/Scripts
 
 .. _services-grouping:
 
-*   `Services Grouping <https://github.com/DataBooster/PyWebApi/tree/master/Sample/UserApps/ServicesGrouping>`_
+*   `Services Grouping <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/rest_grouping.py>`_
 
     In practice, it's useful to encapsulate multiple related services into a service group and present them externally as a new service 
     in order to avoid spreading too much local complexity to the larger scope of the system. In the past we had to write/generate some code or 
@@ -553,6 +558,15 @@ Sample User Apps/Modules/Scripts
             *   Parallel Service Group ``{"[###]": [{...}, {...}, ...]}``
 
         #.  Each sub-unit within a group (enclosed by a pair of square brackets ``[`` ``]``) must be a callable unit ``{ }`` as above.
+
+    |
+
+----
+
+.. _mdx-etl:
+
+*   `MDX ETL <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py>`_
+
 
 |
 
