@@ -74,6 +74,10 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
         if not _check_dbwebapi(task_list):
             raise TypeError(f"the task_list_url ({repr(task_list_url)}) is not a dbwebapi call")
 
+        out_params = task_list['OutputParameters']
+        post_sp = out_params.pop(post_sp_outparam, None)
+        post_sp_args = json.loads(out_params.pop(post_sp_args_outparam, '{}'))
+
         if db_type and isinstance(db_type, str) and db_type[:4].lower() == 'ora':
             result_model = 'DictOfList'
         else:
@@ -86,12 +90,15 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
             if not mdx_query:
                 raise ValueError(f"{repr(mdx_column)} is required for each subtask")
 
-            column_map = t.get(column_map_column)
             callback_sp = t.get(callback_sp_column)
-            callback_args = t.get(callback_args_column)
 
             if callback_sp:
+                column_map = json.loads(t.get(column_map_column))
                 callback_url = urljoin(task_list_url, callback_sp)
+                callback_args = json.loads(t.get(callback_args_column, '{}'))
+                if out_params:
+                    callback_args.update(out_params)
+
                 parallel_tasks.append({
                         "(://)": _url_mdx_reader,
                         "(...)": {
@@ -110,14 +117,13 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
 
         svc_grp = {"[###]": parallel_tasks}
 
-        post_sp = task_list['OutputParameters'].get(post_sp_outparam)
-        post_sp_args = task_list['OutputParameters'].get(post_sp_args_outparam)
-
         if post_sp:
             post_url = urljoin(task_list_url, post_sp)
+            if out_params:
+                post_sp_args.update(out_params)
             post_svc = {
                 "(://)": post_url,
-                "(.|.)": post_sp_args,
+                "(...)": post_sp_args,
                 "(:!!)": each_timeout
             }
             svc_grp = {"[+++]": [svc_grp, post_svc]}
@@ -126,11 +132,11 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
         task_list = final_result
 
     except Exception as err:
-        if not _notify(prev_result, err, notify_url, notify_args):   # Send a notification with result data and/or error information
+        if not _notify(prev_result, err, notify_url, notify_args):  # Send a notification with result data and/or error information
             raise
 
     else:
-        _notify(final_result, None, notify_url, notify_args)          # Send a notification with result data
+        _notify(final_result, None, notify_url, notify_args)        # Send a notification with result data
 
     return final_result
 
