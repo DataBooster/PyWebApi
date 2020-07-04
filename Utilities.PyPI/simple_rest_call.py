@@ -102,6 +102,8 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
     if auth is not None:
         kwargs['auth'] = auth
 
+    kwargs.setdefault('verify', False)
+
     r = request(method, url, **kwargs)
     r.raise_for_status()
 
@@ -112,4 +114,4 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
 
 
-__version__ = "0.1a7"
+__version__ = "0.1a8"
