@@ -20,6 +20,7 @@ from simple_rest_call import request_json
 _reserved_key_parallel_group : str = "[###]"
 _reserved_key_serial_group : str = "[+++]"
 _reserved_key_rest_url : str = "(://)"
+_reserved_key_headers : str = "(:^:)"
 _reserved_key_payload : str = "(...)"
 _reserved_key_payload_with_pipe : str = "(.|.)"
 _reserved_key_timeout : str = "(:!!)"
@@ -66,6 +67,8 @@ class RestTaskLoader(ITaskLoader):
     def extract_single_task(self, task_node:Dict[str, Any]) -> Tuple[tuple, Dict[str, Any], bool]:
         url = task_node.get(_reserved_key_rest_url)
         if url:
+            headers = task_node.get(_reserved_key_headers)
+
             data = task_node.get(_reserved_key_payload)
             if data is None:
                data = {}
@@ -79,7 +82,7 @@ class RestTaskLoader(ITaskLoader):
                 with_pipe = False
 
             timeout = self._get_timeout(task_node)
-            return ((), {'url': url, 'data': data, 'timeout': timeout}, with_pipe)
+            return ((), {'url': url, 'headers': headers, 'data': data, 'timeout': timeout}, with_pipe)
         else:
             return None
 

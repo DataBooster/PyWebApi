@@ -491,6 +491,7 @@ Sample User Apps/Modules/Scripts
                 }
 
             +   "``(://)``" - *Key : Value* - "URL of the service call"
+            +   "``(:^:)``" - *Key : Value* - {(optional) A dictionary of custom headers}
             +   "``(...)``" - *Key : Value* - {A dictionary of arguments (payload) for the service call}
             +   "``(.|.)``" - *Key : Value* - {Merge the results of the previous service as pipeline arguments into this dictionary of arguments}
             +   "``(:!!)``" - *Key : Value* - timeout seconds (optional) *How many seconds to wait for the REST service to respond before giving up*

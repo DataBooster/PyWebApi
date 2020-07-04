@@ -97,7 +97,7 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
     kwargs['headers'] = header
     kwargs['data'] = body
 
-    if auth == (None, None):
+    if auth == (None, None) and not header.get('authorization'):
         auth = HttpNegotiateAuth()
     if auth is not None:
         kwargs['auth'] = auth
@@ -112,4 +112,4 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
 
 
-__version__ = "0.1a6"
+__version__ = "0.1a7"
