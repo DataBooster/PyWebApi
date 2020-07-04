@@ -26,8 +26,8 @@ _reserved_key_payload_with_pipe : str = "(.|.)"
 _reserved_key_timeout : str = "(:!!)"
 
 
-def _task_func(url:str, data:dict=None, timeout:float=None):
-    return request_json(url, data, timeout=timeout)
+def _task_func(url:str, data:dict=None, timeout:float=None, headers:dict=None):
+    return request_json(url, data, timeout=timeout, headers=headers)
 
 
 def _pipeargs_merge_fn(kw_args:Dict[str, Any], pipe_args:Dict[str, Any]) -> Dict[str, Any]:
@@ -56,7 +56,7 @@ class RestTaskLoader(ITaskLoader):
 
 
     @staticmethod
-    def _get_timeout(task_node:Dict[str, Any])->float:
+    def _get_timeout(task_node:Dict[str, Any]) -> float:
         timeout = task_node.get(_reserved_key_timeout)
         if isinstance(timeout, (int, float)) and timeout > 0:
             return timeout
@@ -82,7 +82,7 @@ class RestTaskLoader(ITaskLoader):
                 with_pipe = False
 
             timeout = self._get_timeout(task_node)
-            return ((), {'url': url, 'headers': headers, 'data': data, 'timeout': timeout}, with_pipe)
+            return ((), {'url': url, 'data': data, 'timeout': timeout, 'headers': headers}, with_pipe)
         else:
             return None
 
