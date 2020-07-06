@@ -47,8 +47,8 @@ def run_query(connection_string:str, command_text:str,
 
     result = {}
     retries = 0
-    max_retries = int(mdx_retries) if isinstance(mdx_retries, int) or isinstance(mdx_retries, str) else 0
-    delay = float(delay_retry) if isinstance(delay_retry, int) or isinstance(delay_retry, float) or isinstance(delay_retry, str) else 10.0
+    max_retries = int(mdx_retries) if isinstance(mdx_retries, (int, str)) else 0
+    delay = float(delay_retry) if isinstance(delay_retry, (int, float, str)) else 10.0
     if delay < 1.0:
         delay = 1.0
 
