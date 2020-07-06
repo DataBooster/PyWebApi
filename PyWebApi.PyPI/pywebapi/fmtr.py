@@ -9,6 +9,7 @@ This module implements the conversion from the result object returned by the fun
 """
 
 from collections import Iterable
+from collections.abc import MutableMapping
 from abc import ABCMeta, abstractmethod
 
 
@@ -128,7 +129,7 @@ class MediaTypeFormatterManager(object):
         return (self.default_formatter, self.default_formatter.supported_media_types[0])
 
 
-    def respond_as(self, obj, media_types:str, response_headers:dict, **kwargs):
+    def respond_as(self, obj, media_types:str, response_headers:MutableMapping, **kwargs):
         """This method picks a registered MediaTypeFormatter which matches the media type expected by the request, 
     and converts the original result object to the target media type content
 
@@ -140,7 +141,7 @@ class MediaTypeFormatterManager(object):
         """
         formatter, media_type = self._get_formatter(media_types)
 
-        if isinstance(response_headers, dict):
+        if isinstance(response_headers, MutableMapping):
             response_headers['Content-Type'] = [media_type]
 
         return formatter.format(obj, media_type, **kwargs)

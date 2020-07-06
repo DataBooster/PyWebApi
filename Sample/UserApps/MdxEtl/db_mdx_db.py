@@ -15,7 +15,9 @@
 """
 import json
 from urllib.parse import urljoin
+from collections.abc import Mapping, MutableMapping
 from bottle import request
+from requests.structures import CaseInsensitiveDict
 from simple_rest_call import request_json
 
 
@@ -27,7 +29,7 @@ _url_svc_grp = _full_url("../services_grouping/rest_grouping.start")
 
 
 def _check_dbwebapi(result:dict) -> bool:
-    if result is None or not isinstance(result, dict):
+    if result is None or not isinstance(result, Mapping):
         return False
 
     if 'ResultSets' in result and 'OutputParameters' in result and 'ReturnValue' in result:
@@ -41,7 +43,7 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
     error_param_convention = '[!]'
 
     if notify_url:
-        if isinstance(notify_args, dict):
+        if isinstance(notify_args, MutableMapping):
             result_param_name = notify_args.pop(result_param_convention, None)
             error_param_name = notify_args.pop(error_param_convention, None)
         else:
@@ -74,7 +76,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
         if not _check_dbwebapi(task_list):
             raise TypeError(f"the task_list_url ({repr(task_list_url)}) is not a dbwebapi call")
 
-        out_params = task_list['OutputParameters']
+        out_params = CaseInsensitiveDict(task_list['OutputParameters'])
         post_sp = out_params.pop(post_sp_outparam, None)
         post_sp_args = json.loads(out_params.pop(post_sp_args_outparam, '{}'))
 
@@ -86,16 +88,17 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
         parallel_tasks = []
 
         for t in task_list['ResultSets'][0]:
-            mdx_query = t.get(mdx_column)
+            task = CaseInsensitiveDict(t)
+            mdx_query = task.get(mdx_column)
             if not mdx_query:
                 raise ValueError(f"{repr(mdx_column)} is required for each subtask")
 
-            callback_sp = t.get(callback_sp_column)
+            callback_sp = task.get(callback_sp_column)
 
             if callback_sp:
-                column_map = json.loads(t.get(column_map_column))
+                column_map = json.loads(task.get(column_map_column))
                 callback_url = urljoin(task_list_url, callback_sp)
-                callback_args = json.loads(t.get(callback_args_column, '{}'))
+                callback_args = json.loads(task.get(callback_args_column, '{}'))
                 if out_params:
                     callback_args.update(out_params)
 

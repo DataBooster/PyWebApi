@@ -13,6 +13,7 @@ import site
 import inspect
 import importlib
 from collections import Iterable, OrderedDict
+from collections.abc import Mapping, MutableMapping
 from typing import Union, Dict, List
 
 from bottle import Request, FormsDict
@@ -23,7 +24,7 @@ from . import _util as util
 # bind_arguments - implements flexible function arguments binding.
 #region
 #
-def bind_arguments(sig:inspect.Signature, args:dict) -> inspect.BoundArguments:
+def bind_arguments(sig:inspect.Signature, args:Mapping) -> inspect.BoundArguments:
     """According to the signature of the function, create a mapping from the passed argument dictionary to the function parameters.
     This implementation is a variant of Signature.bind () in inspect module.
 
@@ -89,7 +90,7 @@ def bind_arguments(sig:inspect.Signature, args:dict) -> inspect.BoundArguments:
     return inspect.BoundArguments(sig, out_args)
 
 
-def _one_call(func, sig:inspect.Signature, args:dict):
+def _one_call(func, sig:inspect.Signature, args:Mapping):
     bound_arguments = bind_arguments(sig, args)
     return func(*bound_arguments.args, **bound_arguments.kwargs)
 
@@ -97,7 +98,7 @@ def _one_call(func, sig:inspect.Signature, args:dict):
 def _bulk_call(func, sig:inspect.Signature, args_list:list):
     i = 0
     for args in args_list:
-        if isinstance(args, dict):
+        if isinstance(args, Mapping):
             yield _one_call(func, sig, args)
         elif args is None:
             yield None
@@ -187,7 +188,7 @@ class ModuleImporter(object):
         else:
             sig = inspect.signature(module_level_function)
 
-            if isinstance(args, dict):
+            if isinstance(args, Mapping):
                 return _one_call(module_level_function, sig, args)
             elif isinstance(args, list):
                 if args:
@@ -250,7 +251,7 @@ def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
 # RequestArguments - merges all arguments from JSON body and query string.
 #region
 #
-def _fill_dict_multi_value(arg_dict:dict, name:str, values):
+def _fill_dict_multi_value(arg_dict:MutableMapping, name:str, values):
     key = name.strip() if name else ''
     value = values[0] if isinstance(values, list) and len(values) == 1 else values
 
@@ -272,7 +273,7 @@ def _fill_dict_multi_value(arg_dict:dict, name:str, values):
         util.extend_or_append(pos_args, value)
 
 
-def _fill_dict(arg_dict:dict, forms_dict:FormsDict):
+def _fill_dict(arg_dict:MutableMapping, forms_dict:FormsDict):
     for name, values in forms_dict.items():
         _fill_dict_multi_value(arg_dict, name, values)
 
@@ -280,10 +281,10 @@ def _fill_dict(arg_dict:dict, forms_dict:FormsDict):
 def _init_dict_list(json_obj) -> List[Dict]:
     if json_obj is None:
         return [{}]
-    if isinstance(json_obj, dict):
+    if isinstance(json_obj, Mapping):
         return [dict(json_obj)]
     elif isinstance(json_obj, list):
-        if all(isinstance(item, dict) for item in json_obj):
+        if all(isinstance(item, Mapping) for item in json_obj):
             return [dict(item) for item in json_obj]
         else:
             return [{'': list(json_obj)}]
@@ -324,8 +325,8 @@ class RequestArguments(object):
         """An argument dictionary or a list of dictionary that can be used to provide the required argument `args_dict` for `execute` function."""
         return self.arg_dict_list if len(self.arg_dict_list) > 1 else self.arg_dict_list[0]
 
-    def override(self, override_dict:dict) -> Union[Dict, List[Dict]]:
-        if override_dict and isinstance(override_dict, dict):
+    def override(self, override_dict:Mapping) -> Union[Dict, List[Dict]]:
+        if override_dict and isinstance(override_dict, Mapping):
             for name, value in override_dict:
                 key = name.strip() if name else ''
                 if key:

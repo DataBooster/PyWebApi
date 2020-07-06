@@ -26,6 +26,7 @@ and its product documentation: https://github.com/DataBooster/PyWebApi#services-
 """
 
 from collections import Iterable
+from collections.abc import Mapping
 from abc import ABCMeta, abstractmethod
 from typing import Union, List, Dict, Tuple, Callable, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -72,7 +73,7 @@ class TaskContainer(object):
             raise TypeError("task_group must be a list of TaskContainer")
 
 
-    def run(self, pipeargs:dict={}):
+    def run(self, pipeargs:Mapping={}):
         """Execute all tasks and task groups in the specified order (serial/parallel) and assemble their results into a tree structure corresponding to the input payload.
 
     :param pipeargs: (optional) If the result of the previous task is a dictionary ``[Dict[str, Any]``, it can be piped to current task or task group at run time and merged into the user input arguments.
@@ -93,7 +94,7 @@ class TaskContainer(object):
 
     def _pipe_in(self, pipeargs:Union[Dict, List[Dict]]={}) -> Dict:
         if pipeargs:
-            if isinstance(pipeargs, dict):
+            if isinstance(pipeargs, Mapping):
                 return pipeargs
 
             if isinstance(pipeargs, str):
@@ -112,7 +113,7 @@ class TaskContainer(object):
         return {}
 
 
-    def _single_run(self, pipeargs:dict={}):
+    def _single_run(self, pipeargs:Mapping={}):
         if self.func:
             if self.pos_args is None:
                 self.pos_args = ()
@@ -134,7 +135,7 @@ class TaskContainer(object):
             return None
 
 
-    def _serial_run(self, pipeargs:dict={}):
+    def _serial_run(self, pipeargs:Mapping={}):
         serial_results = []
 
         for task in self.task_group:
@@ -144,7 +145,7 @@ class TaskContainer(object):
         return serial_results
 
 
-    def _parallel_run(self, pipeargs:dict={}):
+    def _parallel_run(self, pipeargs:Mapping={}):
         task_list = []
 
         for task in self.task_group:
@@ -269,24 +270,24 @@ Otherwise, ``None`` should be returned.
 
     :return: An instance of ``TaskContainer``
         """
-        if not isinstance(task_tree, dict):
+        if not isinstance(task_tree, Mapping):
             raise TypeError("task_tree argument must be a dictionary type: Dict[str, Any]")
 
         leaf = self.extract_single_task(task_tree)
         if leaf is not None:
-            if not isinstance(leaf, tuple) or len(leaf) != 3 or not isinstance(leaf[0], tuple) or not isinstance(leaf[1], dict) or not isinstance(leaf[2], bool):
+            if not isinstance(leaf, tuple) or len(leaf) != 3 or not isinstance(leaf[0], tuple) or not isinstance(leaf[1], Mapping) or not isinstance(leaf[2], bool):
                 raise TypeError("extract_single_task must return Tuple[tuple, Dict[str, Any], bool] if the current node is a leaf task, otherwise it must return None.")
             return self.create_single_task(leaf[2], *leaf[0], **leaf[1])
 
         serial = self.extract_serial_group(task_tree)
         if serial is not None:
-            if not isinstance(serial, list) or len(serial) < 1 or not isinstance(serial[0], dict):
+            if not isinstance(serial, list) or len(serial) < 1 or not isinstance(serial[0], Mapping):
                 raise TypeError("extract_serial_group must return List[Dict[str, Any]] if the current node is a serial group, otherwise it must return None.")
             return self.create_group_task([self.load(t) for t in serial], False)
 
         parallel = self.extract_parallel_group(task_tree)
         if parallel is not None:
-            if not isinstance(parallel, list) or len(parallel) < 1 or not isinstance(parallel[0], dict):
+            if not isinstance(parallel, list) or len(parallel) < 1 or not isinstance(parallel[0], Mapping):
                 raise TypeError("extract_parallel_group must return List[Dict[str, Any]] if the current node is a parallel group, otherwise it must return None.")
             return self.create_group_task([self.load(t) for t in parallel], True)
 
@@ -294,4 +295,4 @@ Otherwise, ``None`` should be returned.
 
 
 
-__version__ = "0.1a2"
+__version__ = "0.1a3"

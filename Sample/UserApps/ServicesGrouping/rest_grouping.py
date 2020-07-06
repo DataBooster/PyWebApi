@@ -11,6 +11,8 @@
     Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
     The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
+
+from collections.abc import Mapping
 from typing import List, Tuple, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
 from task_grouping import TaskContainer, ITaskLoader
@@ -31,13 +33,13 @@ def _task_func(url:str, data:dict=None, timeout:float=None, headers:dict=None):
 
 
 def _pipeargs_merge_fn(kw_args:Dict[str, Any], pipe_args:Dict[str, Any]) -> Dict[str, Any]:
-    if pipe_args and isinstance(pipe_args, dict):
+    if pipe_args and isinstance(pipe_args, Mapping):
         merged_args = kw_args.copy() if kw_args else {}
         payload = kw_args.get('data', {})
         if payload is None:
             payload = {}
 
-        if isinstance(payload, dict):
+        if isinstance(payload, Mapping):
             merged_args['data'] = payload.copy().update(pipe_args)
 
         return merged_args

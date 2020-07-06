@@ -8,17 +8,19 @@
     Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
     The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
+
 from time import sleep
+from collections.abc import Mapping, MutableMapping
 from adomd_client import AdomdClient
 from simple_rest_call import request_json
 
 
-def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> bool:
+def _notify(result, error=None, notify_url:str=None, notify_args:MutableMapping=None) -> bool:
     result_param_convention = '[=]'
     error_param_convention = '[!]'
 
     if notify_url:
-        if isinstance(notify_args, dict):
+        if isinstance(notify_args, MutableMapping):
             result_param_name = notify_args.pop(result_param_convention, None)
             error_param_name = notify_args.pop(error_param_convention, None)
         else:
@@ -38,10 +40,10 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
 
 
 def run_query(connection_string:str, command_text:str,
-              result_model:str='DictOfList', column_mapping:dict={},
+              result_model:str='DictOfList', column_mapping:Mapping={},
               mdx_retries:int=1, delay_retry:float=10.0,
-              pass_result_to_url:str=None, more_args:dict=None,
-              notify_url:str=None, notify_args:dict=None):
+              pass_result_to_url:str=None, more_args:Mapping=None,
+              notify_url:str=None, notify_args:MutableMapping=None):
 
     result = {}
     retries = 0
@@ -69,11 +71,11 @@ def run_query(connection_string:str, command_text:str,
     try:
         if pass_result_to_url:
             if more_args:
-                if isinstance(result, dict):
+                if isinstance(result, MutableMapping):
                     result.update(more_args)
                 elif isinstance(result, list):
                     for row in result:
-                        if isinstance(row, dict):
+                        if isinstance(row, MutableMapping):
                             row.update(more_args)
 
             result = request_json(pass_result_to_url, result)   # Chain above result to DbWebApi for storage or further processing

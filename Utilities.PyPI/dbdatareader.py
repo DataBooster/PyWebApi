@@ -27,6 +27,7 @@ example and its `product documentation <https://github.com/DataBooster/PyWebApi#
 | License: MIT
 """
 
+from collections.abc import Mapping
 from abc import ABCMeta, abstractmethod
 
 
@@ -81,7 +82,7 @@ class ListOfList(IResultSet):
                            Mapping a column name to empty string (or None) - often used to indicate that column 
                            does not need to appear in the final rendering of data.
     """
-    def __init__(self, trim_func, column_mapping:dict):
+    def __init__(self, trim_func, column_mapping:Mapping):
         self._trim_func = trim_func
         self._column_mapping = column_mapping
         self.column_names = []
@@ -147,7 +148,7 @@ class ListOfDict(ListOfList):
                            Mapping a column name to empty string (or None) - often used to indicate that column 
                            does not need to appear in the final rendering of data.
     """
-    def __init__(self, trim_func, column_mapping:dict):
+    def __init__(self, trim_func, column_mapping:Mapping):
         super().__init__(trim_func, column_mapping)
 
 
@@ -263,7 +264,7 @@ class DictOfList(ListOfList):
                            *Mapping a column name to empty string (or None) - often used to indicate that column 
                            does not need to appear in the final rendering of data.*
     """
-    def __init__(self, trim_func, column_mapping:dict):
+    def __init__(self, trim_func, column_mapping:Mapping):
         super().__init__(trim_func, column_mapping)
 
     def set_column_names(self, column_names:list):
@@ -390,4 +391,4 @@ forward-only stream into a Python context manager and read the data into the exp
 
 
 
-__version__ = "0.1a8"
+__version__ = "0.1a9"
