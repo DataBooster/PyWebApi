@@ -13,6 +13,7 @@
     Anyone who obtains a copy of this code is welcome to modify it for any purpose, and holds all rights to the modified part only.
     The above license notice and permission notice shall be included in all copies or substantial portions of the Software.
 """
+
 import json
 from urllib.parse import urljoin
 from collections.abc import Mapping, MutableMapping
@@ -63,7 +64,7 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
 
 
 def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=1800,
-          mdx_column:str='MDX_QUERY', column_map_column:str='COLUMN_MAPPING', callback_sp_column:str='CALLBACK_SP', callback_args_column:str='CALLBACK_ARGS', db_type='ora',
+          mdx_column:str='MDX_QUERY', column_map_column:str='COLUMN_MAPPING', callback_sp_column:str='CALLBACK_SP', callback_args_column:str='CALLBACK_ARGS', db_type='oracle',
           post_sp_outparam:str='OUT_POST_SP', post_sp_args_outparam:str='OUT_POST_SP_ARGS',
           notify_url:str=None, notify_args:dict=None):
     try:
@@ -97,7 +98,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
 
             if callback_sp:
                 column_map = json.loads(task.get(column_map_column))
-                callback_url = urljoin(task_list_url, callback_sp)
+                callback_url = urljoin(task_list_url, '../' + callback_sp)
                 callback_args = json.loads(task.get(callback_args_column, '{}'))
                 if out_params:
                     callback_args.update(out_params)
@@ -121,7 +122,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=
         svc_grp = {"[###]": parallel_tasks}
 
         if post_sp:
-            post_url = urljoin(task_list_url, post_sp)
+            post_url = urljoin(task_list_url, '../' + post_sp)
             if out_params:
                 post_sp_args.update(out_params)
             post_svc = {
