@@ -51,26 +51,6 @@ def _json_datetime_decode_hook(pairs):
     return obj_dict
 
 
-def _to_json(data, header:CaseInsensitiveDict=None, quotes:bool=False):
-    if data is None:
-        return data
-
-    if isinstance(data, (str, bytes)) and not quotes:
-        return data
-
-    body = json_encode(data, unpicklable=False)
-    content_type = 'application/json'
-
-    if not isinstance(body, bytes):
-        body = body.encode('utf-8')
-        content_type += '; charset=utf-8'
-
-    if isinstance(header, CaseInsensitiveDict):
-        header.setdefault('Content-Type', content_type)
-
-    return body
-
-
 def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwargs):
     """This module is a simplified wrapper of Requests, specifically for JSON-request and JSON-response with datetime support.
     And by default, Windows single sign-on authentication is used for convenience in enterprise environment.
@@ -84,6 +64,26 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
     :param kwargs: (optional) Please refer to https://requests.readthedocs.io for other optional arguments.
     :return: A JSON decoded object if the response content type is a valid JSON, otherwise the text content will be tried to return.
     """
+
+    def _to_json(data, header:CaseInsensitiveDict=None, quotes:bool=False):
+        if data is None:
+            return data
+
+        if isinstance(data, (str, bytes)) and not quotes:
+            return data
+
+        body = json_encode(data, unpicklable=False)
+        content_type = 'application/json'
+
+        if not isinstance(body, bytes):
+            body = body.encode('utf-8')
+            content_type += '; charset=utf-8'
+
+        if isinstance(header, CaseInsensitiveDict):
+            header.setdefault('Content-Type', content_type)
+
+        return body
+
     explicitly_to_json = False
 
     if data is None:
@@ -114,4 +114,4 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
 
 
-__version__ = "0.1a8"
+__version__ = "0.1a9"

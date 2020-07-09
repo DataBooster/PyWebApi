@@ -29,16 +29,6 @@ _url_mdx_reader = _full_url("../mdxreader/mdx_task.run_query")
 _url_svc_grp = _full_url("../services_grouping/rest_grouping.start")
 
 
-def _check_dbwebapi(result:dict) -> bool:
-    if result is None or not isinstance(result, Mapping):
-        return False
-
-    if 'ResultSets' in result and 'OutputParameters' in result and 'ReturnValue' in result:
-        return True
-    else:
-        return False
-
-
 def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> bool:
     result_param_convention = '[=]'
     error_param_convention = '[!]'
@@ -63,87 +53,125 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
         return False
 
 
-def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, each_timeout:float=1800,
+def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
           mdx_column:str='MDX_QUERY', column_map_column:str='COLUMN_MAPPING', callback_sp_column:str='CALLBACK_SP', callback_args_column:str='CALLBACK_ARGS', db_type='oracle',
           post_sp_outparam:str='OUT_POST_SP', post_sp_args_outparam:str='OUT_POST_SP_ARGS',
           notify_url:str=None, notify_args:dict=None):
-    try:
-        task_list = request_json(task_list_url, sp_args)
-        if task_list:
-            prev_result = task_list
-        else:
-            return None
 
-        if not _check_dbwebapi(task_list):
-            raise TypeError(f"the task_list_url ({repr(task_list_url)}) is not a dbwebapi call")
+    def invoke_main_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
 
-        out_params = CaseInsensitiveDict(task_list['OutputParameters'])
+        def check_dbwebapi(result:dict) -> bool:
+            if not isinstance(result, Mapping):
+                return False
+
+            if 'ResultSets' in result and 'OutputParameters' in result and 'ReturnValue' in result:
+                return True
+            else:
+                return False
+
+        result = request_json(sp_url, sp_args, timeout=sp_timeout)
+
+        if result and not check_dbwebapi(result):
+            raise TypeError(f"{repr(sp_url)} is not a dbwebapi call")
+
+        return result
+
+    def get_tasks(sp_result:dict) -> dict:
+
+        out_params = CaseInsensitiveDict(sp_result['OutputParameters'])
         post_sp = out_params.pop(post_sp_outparam, None)
         post_sp_args = json.loads(out_params.pop(post_sp_args_outparam, '{}'))
+        if post_sp:
+            post_url = urljoin(task_list_url, '../' + post_sp)
+            post_sp_args.update(out_params)
+        else:
+            post_url = None
+            post_sp_args = None
 
-        if db_type and isinstance(db_type, str) and db_type[:4].lower() == 'ora':
+        if db_type and isinstance(db_type, str) and db_type[:3].lower() == 'ora':
             result_model = 'DictOfList'
         else:
             result_model = 'SqlTvp'
 
-        parallel_tasks = []
+        serial_tasks = []
 
-        for t in task_list['ResultSets'][0]:
-            task = CaseInsensitiveDict(t)
-            mdx_query = task.get(mdx_column)
-            if not mdx_query:
-                raise ValueError(f"{repr(mdx_column)} is required for each subtask")
+        for rs in sp_result['ResultSets']:
 
-            callback_sp = task.get(callback_sp_column)
+            parallel_tasks = []
 
-            if callback_sp:
-                column_map = json.loads(task.get(column_map_column))
-                callback_url = urljoin(task_list_url, '../' + callback_sp)
-                callback_args = json.loads(task.get(callback_args_column, '{}'))
-                if out_params:
-                    callback_args.update(out_params)
+            for row in rs:
+                task = CaseInsensitiveDict(row)
+                mdx_query = task.get(mdx_column)
+                if not mdx_query:
+                    if parallel_tasks:
+                        continue        # skip a row if mdx_column is missing from a subsequent row
+                    else:
+                        break           # skip the whole resultset if mdx_column is missing from the first
+                                        # row of the resultset
 
-                parallel_tasks.append({
-                        "(://)": _url_mdx_reader,
-                        "(...)": {
-                            "connection_string": mdx_conn_str,
-                            "command_text": mdx_query,
-                            "result_model": result_model,
-                            "column_mapping": column_map,
-                            "pass_result_to_url": callback_url,
-                            "more_args": callback_args
-                            },
-                        "(:!!)": each_timeout
-                    })
+                callback_sp = task.get(callback_sp_column)
 
-        if not parallel_tasks:
-            return None
+                if callback_sp:
+                    column_map = json.loads(task.get(column_map_column))
+                    callback_url = urljoin(task_list_url, '../' + callback_sp)
+                    callback_args = json.loads(task.get(callback_args_column, '{}'))
+                    if out_params:
+                        callback_args.update(out_params)
 
-        svc_grp = {"[###]": parallel_tasks}
+                    parallel_tasks.append({
+                            "(://)": _url_mdx_reader,
+                            "(...)": {
+                                "connection_string": mdx_conn_str,
+                                "command_text": mdx_query,
+                                "result_model": result_model,
+                                "column_mapping": column_map,
+                                "pass_result_to_url": callback_url,
+                                "more_args": callback_args
+                                },
+                            "(:!!)": timeout
+                        })
 
-        if post_sp:
-            post_url = urljoin(task_list_url, '../' + post_sp)
-            if out_params:
-                post_sp_args.update(out_params)
-            post_svc = {
-                "(://)": post_url,
-                "(...)": post_sp_args,
-                "(:!!)": each_timeout
-            }
-            svc_grp = {"[+++]": [svc_grp, post_svc]}
+            if parallel_tasks:
+                serial_tasks.append({"[###]": parallel_tasks})
 
-        final_result = request_json(_url_svc_grp, {"rest": svc_grp})
-        task_list = final_result
+        if serial_tasks:
+            if len(serial_tasks) == 1:
+                svc_grp = serial_tasks[0]
+            else:
+                svc_grp = {"[+++]": serial_tasks}
+        else:
+            svc_grp = None
+
+        return (svc_grp, post_url, post_sp_args)
+
+    try:
+        result = None
+
+        while True:
+            result = invoke_main_sp(task_list_url, sp_args, timeout)
+
+            svc_grp, post_url, post_sp_args = get_tasks(result)
+
+            if svc_grp:
+
+                result = request_json(_url_svc_grp, {"rest": svc_grp})
+
+                if post_url:
+                    task_list_url, sp_args = post_url, post_sp_args
+                else:
+                    break
+            else:
+                break
 
     except Exception as err:
-        if not _notify(prev_result, err, notify_url, notify_args):  # Send a notification with result data and/or error information
+        if not _notify(result, err, notify_url, notify_args):   # Send a notification with result data and/or error information
             raise
 
     else:
-        _notify(final_result, None, notify_url, notify_args)        # Send a notification with result data
+        _notify(result, None, notify_url, notify_args)          # Send a notification with result data
 
-    return final_result
+    return result
 
 
 
-__version__ = "0.1a0.dev1"
+__version__ = "0.1a0.dev2"

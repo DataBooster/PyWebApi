@@ -92,28 +92,28 @@ class TaskContainer(object):
                 return self._serial_run(pipeargs)
 
 
-    def _pipe_in(self, pipeargs:Union[Dict, List[Dict]]={}) -> Dict:
-        if pipeargs:
-            if isinstance(pipeargs, Mapping):
-                return pipeargs
-
-            if isinstance(pipeargs, str):
-                return {}
-
-            if isinstance(pipeargs, Iterable):
-                pipe_args = {}
-
-                for p in pipeargs:
-                    d = self._pipe_in(p)
-                    if d:
-                        pipe_args.update(d)
-
-                return pipe_args
-
-        return {}
-
-
     def _single_run(self, pipeargs:Mapping={}):
+
+        def _pipe_in(pipeargs:Union[Dict, List[Dict]]={}) -> Dict:
+            if pipeargs:
+                if isinstance(pipeargs, Mapping):
+                    return pipeargs
+
+                if isinstance(pipeargs, str):
+                    return {}
+
+                if isinstance(pipeargs, Iterable):
+                    pipe_args = {}
+
+                    for p in pipeargs:
+                        d = _pipe_in(p)
+                        if d:
+                            pipe_args.update(d)
+
+                    return pipe_args
+
+            return {}
+
         if self.func:
             if self.pos_args is None:
                 self.pos_args = ()
@@ -122,7 +122,7 @@ class TaskContainer(object):
                 self.kw_args = {}
 
             if self.merge_fn:
-                pipe_args = self._pipe_in(pipeargs)
+                pipe_args = _pipe_in(pipeargs)
                 if pipe_args:
                     kw_args = self.merge_fn(self.kw_args, pipe_args)
                 else:
@@ -295,4 +295,4 @@ Otherwise, ``None`` should be returned.
 
 
 
-__version__ = "0.1a3"
+__version__ = "0.1a4"

@@ -251,29 +251,29 @@ def execute(root:str, routed_path:str, args_dict:Union[Dict, List[Dict]]={}):
 # RequestArguments - merges all arguments from JSON body and query string.
 #region
 #
-def _fill_dict_multi_value(arg_dict:MutableMapping, name:str, values):
-    key = name.strip() if name else ''
-    value = values[0] if isinstance(values, list) and len(values) == 1 else values
-
-    if key:
-        try:
-            existing = arg_dict[key]
-        except KeyError:
-            arg_dict[key] = value
-        else:
-            if isinstance(existing, list):
-                util.extend_or_append(existing, value)
-            elif value and not existing:
-                arg_dict[key] = value
-            elif existing is None and value is not None:
-                arg_dict[key] = value
-            #else ignore
-    else:
-        pos_args = arg_dict.setdefault('', [])
-        util.extend_or_append(pos_args, value)
-
-
 def _fill_dict(arg_dict:MutableMapping, forms_dict:FormsDict):
+
+    def _fill_dict_multi_value(arg_dict:MutableMapping, name:str, values):
+        key = name.strip() if name else ''
+        value = values[0] if isinstance(values, list) and len(values) == 1 else values
+
+        if key:
+            try:
+                existing = arg_dict[key]
+            except KeyError:
+                arg_dict[key] = value
+            else:
+                if isinstance(existing, list):
+                    util.extend_or_append(existing, value)
+                elif value and not existing:
+                    arg_dict[key] = value
+                elif existing is None and value is not None:
+                    arg_dict[key] = value
+                #else ignore
+        else:
+            pos_args = arg_dict.setdefault('', [])
+            util.extend_or_append(pos_args, value)
+
     for name, values in forms_dict.items():
         _fill_dict_multi_value(arg_dict, name, values)
 
