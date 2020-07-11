@@ -104,10 +104,9 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
                 mdx_query = task.get(mdx_column)
                 if not mdx_query:
                     if parallel_tasks:
-                        continue        # skip a row if mdx_column is missing from a subsequent row
+                        continue    # skip a row if mdx_column is missing from a subsequent row
                     else:
-                        break           # skip the whole resultset if mdx_column is missing from the first
-                                        # row of the resultset
+                        break       # skip the whole resultset if mdx_column is missing from the first row
 
                 callback_sp = task.get(callback_sp_column)
 
