@@ -578,6 +578,29 @@ Sample User Apps/Modules/Scripts
 
     .. image:: docs/mdx-etl-engine.png
 
+    Let's use an example to explain in detail.
+
+    #.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdx_etl/db_mdx_db.start``
+        with a JSON payload:
+
+        .. code-block:: JSON
+
+            {
+                "task_sp_url": "http://dbwebapi.dev.com/oradev/your_schema.mdx_etl_demo.get_mdx_tasks/json?namingcase=none",
+                "sp_args": {
+                    "inParam1": "2020-07-01",
+                    "inParam2": "test from fiddler"
+                },
+                "mdx_conn_str": "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600;"
+            }
+
+        With these 3 arguments:
+
+        -   **task_list_url**: A valid `DbWebApi <https://github.com/DataBooster/DbWebApi>`_ URL of the stored procedure, which lists all task flows for the MDX ETL process;
+        -   **sp_args**: A JSON dictionary that passes stored procedure parameters;
+        -   **mdx_conn_str**: The ADOMD Connection String for each MDX task;
+
+        The MDX ETL engine will 
 
 |
 

@@ -53,7 +53,7 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
         return False
 
 
-def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
+def start(task_sp_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
           mdx_column:str='MDX_QUERY', column_map_column:str='COLUMN_MAPPING', callback_sp_column:str='CALLBACK_SP', callback_args_column:str='CALLBACK_ARGS', db_type='oracle',
           post_sp_outparam:str='OUT_POST_SP', post_sp_args_outparam:str='OUT_POST_SP_ARGS',
           notify_url:str=None, notify_args:dict=None):
@@ -82,7 +82,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
         post_sp = out_params.pop(post_sp_outparam, None)
         post_sp_args = json.loads(out_params.pop(post_sp_args_outparam, '{}'))
         if post_sp:
-            post_url = urljoin(task_list_url, '../' + post_sp)
+            post_url = urljoin(task_sp_url, '../' + post_sp)
             post_sp_args.update(out_params)
         else:
             post_url = None
@@ -112,7 +112,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
 
                 if callback_sp:
                     column_map = json.loads(task.get(column_map_column))
-                    callback_url = urljoin(task_list_url, '../' + callback_sp)
+                    callback_url = urljoin(task_sp_url, '../' + callback_sp)
                     callback_args = json.loads(task.get(callback_args_column, '{}'))
                     if out_params:
                         callback_args.update(out_params)
@@ -147,7 +147,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
         result = None
 
         while True:
-            result = invoke_main_sp(task_list_url, sp_args, timeout)
+            result = invoke_main_sp(task_sp_url, sp_args, timeout)
 
             svc_grp, post_url, post_sp_args = get_tasks(result)
 
@@ -156,7 +156,7 @@ def start(task_list_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
                 result = request_json(_url_svc_grp, {"rest": svc_grp})
 
                 if post_url:
-                    task_list_url, sp_args = post_url, post_sp_args
+                    task_sp_url, sp_args = post_url, post_sp_args
                 else:
                     break
             else:
