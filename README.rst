@@ -580,7 +580,7 @@ Sample User Apps/Modules/Scripts
 
     Let's use an example to explain in detail.
 
-    #.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdx_etl/db_mdx_db.start``
+    1.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdx_etl/db_mdx_db.start``
         with a JSON payload:
 
         .. code-block:: JSON
@@ -594,13 +594,37 @@ Sample User Apps/Modules/Scripts
                 "mdx_conn_str": "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600;"
             }
 
-        With these 3 arguments:
-
-        -   **task_list_url**: A valid `DbWebApi <https://github.com/DataBooster/DbWebApi>`_ URL of the stored procedure, which lists all task flows for the MDX ETL process;
+        -   **task_sp_url**: A valid `DbWebApi <https://github.com/DataBooster/DbWebApi>`_ URL of the stored procedure, which lists all task flows for the MDX ETL process;
         -   **sp_args**: A JSON dictionary that passes stored procedure parameters;
-        -   **mdx_conn_str**: The ADOMD Connection String for each MDX task;
+        -   **mdx_conn_str**: The ADOMD connection string for each MDX task;
 
-        The MDX ETL engine will 
+        These 3 arguments are required for the MDX ETL engine to start a process. For other optional arguments, 
+        `the signature of the entry function start(...) <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py#L56>`__ is clear at a glance.
+
+    #.  If one or more result sets output by **task_sp** have ``MDX_QUERY`` and corresponding ``CALLBACK_SP``, 
+        the MDX ETL engine uses this information to generate a descriptive JSON for services grouping and run it.
+
+        .. image:: docs/task_sp-result_set1.png
+
+        All ``MDX_QUERY`` -> ``CALLBACK_SP`` task flows in the same result set are executed in parallel.
+        If the **task_sp** outputs multiple result sets, the corresponding multiple task groups will be further executed in series.
+
+        You can also use an output parameter to specify a post-processing stored procedure name that will be called after all internal task flows are completed.
+
+        In this example:
+
+        ::
+
+            OUT_POST_SP      := 'your_schema.mdx_etl_demo.final_post_processing?namingcase=camel';              -- Fully qualified name of the post-processing stored procedure as URL
+            OUT_POST_SP_ARGS := '{"inComment": "This is an example of argument passed from the bootloader"}';   -- JSON dictionary
+
+		The overall running diagram of this example is as follows:
+
+        .. image:: docs/mdx-etl-example1.png
+
+        So far, the names of key output parameters in the stored procedure and the column names in the result set are based on the convention 
+        (derived from the default arguments in `the signature of the entry function start(...) <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py#L56>`__).
+
 
 |
 
