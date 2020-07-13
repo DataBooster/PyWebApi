@@ -618,7 +618,7 @@ Sample User Apps/Modules/Scripts
             OUT_POST_SP      := 'your_schema.mdx_etl_demo.final_post_processing?namingcase=camel';              -- Fully qualified name of the post-processing stored procedure as URL
             OUT_POST_SP_ARGS := '{"inComment": "This is an example of argument passed from the bootloader"}';   -- JSON dictionary
 
-		The overall running diagram of this example is as follows:
+        The overall running diagram of this example is as follows:
 
         .. image:: docs/mdx-etl-example1.png
 
