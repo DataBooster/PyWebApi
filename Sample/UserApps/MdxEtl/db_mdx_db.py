@@ -58,7 +58,7 @@ def start(task_sp_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
           post_sp_outparam:str='OUT_POST_SP', post_sp_args_outparam:str='OUT_POST_SP_ARGS',
           notify_url:str=None, notify_args:dict=None):
 
-    def invoke_main_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
+    def invoke_task_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
 
         def check_dbwebapi(result:dict) -> bool:
             if not isinstance(result, Mapping):
@@ -147,7 +147,7 @@ def start(task_sp_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
         result = None
 
         while True:
-            result = invoke_main_sp(task_sp_url, sp_args, timeout)
+            result = invoke_task_sp(task_sp_url, sp_args, timeout)
 
             svc_grp, post_url, post_sp_args = get_tasks(result)
 

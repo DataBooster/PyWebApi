@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    -- This is the entry procedure of a MDX ETL. The characteristic that distinguishes it from an ordinary procedure is that:
+    -- This task_sp the entry procedure of a MDX ETL. The characteristic that distinguishes it from an ordinary procedure is that:
     -- it has an MDX_QUERY column and a corresponding CALLBACK_SP column in at least one output result set (OUT SYS_REFCURSOR).
     PROCEDURE GET_MDX_TASKS
     (
@@ -37,7 +37,7 @@
         -- The parameter names are a convention with the end client, and can also be specified by options.
         OUT_POST_SP      OUT VARCHAR2,  -- The output value should be the fully qualified name of the post-processing procedure, even if it is in the same package.
                                         -- You can also append any URL query string supported by dbwebapi to it, such as '?NamingCase=None'
-                                        -- If the post-processing procedure is pointed to another MDX ETL entry (or even recursively pointed to itself), 
+                                        -- If the post-processing procedure is pointed to another task_sp (or even recursively pointed to itself), 
                                         -- that process will be chained to the current process, so on and so forth.
         OUT_POST_SP_ARGS OUT VARCHAR2,  -- The output value must be a string of JSON dictionary that contains the input parameters to be passed to the post-processing procedure.
 
