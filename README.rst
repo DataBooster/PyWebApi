@@ -618,13 +618,27 @@ Sample User Apps/Modules/Scripts
             OUT_POST_SP      := 'your_schema.mdx_etl_demo.final_post_processing?namingcase=camel';              -- Fully qualified name of the post-processing stored procedure as URL
             OUT_POST_SP_ARGS := '{"inComment": "This is an example of argument passed from the bootloader"}';   -- JSON dictionary
 
-        The overall running diagram of this example is as follows:
+        *The names of key output parameters in the stored procedure and the column names in the result set are based on conventions, 
+        derived from the default arguments in* `the signature of the entry function start(...) <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py#L56>`__ .
+        *To customize your own conventions, simply change the values ​​of those default arguments.*
+
+        The following is the overall running diagram of this example:
 
         .. image:: docs/mdx-etl-example1.png
 
-        So far, the names of key output parameters in the stored procedure and the column names in the result set are based on the convention 
-        (derived from the default arguments in `the signature of the entry function start(...) <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py#L56>`__).
+        If the post-processing name points to another **task_sp** (or even recursively points to itself), multiple such processes will be chained together, and so on:
 
+        .. image:: docs/mdx-etl-chain.png
+
+    In essence, what the outputs of **task_sp** will drive which tasks will be performed by the MDX ETL and how they will be executed in the entire process:
+
+    *   The result set is used to specify what MDX queries and corresponding tasks need to be executed in parallel;
+    *   A special named output parameter (``OUT_POST_SP`` with ``OUT_POST_SP_ARGS``) can be used to chain-invoke another similar process if needed;
+    *   Any other output parameters will be pipelined to all subtasks and post-processing stored procedures as part of their input parameters if the names match.
+
+    Please see the comments in the example `ORACLE.MDX_ETL_DEMO.pck <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/ORACLE.MDX_ETL_DEMO.pck>`__, which details the practical usage for Oracle.
+
+    *(For the SQL Server example, it will be prepared later when the first SQL Server audience needs it.)*
 
 |
 
