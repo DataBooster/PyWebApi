@@ -65,7 +65,7 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
     :return: A JSON decoded object if the response content type is a valid JSON, otherwise the text content will be tried to return.
     """
 
-    def _to_json(data, header:CaseInsensitiveDict=None, quotes:bool=False):
+    def _to_json(data, headers:CaseInsensitiveDict=None, quotes:bool=False):
         if data is None:
             return data
 
@@ -79,8 +79,8 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
             body = body.encode('utf-8')
             content_type += '; charset=utf-8'
 
-        if isinstance(header, CaseInsensitiveDict):
-            header.setdefault('Content-Type', content_type)
+        if isinstance(headers, CaseInsensitiveDict):
+            headers.setdefault('Content-Type', content_type)
 
         return body
 
@@ -91,14 +91,18 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
         if data is not None:
             explicitly_to_json = True
 
-    header = CaseInsensitiveDict(kwargs.get('headers', {}))
-    body = _to_json(data, header, explicitly_to_json)
+    headers = CaseInsensitiveDict(kwargs.get('headers', {}))
+    body = _to_json(data, headers, explicitly_to_json)
 
-    kwargs['headers'] = header
+    kwargs['headers'] = headers
     kwargs['data'] = body
 
-    if auth == (None, None) and not header.get('authorization'):
-        auth = HttpNegotiateAuth()
+    if auth == (None, None):
+        if headers.get('authorization'):
+            auth = None
+        else:
+            auth = HttpNegotiateAuth()
+
     if auth is not None:
         kwargs['auth'] = auth
 
@@ -114,4 +118,4 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
 
 
-__version__ = "0.1a9"
+__version__ = "0.1b1"
