@@ -29,6 +29,7 @@ A quick example can be found from https://github.com/DataBooster/PyWebApi/blob/m
 | Copyright (c) 2020 Abel Cheng
 | License: MIT
 """
+
 from requests import request
 from requests.structures import CaseInsensitiveDict
 from requests_negotiate_sspi import HttpNegotiateAuth
@@ -52,7 +53,7 @@ def _json_datetime_decode_hook(pairs):
 
 
 def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwargs):
-    """This module is a simplified wrapper of Requests, specifically for JSON-request and JSON-response with datetime support.
+    """This function is a simplified wrapper of Requests, specifically for JSON-request and JSON-response with datetime support.
     And by default, Windows single sign-on authentication is used for convenience in enterprise environment.
 
     :param url: The URL for the RESTful call.
@@ -118,4 +119,4 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
 
 
-__version__ = "0.1b1"
+__version__ = "0.1b2"

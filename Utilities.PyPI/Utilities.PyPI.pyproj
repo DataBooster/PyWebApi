@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dbdatareader.py" />
+    <Compile Include="powerbi_push_datasets.py" />
+    <Compile Include="setup_powerbi_push_datasets.py" />
     <Compile Include="setup_simple_rest_call.py" />
     <Compile Include="setup_dbdatareader.py" />
     <Compile Include="setup_task_grouping.py" />
