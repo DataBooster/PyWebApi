@@ -13,6 +13,7 @@ The repository provides:
     +   `MdxReader <mdx-reader_>`__
     +   `Services Grouping <services-grouping_>`__
     +   `MDX ETL <mdx-etl_>`__
+    +   `Power BI Data Pusher <powerbi-data-pusher_>`__
 
 #.  Some utility PyPI packages:
 
@@ -20,6 +21,7 @@ The repository provides:
     +   **simple-rest-call** (https://pypi.org/project/simple-rest-call/) - wraps `Requests <https://requests.readthedocs.io/>`__ into a simple call
     +   **task-grouping** (https://pypi.org/project/task-grouping/) - organizes a group of tasks with serial/parallel structure, 
         carries the arguments for each task unit to run, and assembles all the results into the corresponding tree structure.
+    +   **powerbi-push-datasets** (https://pypi.org/project/powerbi-push-datasets/) - Power BI Push Datasets Mgmt 
 
 |
 
@@ -643,6 +645,22 @@ Sample User Apps/Modules/Scripts
 |
 
 ----
+
+.. _powerbi-data-pusher:
+
+*   Power BI Data Pusher
+
+    Power BI Data Pusher acts as a data pump to read multiple resultsets from database stored procedure and push them into multiple tables in `Power BI Push Datasets <https://docs.microsoft.com/en-us/power-bi/developer/automation/api-automatic-retention-policy-for-real-time-data>`__.
+    It is as simple as an online XCOPY:
+
+    -   Source - A DbWebApi URL of the stored procedure and its input parameters
+    -   Destination - the target dataset name in the Power BI service
+
+
+|
+
+----
+
 
 Releases
 --------

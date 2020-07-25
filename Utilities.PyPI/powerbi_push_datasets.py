@@ -191,7 +191,8 @@ class PushDatasetsMgmt(object):
             raise ValueError("a valid access token is required")
 
 
-    def _check_name(self, id:str, name:str, category:str):
+    @staticmethod
+    def _check_name(id:str, name:str, category:str):
         if not id or not is_uuid(id):
             raise NameError(f"the {repr(name)} is not an existing {category} name")
 
@@ -354,13 +355,33 @@ class PushDatasetsMgmt(object):
         resp = powerbi_rest_v1(self.access_token, 'POST', rest_path, {"rows": row_list})
 
 
+    @staticmethod
+    def _aggregate_error(error_dict:dict, error:Exception, table_name:str)->Exception:
+        err_msg = repr(error)
+        err_tbs = error_dict.get(err_msg)
+        if err_tbs is None:
+            error_dict[err_msg]= [table_name]
+        else:
+            err_tbs.append(table_name)
+        return error
+
+    @staticmethod
+    def _check_aggregated_error(error_dict:dict, last_error:Exception):
+        if last_error:
+            if len(error_dict) == 1:
+                last_error.args += tuple(str(t) for e, t in error_dict.items())
+                raise last_error
+            else:
+                raise RuntimeError(str(error_dict))
+
+
     def push_tables(self, result_sets:list, table_names:list, dataset_name:str, workspace:str=None):
 
         if not isinstance(result_sets, list) or not isinstance(table_names, list) or len(result_sets) != len(table_names) or len(table_names) == 0:
             raise ValueError(f"the count of table_names does not match the count of result_sets")
 
-        errors = {}
-        last_exception = None
+        error_dict = {}
+        last_error = None
 
         for i in range(len(table_names)):
             table_name = table_names[i]
@@ -369,20 +390,9 @@ class PushDatasetsMgmt(object):
                 try:
                     self.push_rows(new_rows, table_name, dataset_name, workspace)
                 except Exception as err:
-                    err_msg = str(err)
-                    err_tabs = errors.get(err_msg)
-                    if err_tabs is None:
-                        errors[err_msg]= [table_name]
-                    else:
-                        err_tabs.append(table_name)
-                    last_exception = err
+                    last_error = self._aggregate_error(error_dict, err, table_name)
 
-        if last_exception:
-            if len(errors) == 1:
-                last_exception.args += str(errors.values()[0])
-                raise last_exception
-            else:
-                raise RuntimeError(str(errors))
+        self._check_aggregated_error(error_dict, last_error)
 
 
     def truncate_tables(self, table_names:list, dataset_name:str, workspace:str=None):
@@ -393,17 +403,25 @@ class PushDatasetsMgmt(object):
 
         if table_names:
             dataset_id = self.get_dataset_id(dataset_name, workspace)
+            group_id = self.get_group_id(workspace)
+
+            error_dict = {}
+            last_error = None
 
             for table in table_names:
                 table_name = quote(table)
                 if workspace:
-                    group_id = self.get_group_id(workspace)
                     rest_path = f"groups/{group_id}/datasets/{dataset_id}/tables/{table_name}/rows"
                 else:
                     rest_path = f"datasets/{dataset_id}/tables/{table_name}/rows"
 
-                powerbi_rest_v1(self.access_token, 'DELETE', rest_path)
+                try:
+                    powerbi_rest_v1(self.access_token, 'DELETE', rest_path)
+                except Exception as err:
+                    last_error = self._aggregate_error(error_dict, err, table_name)
+
+            self._check_aggregated_error(error_dict, last_error)
 
 
 
-__version__ = "0.1a0.dev1"
+__version__ = "0.1a0.dev2"
