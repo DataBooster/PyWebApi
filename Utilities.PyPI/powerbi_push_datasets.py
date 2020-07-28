@@ -45,9 +45,17 @@ def powerbi_rest_v1(access_token: str, http_method:str, rest_path:str, request_p
     def full_url(relative_url:str) -> str:
         return urljoin("https://api.powerbi.com/v1.0/myorg/", relative_url)
 
-    headers = {'Pragma': 'no-cache', 'Cache-Control': 'no-cache', 'Authorization': 'Bearer ' + access_token, 'Accept': 'application/json'}
+    explicit_headers = kwargs.get('headers', {})
+    if isinstance(explicit_headers, str):
+        explicit_headers = json_decode(explicit_headers)
+    if not isinstance(explicit_headers, MutableMapping):
+        explicit_headers = {}
 
-    return request_json(full_url(rest_path), request_payload, http_method, headers=headers)
+    headers = {'Pragma': 'no-cache', 'Cache-Control': 'no-cache', 'Authorization': 'Bearer ' + access_token, 'Accept': 'application/json'}
+    headers.update(explicit_headers)
+    kwargs['headers'] = headers
+
+    return request_json(full_url(rest_path), request_payload, http_method, **kwargs)
 
 
 def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, defaultMode:str="Push") -> dict:
@@ -331,7 +339,7 @@ class PushDatasetsMgmt(object):
             return self._create_dataset(dataset_name, dataset_properties, defaultRetentionPolicy, group_id)
 
 
-    def push_rows(self, row_list:list, table_name:str, dataset_name:str, workspace:str=None):
+    def push_rows(self, row_list:list, table_name:str, sequence_number:int, dataset_name:str, workspace:str=None):
         if not row_list or not isinstance(row_list, Iterable):
             raise TypeError("row_list argument requires a list of objects")
 
@@ -352,7 +360,12 @@ class PushDatasetsMgmt(object):
         else:
             rest_path = f"datasets/{dataset_id}/tables/{table_name}/rows"
 
-        resp = powerbi_rest_v1(self.access_token, 'POST', rest_path, {"rows": row_list})
+        if sequence_number:
+            headers = {"X-PowerBI-PushData-SequenceNumber": int(sequence_number)}
+        else:
+            headers = {}
+
+        resp = powerbi_rest_v1(self.access_token, 'POST', rest_path, {"rows": row_list}, headers=headers)
 
 
     @staticmethod
@@ -375,20 +388,28 @@ class PushDatasetsMgmt(object):
                 raise RuntimeError(str(error_dict))
 
 
-    def push_tables(self, result_sets:list, table_names:list, dataset_name:str, workspace:str=None):
+    def push_tables(self, result_sets:list, table_name_seq_list:list, dataset_name:str, workspace:str=None):
 
-        if not isinstance(result_sets, list) or not isinstance(table_names, list) or len(result_sets) != len(table_names) or len(table_names) == 0:
+        if not isinstance(result_sets, list) or not isinstance(table_name_seq_list, list) or len(result_sets) != len(table_name_seq_list) or len(table_name_seq_list) == 0:
             raise ValueError(f"the count of table_names does not match the count of result_sets")
 
         error_dict = {}
         last_error = None
 
-        for i in range(len(table_names)):
-            table_name = table_names[i]
+        for i in range(len(table_name_seq_list)):
+            name_seq = table_name_seq_list[i]
+            if isinstance(name_seq, tuple):
+                table_name, seq_num = name_seq
+            elif isinstance(name_seq, str):
+                table_name = name_seq
+                seq_num = None
+            else:
+                raise TypeError(f"table_name_seq_list argument requires a list of tuples [(TableName, PowerBI_PushData_SequenceNumber)]")
+
             new_rows = result_sets[i]
             if table_name and new_rows:
                 try:
-                    self.push_rows(new_rows, table_name, dataset_name, workspace)
+                    self.push_rows(new_rows, table_name, seq_num, dataset_name, workspace)
                 except Exception as err:
                     last_error = self._aggregate_error(error_dict, err, table_name)
 
@@ -423,5 +444,36 @@ class PushDatasetsMgmt(object):
             self._check_aggregated_error(error_dict, last_error)
 
 
+    def get_sequence_numbers(self, table_names:list, dataset_name:str, workspace:str=None):
+        if not table_names:
+            table_names = self.get_tables(dataset_name, workspace)
+        elif isinstance(table_names, str):
+            table_names = [table_names]
 
-__version__ = "0.1a0.dev2"
+        table_seq_list = []
+        if table_names:
+            dataset_id = self.get_dataset_id(dataset_name, workspace)
+            group_id = self.get_group_id(workspace)
+
+            for table in table_names:
+                table_name = quote(table)
+                if workspace:
+                    rest_path = f"groups/{group_id}/datasets/{dataset_id}/tables/{table_name}/sequenceNumbers"
+                else:
+                    rest_path = f"datasets/{dataset_id}/tables/{table_name}/sequenceNumbers"
+
+                try:
+                    resp = powerbi_rest_v1(self.access_token, 'GET', rest_path)
+                except Exception as err:
+                    last_error = self._aggregate_error(error_dict, err, table_name)
+                else:
+                    resp.setdefault('name', table)
+                    table_seq_list.append(resp)
+
+            self._check_aggregated_error(error_dict, last_error)
+
+        return table_seq_list
+
+
+
+__version__ = "0.1a0.dev3"
