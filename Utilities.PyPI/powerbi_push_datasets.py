@@ -14,7 +14,7 @@ into a few simple methods:
 This module also provides two conversion tools:
 
 -   ``convert_bim_to_push_dataset`` : Convert a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) into a Push Dataset Model supported by Power BI Service;
--   ``generate_bim_from_resultsets`` : Generate a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) based on a `ResultSets of Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables;
+-   ``derive_bim_from_resultsets`` : Generate a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) based on a `ResultSets of Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables;
 
 
 ----
@@ -122,7 +122,7 @@ def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, defa
     return dataset_properties
 
 
-def generate_bim_from_resultsets(result_sets:list, table_names:list, dataset_name:str) -> dict:
+def derive_bim_from_resultsets(result_sets:list, table_names:list, dataset_name:str) -> dict:
 
     def detect_data_type(column_name:str, first_value, result_set:list) -> str:
         if first_value is None:
@@ -162,6 +162,8 @@ def generate_bim_from_resultsets(result_sets:list, table_names:list, dataset_nam
     tables = []
     for i in range(len(table_names)):
         table_name = table_names[i]
+        if isinstance(table_name, tuple) and len(table_name) > 0 and isinstance(table_name[0], str):
+            table_name = table_name[0]
         if table_name:
             tables.append(generate_table_bim(result_sets[i], table_name))
 
@@ -185,6 +187,46 @@ class PushDatasetsMgmt(object):
         self._group_dict = {}
         self._dataset_dict = {}
         self.access_token = access_token
+
+
+    class ErrorAggregation(object):
+        def __init__(self):
+            self._error_dict = {}
+
+        def add(self, err_obj:Exception, table_name:str):
+            err_type = type(err_obj).__name__
+            err_sort = self._error_dict.get(err_type)
+            if err_sort is None:
+                self._error_dict[err_type] = {err_obj: [table_name]}
+            else:
+                tbs = err_sort.get(err_obj)
+                if tbs is None:
+                    err_sort[err_obj] = [table_name]
+                else:
+                    tbs.append(table_name)
+
+        @property
+        def aggregated_error(self):
+            if not self._error_dict:
+                return None
+            if len(self._error_dict) == 1:
+                err_objs = next(e for e in self._error_dict.values())
+                same_error, tb_names = next(pair for pair in err_objs.items())
+                if len(err_objs) == 1:
+                    same_error.args = (f"{str(tb_names)}: {str(same_error)}",)
+                else:
+                    same_error.args = (str({str(tbs): str(err) for err, tbs in err_objs.items()}),)
+                return same_error
+            else:
+                varied_dict = {str(tbs): repr(err)
+                               for et, ed in self._error_dict.items() 
+                               for err, tbs in ed}
+                return RuntimeError(str(varied_dict))
+
+        def check(self):
+            agg_err = self.aggregated_error
+            if agg_err:
+                raise agg_err
 
 
     @property
@@ -361,31 +403,11 @@ class PushDatasetsMgmt(object):
             rest_path = f"datasets/{dataset_id}/tables/{table_name}/rows"
 
         if sequence_number:
-            headers = {"X-PowerBI-PushData-SequenceNumber": int(sequence_number)}
+            headers = {"X-PowerBI-PushData-SequenceNumber": str(sequence_number)}
         else:
             headers = {}
 
         resp = powerbi_rest_v1(self.access_token, 'POST', rest_path, {"rows": row_list}, headers=headers)
-
-
-    @staticmethod
-    def _aggregate_error(error_dict:dict, error:Exception, table_name:str)->Exception:
-        err_msg = repr(error)
-        err_tbs = error_dict.get(err_msg)
-        if err_tbs is None:
-            error_dict[err_msg]= [table_name]
-        else:
-            err_tbs.append(table_name)
-        return error
-
-    @staticmethod
-    def _check_aggregated_error(error_dict:dict, last_error:Exception):
-        if last_error:
-            if len(error_dict) == 1:
-                last_error.args += tuple(str(t) for e, t in error_dict.items())
-                raise last_error
-            else:
-                raise RuntimeError(str(error_dict))
 
 
     def push_tables(self, result_sets:list, table_name_seq_list:list, dataset_name:str, workspace:str=None):
@@ -393,8 +415,7 @@ class PushDatasetsMgmt(object):
         if not isinstance(result_sets, list) or not isinstance(table_name_seq_list, list) or len(result_sets) != len(table_name_seq_list) or len(table_name_seq_list) == 0:
             raise ValueError(f"the count of table_names does not match the count of result_sets")
 
-        error_dict = {}
-        last_error = None
+        agg_error = self.ErrorAggregation()
 
         for i in range(len(table_name_seq_list)):
             name_seq = table_name_seq_list[i]
@@ -411,9 +432,9 @@ class PushDatasetsMgmt(object):
                 try:
                     self.push_rows(new_rows, table_name, seq_num, dataset_name, workspace)
                 except Exception as err:
-                    last_error = self._aggregate_error(error_dict, err, table_name)
+                    agg_error.add(err, table_name)
 
-        self._check_aggregated_error(error_dict, last_error)
+        agg_error.check()
 
 
     def truncate_tables(self, table_names:list, dataset_name:str, workspace:str=None):
@@ -426,8 +447,7 @@ class PushDatasetsMgmt(object):
             dataset_id = self.get_dataset_id(dataset_name, workspace)
             group_id = self.get_group_id(workspace)
 
-            error_dict = {}
-            last_error = None
+            agg_error = self.ErrorAggregation()
 
             for table in table_names:
                 table_name = quote(table)
@@ -439,9 +459,9 @@ class PushDatasetsMgmt(object):
                 try:
                     powerbi_rest_v1(self.access_token, 'DELETE', rest_path)
                 except Exception as err:
-                    last_error = self._aggregate_error(error_dict, err, table_name)
+                    agg_error.add(err, table_name)
 
-            self._check_aggregated_error(error_dict, last_error)
+            agg_error.check()
 
 
     def get_sequence_numbers(self, table_names:list, dataset_name:str, workspace:str=None):
@@ -455,6 +475,8 @@ class PushDatasetsMgmt(object):
             dataset_id = self.get_dataset_id(dataset_name, workspace)
             group_id = self.get_group_id(workspace)
 
+            agg_error = self.ErrorAggregation()
+
             for table in table_names:
                 table_name = quote(table)
                 if workspace:
@@ -465,15 +487,16 @@ class PushDatasetsMgmt(object):
                 try:
                     resp = powerbi_rest_v1(self.access_token, 'GET', rest_path)
                 except Exception as err:
-                    last_error = self._aggregate_error(error_dict, err, table_name)
+                    agg_error.add(err, table_name)
                 else:
+                    resp.pop('@odata.context', None)
                     resp.setdefault('name', table)
                     table_seq_list.append(resp)
 
-            self._check_aggregated_error(error_dict, last_error)
+            agg_error.check()
 
         return table_seq_list
 
 
 
-__version__ = "0.1a0.dev3"
+__version__ = "0.1a0.dev4"
