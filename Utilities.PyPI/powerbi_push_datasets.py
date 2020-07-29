@@ -220,7 +220,7 @@ class PushDatasetsMgmt(object):
             else:
                 err_args = (f"{str(tbs)} - {repr(err)}"
                                for et, ed in self._error_dict.items() 
-                               for err, tbs in ed)
+                               for err, tbs in ed.items())
                 return RuntimeError(err_args)
 
         def check(self):
@@ -446,7 +446,6 @@ class PushDatasetsMgmt(object):
         if table_names:
             dataset_id = self.get_dataset_id(dataset_name, workspace)
             group_id = self.get_group_id(workspace)
-
             agg_error = self.ErrorAggregation()
 
             for table in table_names:
@@ -474,7 +473,6 @@ class PushDatasetsMgmt(object):
         if table_names:
             dataset_id = self.get_dataset_id(dataset_name, workspace)
             group_id = self.get_group_id(workspace)
-
             agg_error = self.ErrorAggregation()
 
             for table in table_names:
@@ -499,4 +497,4 @@ class PushDatasetsMgmt(object):
 
 
 
-__version__ = "0.1a0.dev5"
+__version__ = "0.1a0.dev6"
