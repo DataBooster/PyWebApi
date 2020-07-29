@@ -213,15 +213,15 @@ class PushDatasetsMgmt(object):
                 err_objs = next(e for e in self._error_dict.values())
                 same_error, tb_names = next(pair for pair in err_objs.items())
                 if len(err_objs) == 1:
-                    same_error.args = (f"{str(tb_names)}: {str(same_error)}",)
+                    same_error.args = (f"{str(tb_names)} - {str(same_error)}",)
                 else:
-                    same_error.args = (str({str(tbs): str(err) for err, tbs in err_objs.items()}),)
+                    same_error.args = (f"{str(tbs)} - {str(err)}" for err, tbs in err_objs.items())
                 return same_error
             else:
-                varied_dict = {str(tbs): repr(err)
+                err_args = (f"{str(tbs)} - {repr(err)}"
                                for et, ed in self._error_dict.items() 
-                               for err, tbs in ed}
-                return RuntimeError(str(varied_dict))
+                               for err, tbs in ed)
+                return RuntimeError(err_args)
 
         def check(self):
             agg_err = self.aggregated_error
@@ -499,4 +499,4 @@ class PushDatasetsMgmt(object):
 
 
 
-__version__ = "0.1a0.dev4"
+__version__ = "0.1a0.dev5"
