@@ -15,7 +15,7 @@ from simple_rest_call import request_json
 from powerbi_push_datasets import derive_bim_from_resultsets
 
 
-def _invoke_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
+def invoke_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
 
     def check_dbwebapi(result:dict) -> bool:
         if not isinstance(result, Mapping):
@@ -39,7 +39,7 @@ def _invoke_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
     return result
 
 
-def _get_table_name_seq_list(first_result_set:list, name_only:bool=False) -> list:
+def get_table_name_seq_list(first_result_set:list, name_only:bool=False) -> list:
     def cast_to_int(seq_num:float) -> int:
         if seq_num is None:
             return None
@@ -61,26 +61,26 @@ def _get_table_name_seq_list(first_result_set:list, name_only:bool=False) -> lis
         return [row[table_name_column] for row in first_result_set]
 
 
-def _extract_sp_name(sp_url:str) -> str:
+def extract_sp_name(sp_url:str) -> str:
     sp_path = urlparse(sp_url).path
     _, _, sp_name = sp_path.rpartition('.')
     sp_name, _, _ = sp_name.partition('/')
     return sp_name
 
 
+
 def derive_bim(sp_url:str, sp_args:dict=None, dataset_name:str=None, timeout:float=1800) -> dict:
     if not dataset_name:
-        dataset_name = _extract_sp_name(sp_url)
+        dataset_name = extract_sp_name(sp_url)
 
-    result = _invoke_sp(sp_url, sp_args, timeout)
+    result = invoke_sp(sp_url, sp_args, timeout)
 
     metadata = result['ResultSets'].pop(0)
-    table_names = _get_table_name_seq_list(metadata, True)
+    table_names = get_table_name_seq_list(metadata, True)
 
     bim = derive_bim_from_resultsets(result['ResultSets'], table_names, dataset_name)
 
     response.set_header('Content-Disposition', f'attachment; filename="{dataset_name}.bim"')
 
     return bim
-
 

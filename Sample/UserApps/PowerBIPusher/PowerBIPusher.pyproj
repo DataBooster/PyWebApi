@@ -23,9 +23,10 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="model.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="authorization.py" />
+    <Compile Include="model.py" />
+    <Compile Include="pbi_config.py" />
+    <Compile Include="push_datasets.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="deploy.bat" />

@@ -1,2 +1,3 @@
 powerbi-push-datasets
 bottle
+msal
