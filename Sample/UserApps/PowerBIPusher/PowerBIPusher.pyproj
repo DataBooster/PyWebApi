@@ -24,9 +24,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="authorization.py" />
-    <Compile Include="model.py" />
+    <Compile Include="db_to_pbi.py" />
     <Compile Include="pbi_config.py" />
-    <Compile Include="push_datasets.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="deploy.bat" />

@@ -5,17 +5,20 @@ powerbi_push_datasets - Power BI Push Datasets Mgmt
 ----
 
 The main class **PushDatasetsMgmt** encapsulates the Power BI REST operations on `Push Datasets <https://docs.microsoft.com/en-us/rest/api/power-bi/pushdatasets>`_
-into a few simple methods:
+(which allows programmatic access for pushing data into PowerBI) into a few simple methods:
 
 -   ``deploy_dataset`` : Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file);
--   ``push_tables`` : Push a `ResultSets of Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset;
+-   ``push_tables`` : Push all `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset;
 -   ``truncate_tables`` : Removes all rows from specified (or all) tables in a Power BI Push Dataset;
 
-This module also provides two conversion tools:
+This module also provides two conversion tools for development-time:
 
 -   ``convert_bim_to_push_dataset`` : Convert a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) into a Push Dataset Model supported by Power BI Service;
--   ``derive_bim_from_resultsets`` : Generate a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) based on a `ResultSets of Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables;
+-   ``derive_bim_from_resultsets`` : Generate a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables;
 
+For detailed usage, see the practice sample code: https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/db_to_pbi.py
+
+and its product documentation: https://github.com/DataBooster/PyWebApi#powerbi-data-pusher
 
 ----
 
@@ -40,10 +43,25 @@ def is_uuid(name:str) -> bool:
     return True if _uuid_pattern.fullmatch(name) else False
 
 
-def powerbi_rest_v1(access_token: str, http_method:str, rest_path:str, request_payload:dict=None, **kwargs):
+def invoke_powerbi_rest(access_token: str, http_method:str, rest_path:str, request_payload:dict=None, organization:str='myorg', api_version:str='v1.0', **kwargs):
+    """Executes a REST call to the Power BI service, with the specified URL and body.
 
-    def full_url(relative_url:str) -> str:
-        return urljoin("https://api.powerbi.com/v1.0/myorg/", relative_url)
+    :param access_token: The authentication access token for the Power BI REST call.
+    :param http_method: Method for the request: ``GET``, ``POST``, ``DELETE``, ``PUT``, ``PATCH``, ``OPTIONS``.
+    :param rest_path: Relative or absolute URL of the Power BI entity you want to access. For example, if you want to access https://api.powerbi.com/v1.0/myorg/groups, then specify 'groups', or pass in the entire URL.
+    :param request_payload: Body of the request. This is optional unless the request method is POST, PUT, or PATCH.
+    :param organization: (optional) Organization name or tenant GUID to include in the URL. Default is 'myorg'.
+    :param api_version: (optional) Version of the API to include in the URL. Default is 'v1.0'. Ignored if ``rest_path`` is an absolute URL.
+    :param kwargs: (optional) Please refer to https://requests.readthedocs.io for other optional arguments.
+    :return: A JSON decoded object.
+    """
+
+    def full_url(relative_url:str, organization:str, api_version:str) -> str:
+        if not organization:
+            organization = 'myorg'
+        if not api_version:
+            api_version = 'v1.0'
+        return urljoin(f"https://api.powerbi.com/{api_version}/{organization}/", relative_url)
 
     explicit_headers = kwargs.get('headers', {})
     if isinstance(explicit_headers, str):
@@ -55,10 +73,18 @@ def powerbi_rest_v1(access_token: str, http_method:str, rest_path:str, request_p
     headers.update(explicit_headers)
     kwargs['headers'] = headers
 
-    return request_json(full_url(rest_path), request_payload, http_method, **kwargs)
+    return request_json(full_url(rest_path, organization, api_version), request_payload, http_method, **kwargs)
 
 
-def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, defaultMode:str="Push") -> dict:
+def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, default_mode:str="Push") -> dict:
+    """Convert a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) into a Push Dataset Model supported by Power BI Service.
+All properties not supported by Power BI Push Datasets will be filtered out of the output model.
+
+    :param model_bim: The JSON of the `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file).
+    :param dataset_name: The dataset name.
+    :param default_mode: The dataset mode or type which allows programmatic access for pushing data into PowerBI. Only 'Push' and 'PushStreaming' are currently supported.
+    :return: A Push Dataset Model (request body of https://docs.microsoft.com/en-us/rest/api/power-bi/pushdatasets/datasets_postdatasetingroup) that can be directly used to create a new dataset in Power BI Service.
+    """
 
     def find_tables_dict(model_bim:MutableMapping) -> MutableMapping:
         if not isinstance(model_bim, MutableMapping):
@@ -111,8 +137,8 @@ def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, defa
     if relationships:
         dataset_properties["relationships"] = relationships
 
-    if defaultMode:
-        dataset_properties["defaultMode"] = defaultMode
+    if default_mode:
+        dataset_properties["defaultMode"] = default_mode
 
     clean_up_keys(dataset_properties, "tables", {'columns', 'measures', 'name', 'rows', 'isHidden'})
     clean_up_keys(dataset_properties, "columns", {'dataType', 'name', 'formatString', 'sortByColumn', 'dataCategory', 'isHidden', 'summarizeBy'})
@@ -123,6 +149,12 @@ def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, defa
 
 
 def derive_bim_from_resultsets(result_sets:list, table_names:list, dataset_name:str) -> dict:
+    """Generate a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) based on `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables.
+
+    :param result_sets: A list of result sets returned from a stored procedure corresponding to multiple Power BI tables.
+    :param table_names: A list of table names corresponding to the result set list.
+    :return: The `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file).
+    """
 
     def detect_data_type(column_name:str, first_value, result_set:list) -> str:
         if first_value is None:
@@ -181,6 +213,11 @@ def derive_bim_from_resultsets(result_sets:list, table_names:list, dataset_name:
 
 
 class PushDatasetsMgmt(object):
+    """This class encapsulates the Power BI REST operations on `Push Datasets <https://docs.microsoft.com/en-us/rest/api/power-bi/pushdatasets>`_
+(which allows programmatic access for pushing data into PowerBI) into a few simple methods.
+
+    :param access_token: A valid access token for authenticating subsequent Power BI REST operations.
+    """
 
     def __init__(self, access_token:str):
 
@@ -248,6 +285,8 @@ class PushDatasetsMgmt(object):
 
 
     def get_group_id(self, workspace:str) -> str:
+        """Get the group_id according to a specified workspace. If the name of the workspace passed in looks like a UUID, the UUID will be returned directly without querying it from the Power BI Service."""
+
         if not workspace:
             return None
 
@@ -260,7 +299,7 @@ class PushDatasetsMgmt(object):
             return group_id
         else:
             name_filter = quote("name eq " + repr(workspace))
-            resp = powerbi_rest_v1(self.access_token, 'GET', "groups?$filter=" + name_filter)
+            resp = invoke_powerbi_rest(self.access_token, 'GET', "groups?$filter=" + name_filter)
 
             if not resp:
                 return resp
@@ -279,6 +318,8 @@ class PushDatasetsMgmt(object):
 
 
     def get_dataset_id(self, dataset:str, workspace:str=None) -> str:
+        """Get the dataset_id according to a dataset name in the specified workspace. If the name of the dataset passed in looks like a UUID, the UUID will be returned directly without querying it from the Power BI Service."""
+
         if not dataset:
             return None
 
@@ -297,7 +338,7 @@ class PushDatasetsMgmt(object):
             else:
                 rest_path = "datasets"
 
-            resp = powerbi_rest_v1(self.access_token, 'GET', rest_path)
+            resp = invoke_powerbi_rest(self.access_token, 'GET', rest_path)
 
             if not resp:
                 return resp
@@ -316,6 +357,8 @@ class PushDatasetsMgmt(object):
 
 
     def get_tables(self, dataset:str, workspace:str=None) -> set:
+        """Get a list of tables within the specified dataset from the specified workspace."""
+
         dataset_id = self.get_dataset_id(dataset, workspace)
         self._check_name(dataset_id, dataset, 'dataset')
 
@@ -325,7 +368,7 @@ class PushDatasetsMgmt(object):
         else:
             rest_path = f"datasets/{dataset_id}/tables"
 
-        resp = powerbi_rest_v1(self.access_token, 'GET', rest_path)
+        resp = invoke_powerbi_rest(self.access_token, 'GET', rest_path)
 
         if resp:
             return set(v['name'] for v in resp['value'])
@@ -333,16 +376,16 @@ class PushDatasetsMgmt(object):
             return set()
 
 
-    def _create_dataset(self, dataset_name:str, dataset_properties:MutableMapping, defaultRetentionPolicy, group_id:str=None) -> str:
+    def _create_dataset(self, dataset_name:str, dataset_properties:MutableMapping, default_retention_policy, group_id:str=None) -> str:
         if group_id:
             rest_path = f"groups/{group_id}/datasets"
         else:
             rest_path = "datasets"
 
-        if defaultRetentionPolicy:
-            rest_path += "?defaultRetentionPolicy=" + defaultRetentionPolicy
+        if default_retention_policy:
+            rest_path += "?defaultRetentionPolicy=" + default_retention_policy
 
-        resp = powerbi_rest_v1(self.access_token, 'POST', rest_path, dataset_properties)
+        resp = invoke_powerbi_rest(self.access_token, 'POST', rest_path, dataset_properties)
 
         return resp['id']
 
@@ -354,14 +397,22 @@ class PushDatasetsMgmt(object):
         else:
             rest_path = f"datasets/{dataset_id}/tables/{table_name}"
 
-        resp = powerbi_rest_v1(self.access_token, 'PUT', rest_path, table_bim)
+        resp = invoke_powerbi_rest(self.access_token, 'PUT', rest_path, table_bim)
 
         return resp["name"]
 
 
-    def deploy_dataset(self, model_bim:MutableMapping, dataset_name:str, workspace:str=None, defaultMode:str="Push", defaultRetentionPolicy:str='basicFIFO') -> str:
+    def deploy_dataset(self, model_bim:MutableMapping, dataset_name:str, workspace:str=None, default_mode:str="Push", default_retention_policy:str='basicFIFO') -> str:
+        """Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file).
 
-        dataset_properties = convert_bim_to_push_dataset(model_bim, dataset_name, defaultMode)
+    :param model_bim: The JSON of the `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file).
+    :param dataset_name: The dataset name.
+    :param workspace: (optional) The workspace name.
+    :param default_mode: (optional) The dataset mode or type which allows programmatic access for pushing data into PowerBI. Only 'Push' and 'PushStreaming' are currently supported.
+    :param default_retention_policy: (optional) The default retention policy. Default is 'basicFIFO'.
+    :return: The dataset_id of the dataset.
+        """
+        dataset_properties = convert_bim_to_push_dataset(model_bim, dataset_name, default_mode)
 
         if not dataset_properties:
             raise ValueError("the dataset properties are not sufficient to create a Power BI Push Dataset or add tables")
@@ -378,7 +429,7 @@ class PushDatasetsMgmt(object):
                         self._update_table(table_bim, dataset_id, group_id)
             return dataset_id
         else:
-            return self._create_dataset(dataset_name, dataset_properties, defaultRetentionPolicy, group_id)
+            return self._create_dataset(dataset_name, dataset_properties, default_retention_policy, group_id)
 
 
     def push_rows(self, row_list:list, table_name:str, sequence_number:int, dataset_name:str, workspace:str=None):
@@ -407,10 +458,20 @@ class PushDatasetsMgmt(object):
         else:
             headers = {}
 
-        resp = powerbi_rest_v1(self.access_token, 'POST', rest_path, {"rows": row_list}, headers=headers)
+        resp = invoke_powerbi_rest(self.access_token, 'POST', rest_path, {"rows": row_list}, headers=headers)
 
 
     def push_tables(self, result_sets:list, table_name_seq_list:list, dataset_name:str, workspace:str=None):
+        """Push all `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset.
+
+    :param result_sets: The data for multiple tables that will be pushed to a Power BI Push Dataset. It is usually multiple result sets returned by a stored procedure.
+    :param table_name_seq_list: A list of tuples corresponding to the list of result sets. 
+        The first item in each tuple must specify the table name of the corresponding result set in the Power BI Dataset, 
+        and the second item (optional) is used to specify a Sequence Number of the corresponding table 
+        if you need to enable the **X-PowerBI-PushData-SequenceNumber** feature - a build-in mechanism to guarantee which rows have been successfully pushed.
+    :param dataset_name: The dataset to be pushed data into.
+    :param workspace: (optional) The workspace name.
+        """
 
         if not isinstance(result_sets, list) or not isinstance(table_name_seq_list, list) or len(result_sets) != len(table_name_seq_list) or len(table_name_seq_list) == 0:
             raise ValueError(f"the count of table_names does not match the count of result_sets")
@@ -438,7 +499,14 @@ class PushDatasetsMgmt(object):
 
 
     def truncate_tables(self, table_names:list, dataset_name:str, workspace:str=None):
-        if not table_names:
+        """Removes all rows from specified (or all) tables in a Power BI Push Dataset.
+
+    :param table_names: A list of table names. The data in these specified tables will be truncated. 
+        All tables in the specified dataset will be truncated if ``None`` is passed in.
+    :param dataset_name: The dataset name.
+    :param workspace: (optional) The workspace name.
+        """
+        if table_names is None:
             table_names = self.get_tables(dataset_name, workspace)
         elif isinstance(table_names, str):
             table_names = [table_names]
@@ -456,7 +524,7 @@ class PushDatasetsMgmt(object):
                     rest_path = f"datasets/{dataset_id}/tables/{table_name}/rows"
 
                 try:
-                    powerbi_rest_v1(self.access_token, 'DELETE', rest_path)
+                    invoke_powerbi_rest(self.access_token, 'DELETE', rest_path)
                 except Exception as err:
                     agg_error.add(err, table_name)
 
@@ -483,7 +551,7 @@ class PushDatasetsMgmt(object):
                     rest_path = f"datasets/{dataset_id}/tables/{table_name}/sequenceNumbers"
 
                 try:
-                    resp = powerbi_rest_v1(self.access_token, 'GET', rest_path)
+                    resp = invoke_powerbi_rest(self.access_token, 'GET', rest_path)
                 except Exception as err:
                     agg_error.add(err, table_name)
                 else:
@@ -497,4 +565,4 @@ class PushDatasetsMgmt(object):
 
 
 
-__version__ = "0.1a0.dev6"
+__version__ = "0.1a1"
