@@ -139,8 +139,8 @@ def push_data(sp_url:str, sp_args:dict=None, dataset_name:str=None, workspace:st
 
     pd_mgmt.push_tables(result['ResultSets'], table_name_seq_list, dataset_name, workspace)
 
-    table_names = [tbn for tbn, seq in table_name_seq_list]
-    return pd_mgmt.get_sequence_numbers(table_names, dataset_name, workspace)
+    #table_names = [tbn for tbn, seq in table_name_seq_list]
+    #return pd_mgmt.get_sequence_numbers(table_names, dataset_name, workspace)
 
 
 
