@@ -17,7 +17,7 @@ from os import path as os_path
 from urllib.parse import urlparse
 from collections.abc import Mapping
 from json import loads as json_decode
-from simple_rest_call import request_json
+from simple_rest_call import rest
 from authorization import get_accesstoken
 from powerbi_push_datasets import PushDatasetsMgmt, derive_bim_from_resultsets
 
@@ -33,7 +33,7 @@ def _invoke_sp(sp_url:str, sp_args:dict, sp_timeout:float) -> dict:
         else:
             return False
 
-    result = request_json(sp_url, sp_args, timeout=sp_timeout)
+    result = rest(sp_url, sp_args, timeout=sp_timeout)
 
     if result and not check_dbwebapi(result):
         raise TypeError(f"{repr(sp_url)} is not a dbwebapi call")

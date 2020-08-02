@@ -19,7 +19,7 @@ from urllib.parse import urljoin
 from collections.abc import Mapping, MutableMapping
 from bottle import request
 from requests.structures import CaseInsensitiveDict
-from simple_rest_call import request_json
+from simple_rest_call import rest
 
 
 def _full_url(relative_url:str) -> str:
@@ -46,7 +46,7 @@ def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> b
         if error_param_name:
             notify_args[error_param_name] = error
 
-        request_json(notify_url, notify_args)
+        rest(notify_url, notify_args)
 
         return True
     else:
@@ -69,7 +69,7 @@ def start(task_sp_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
             else:
                 return False
 
-        result = request_json(sp_url, sp_args, timeout=sp_timeout)
+        result = rest(sp_url, sp_args, timeout=sp_timeout)
 
         if result and not check_dbwebapi(result):
             raise TypeError(f"{repr(sp_url)} is not a dbwebapi call")
@@ -153,7 +153,7 @@ def start(task_sp_url:str, sp_args:dict, mdx_conn_str:str, timeout:float=1800,
 
             if svc_grp:
 
-                result = request_json(_url_svc_grp, {"rest": svc_grp})
+                result = rest(_url_svc_grp, {"rest": svc_grp})
 
                 if post_url:
                     task_sp_url, sp_args = post_url, post_sp_args

@@ -12,7 +12,7 @@
 from time import sleep
 from collections.abc import Mapping, MutableMapping
 from adomd_client import AdomdClient
-from simple_rest_call import request_json
+from simple_rest_call import rest
 
 
 def _notify(result, error=None, notify_url:str=None, notify_args:MutableMapping=None) -> bool:
@@ -32,7 +32,7 @@ def _notify(result, error=None, notify_url:str=None, notify_args:MutableMapping=
         if error_param_name:
             notify_args[error_param_name] = error
 
-        request_json(notify_url, notify_args)
+        rest(notify_url, notify_args)
 
         return True
     else:
@@ -78,7 +78,7 @@ def run_query(connection_string:str, command_text:str,
                         if isinstance(row, MutableMapping):
                             row.update(more_args)
 
-            result = request_json(pass_result_to_url, result)   # Chain above result to DbWebApi for storage or further processing
+            result = rest(pass_result_to_url, result)   # Chain above result to DbWebApi for storage or further processing
 
     except Exception as err:
         if not _notify(result, err, notify_url, notify_args):   # Send a notification with result data and/or error information

@@ -32,9 +32,8 @@ from collections import Iterable
 from collections.abc import MutableMapping
 from urllib.parse import urljoin, quote
 from datetime import datetime, date, time, timedelta
-from simple_rest_call import request_json
+from simple_rest_call import rest
 from json import loads as json_decode
-from requests import HTTPError
 
 
 _uuid_pattern = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
@@ -73,15 +72,7 @@ def invoke_powerbi_rest(access_token: str, http_method:str, rest_path:str, reque
     headers.update(explicit_headers)
     kwargs['headers'] = headers
 
-    try:
-        return request_json(full_url(rest_path, organization, api_version), request_payload, http_method, **kwargs)
-    except HTTPError as pbi_err:
-        try:
-            err_msg = pbi_err.response.json()['error']['message']
-            pbi_err.args = (pbi_err.args[0] + ' - ' + err_msg,) + pbi_err.args[1:]
-        except:
-            pass
-        raise pbi_err
+    return rest(full_url(rest_path, organization, api_version), request_payload, http_method, error_extractor=lambda x: x['error']['message'], **kwargs)
 
 
 def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, default_mode:str="Push") -> dict:
@@ -573,4 +564,4 @@ class PushDatasetsMgmt(object):
 
 
 
-__version__ = "0.1a2"
+__version__ = "0.1a3"

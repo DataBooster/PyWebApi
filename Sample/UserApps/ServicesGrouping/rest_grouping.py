@@ -16,7 +16,7 @@ from collections.abc import Mapping
 from typing import List, Tuple, Dict, Any
 from concurrent.futures import ThreadPoolExecutor
 from task_grouping import TaskContainer, ITaskLoader
-from simple_rest_call import request_json
+from simple_rest_call import rest
 
 
 _reserved_key_parallel_group : str = "[###]"
@@ -29,7 +29,7 @@ _reserved_key_timeout : str = "(:!!)"
 
 
 def _task_func(url:str, data:dict=None, timeout:float=None, headers:dict=None):
-    return request_json(url, data, timeout=timeout, headers=headers)
+    return rest(url, data, timeout=timeout, headers=headers)
 
 
 def _pipeargs_merge_fn(kw_args:Dict[str, Any], pipe_args:Dict[str, Any]) -> Dict[str, Any]:
