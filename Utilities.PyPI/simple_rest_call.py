@@ -8,7 +8,7 @@ Windows single sign-on authentication is used for convenience in enterprise envi
 
 .. code-block:: python
 
-    request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwargs)
+    rest(url:str, data=None, method:str='POST', auth=(None,None), **kwargs)
 
 :url: The URL for the RESTful call.
 :data: The payload to be passed in the request body. Any incoming Python object will be encoded as JSON content
@@ -30,11 +30,12 @@ A quick example can be found from https://github.com/DataBooster/PyWebApi/blob/m
 | License: MIT
 """
 
-from requests import request
+from requests import request, Response, HTTPError
 from requests.structures import CaseInsensitiveDict
 from requests_negotiate_sspi import HttpNegotiateAuth
 from jsonpickle import encode as json_encode
 from dateutil import parser as dt_parser
+from collections.abc import Mapping
 
 
 def _json_datetime_decode_hook(pairs):
@@ -52,7 +53,11 @@ def _json_datetime_decode_hook(pairs):
     return obj_dict
 
 
-def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwargs):
+def _extract_dbwebapi_error(json_return:dict) -> str:
+    return json_return.get('ExceptionMessage')
+
+
+def rest(url:str, data=None, method:str='POST', auth=(None,None), error_extractor=_extract_dbwebapi_error, **kwargs):
     """This function is a simplified wrapper of Requests, specifically for JSON-request and JSON-response with datetime support.
     And by default, Windows single sign-on authentication is used for convenience in enterprise environment.
 
@@ -85,6 +90,20 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
         return body
 
+    def _raise_for_error(resp:Response, json_return:dict, error_extractor):
+        try:
+            resp.raise_for_status()
+        except HTTPError as http_error:
+            try:
+                if isinstance(json_return, Mapping) and error_extractor is not None:
+                    error_message = error_extractor(json_return)
+                    if isinstance(error_message, str) and error_message:
+                        http_error.args = (http_error.args[0] + ' ~!~ ' + error_message,) + http_error.args[1:]
+            except:
+                raise http_error
+            else:
+                raise http_error
+
     explicitly_to_json = False
 
     if data is None:
@@ -109,14 +128,20 @@ def request_json(url:str, data=None, method:str='POST', auth=(None,None), **kwar
 
     kwargs.setdefault('verify', False)
 
-    r = request(method, url, **kwargs)
-    r.raise_for_status()
+    resp = request(method, url, **kwargs)
 
     try:
-        return r.json(object_pairs_hook=_json_datetime_decode_hook)
+        ret = resp.json(object_pairs_hook=_json_datetime_decode_hook)
     except ValueError:
-        return r.text
+        ret = resp.text
+
+    _raise_for_error(resp, ret, error_extractor)
+
+    return ret
+
+
+request_json = rest
 
 
 
-__version__ = "0.1b2"
+__version__ = "0.1b3"
