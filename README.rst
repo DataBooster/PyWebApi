@@ -654,13 +654,13 @@ Sample User Apps/Modules/Scripts
     It provides 3 simple functions:
 
     #.  ``derive_bim`` (for design-time): Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file 
-        based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data (for all tables in a Power BI dataset).
+        based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ as sample data for all tables to be created in a Power BI dataset.
     #.  ``deploy_dataset`` (for deployment-time): Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file.
     #.  ``push_data`` (for run-time): Push all `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset, it is as simple as an online XCOPY.
 
     The following figure shows the stages in which they are used.
 
-    .. image:: docs/mdx-etl-chain.png
+    .. image:: docs/powerbi-data-pusher.png
 
 
 
