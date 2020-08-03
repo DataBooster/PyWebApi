@@ -648,13 +648,21 @@ Sample User Apps/Modules/Scripts
 
 .. _powerbi-data-pusher:
 
-*   Power BI Data Pusher
+*   `Power BI Data Pusher <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/db_to_pbi.py>`__
 
     Power BI Data Pusher acts as a data pump to read multiple resultsets from database stored procedure and push them into multiple tables in `Power BI Push Datasets <https://docs.microsoft.com/en-us/power-bi/developer/automation/api-automatic-retention-policy-for-real-time-data>`__.
-    It is as simple as an online XCOPY:
+    It provides 3 simple functions:
 
-    -   Source - A DbWebApi URL of the stored procedure and its input parameters
-    -   Destination - the target dataset name in the Power BI service
+    #.  ``derive_bim`` (for design-time): Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file 
+        based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data (for all tables in a Power BI dataset).
+    #.  ``deploy_dataset`` (for deployment-time): Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file.
+    #.  ``push_data`` (for run-time): Push all `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset, it is as simple as an online XCOPY.
+
+    The following figure shows the stages in which they are used.
+
+    .. image:: docs/mdx-etl-chain.png
+
+
 
 
 |
