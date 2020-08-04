@@ -603,13 +603,13 @@ Sample User Apps/Modules/Scripts
         These 3 arguments are required for the MDX ETL engine to start a process. For other optional arguments, 
         `the signature of the entry function start(...) <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py#L56>`__ is clear at a glance.
 
-    #.  If one or more result sets output by **task_sp** have ``MDX_QUERY`` and corresponding ``CALLBACK_SP``, 
+    #.  If one or more resultsets output by **task_sp** have ``MDX_QUERY`` and corresponding ``CALLBACK_SP``, 
         the MDX ETL engine uses this information to generate a descriptive JSON for services grouping and run it.
 
         .. image:: docs/task_sp-result_set1.png
 
-        All ``MDX_QUERY`` -> ``CALLBACK_SP`` task flows in the same result set are executed in parallel.
-        If the **task_sp** outputs multiple result sets, the corresponding multiple task groups will be further executed in series.
+        All ``MDX_QUERY`` -> ``CALLBACK_SP`` task flows in the same resultset are executed in parallel.
+        If the **task_sp** outputs multiple resultsets, the corresponding multiple task groups will be further executed in series.
 
         You can also use an output parameter to specify a post-processing stored procedure name that will be called after all internal task flows are completed.
 
@@ -620,7 +620,7 @@ Sample User Apps/Modules/Scripts
             OUT_POST_SP      := 'your_schema.mdx_etl_demo.final_post_processing?namingcase=camel';              -- Fully qualified name of the post-processing stored procedure as URL
             OUT_POST_SP_ARGS := '{"inComment": "This is an example of argument passed from the bootloader"}';   -- JSON dictionary
 
-        *The names of key output parameters in the stored procedure and the column names in the result set are based on conventions, 
+        *The names of key output parameters in the stored procedure and the column names in the resultset are based on conventions, 
         derived from the default arguments in* `the signature of the entry function start(...) <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/db_mdx_db.py#L56>`__ .
         *To customize your own conventions, simply change the values ​​of those default arguments.*
 
@@ -634,7 +634,7 @@ Sample User Apps/Modules/Scripts
 
     In essence, what the outputs of **task_sp** will drive which tasks will be performed by the MDX ETL and how they will be executed in the entire process:
 
-    *   The result set is used to specify what MDX queries and corresponding tasks need to be executed in parallel;
+    *   The resultset is used to specify what MDX queries and corresponding tasks need to be executed in parallel;
     *   A special named output parameter (``OUT_POST_SP`` with ``OUT_POST_SP_ARGS``) can be used to chain-invoke another similar process if needed;
     *   Any other output parameters will be pipelined to all subtasks and post-processing stored procedures as part of their input parameters if the names match.
 
@@ -662,7 +662,18 @@ Sample User Apps/Modules/Scripts
 
     .. image:: docs/powerbi-data-pusher.png
 
+    In order to reduce the complexity of configuration, the stored procedure here acts as the metadata source and data source of the destination Power BI dataset. 
+    Two conventions need to be followed:
 
+    #.  The first resultset of the stored procedure must be used to indicate the corresponding Power BI table name in Push Dataset for all subsequent resultsets, 
+        and (optional) the Sequence Number for the corresponding table if you need to enable the **X-PowerBI-PushData-SequenceNumber** feature - 
+        a build-in mechanism to guarantee which rows have been successfully pushed.
+
+        -   A string type column *(the column name does not matter)* is used to specify which table in the destination Power BI dataset to push the corresponding resultset to;
+        -   (optional) A numeric type column (column name does not matter) is used to specify the X-PowerBI-PushData-SequenceNumber for that table.
+
+    #.  Starting from the second resultset, every resultset is pushed to the corresponding table in the Power BI dataset. 
+        And all the column names (after applying `DbWebApi property-naming-convention <https://github.com/DataBooster/DbWebApi#property-naming-convention>`__) in the resultset match the column names in the destination table.
 
 
 |
