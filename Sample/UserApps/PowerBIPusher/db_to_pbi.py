@@ -3,7 +3,7 @@
 
     This module implements the following three functions:
 
-    *   **derive_bim**: Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data (multiple tables);
+    *   **derive_bim**: Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file based on `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data (multiple tables);
     *   **deploy_dataset**: Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file;
     *   **push_data**: Push all `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset;
 
@@ -77,7 +77,7 @@ def _extract_sp_name(sp_url:str) -> str:
 
 
 def derive_bim(sp_url:str, sp_args:dict=None, dataset_name:str=None, timeout:float=1800) -> dict:
-    """Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data (multiple tables).
+    """Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file based on `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data (multiple tables).
 
     The first result set of the stored procedure must be used to indicate the corresponding Power BI table name in Push Dataset for all subsequent result sets..
     """

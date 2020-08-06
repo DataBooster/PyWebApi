@@ -26,7 +26,7 @@
     <Compile Include="db_mdx_db.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="deploy.bat" />
+    <None Include="deploy.bat" />
     <Content Include="pywebapi.pth" />
     <Content Include="requirements.txt" />
   </ItemGroup>

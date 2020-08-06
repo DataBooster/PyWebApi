@@ -654,11 +654,11 @@ Sample User Apps/Modules/Scripts
     It provides 3 simple functions:
 
     #.  ``derive_bim`` (for design-time): Generate and download a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file 
-        based on `ResultSets of a Stored Procedure (ResultSets) <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ as sample data for all tables to be created in a Power BI dataset.
+        based on `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ as sample data for all tables to be created in a Power BI dataset.
     #.  ``deploy_dataset`` (for deployment-time): Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file.
     #.  ``push_data`` (for run-time): Push all `ResultSets of a Stored Procedure <https://github.com/DataBooster/DbWebApi/wiki#http-response>`__ - data for multiple tables into a Power BI Push Dataset, it is as simple as an online XCOPY.
 
-    The following figure shows the stages in which they are used.
+    The following figure shows the stages in which they are used:
 
     .. image:: docs/powerbi-data-pusher.png
 
@@ -667,10 +667,10 @@ Sample User Apps/Modules/Scripts
 
     #.  The first resultset of the stored procedure must be used to indicate the corresponding Power BI table name in Push Dataset for all subsequent resultsets, 
         and (optional) the Sequence Number for the corresponding table if you need to enable the **X-PowerBI-PushData-SequenceNumber** feature - 
-        a build-in mechanism to guarantee which rows have been successfully pushed.
+        a Power BI build-in mechanism to guarantee which rows have been successfully pushed.
 
         -   A string type column *(the column name does not matter)* is used to specify which table in the destination Power BI dataset to push the corresponding resultset to;
-        -   (optional) A numeric type column (column name does not matter) is used to specify the X-PowerBI-PushData-SequenceNumber for that table.
+        -   (optional) A numeric type column *(column name does not matter)* is used to specify the X-PowerBI-PushData-SequenceNumber for that table.
 
     #.  Starting from the second resultset, every resultset is pushed to the corresponding table in the Power BI dataset. 
         And all the column names (after applying `DbWebApi property-naming-convention <https://github.com/DataBooster/DbWebApi#property-naming-convention>`__) in the resultset match the column names in the destination table.

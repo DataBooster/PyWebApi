@@ -1,0 +1,166 @@
+openapi: 3.0.0
+info:
+  description: >-
+    Power BI Data Pusher acts as a data pump to read multiple resultsets from
+    database stored procedure and push them into multiple tables in Power BI
+    Push Datasets. It provides 3 simple functions:
+  version: 1.0.0
+  title: Power BI Data Pusher
+  contact:
+    name: PyWebApi
+    url: 'https://github.com/DataBooster/PyWebApi'
+  license:
+    name: MIT
+    url: 'https://github.com/DataBooster/PyWebApi/blob/master/LICENSE'
+
+tags:
+  - name: Design-time
+  - name: Deployment-time
+  - name: Run-time
+
+paths:
+  /db_to_pbi.derive_bim:
+    post:
+      summary: "- Derive Tabular Model from ResultSets of a Stored Procedure"
+      operationId: derive_bim
+      description: |-
+        Generate and download a **Tabular Model (.bim file)** based on ResultSets of a Stored Procedure (https://github.com/DataBooster/DbWebApi/wiki#http-response) as sample data for all tables to be created in a Power BI dataset.
+
+        The first result set of the stored procedure must be used to indicate the corresponding Power BI table name for all subsequent result sets.
+      responses:
+        "200":
+          description: Download the tabular model (.bim) file
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {"name": "PushDatasetName", "compatibilityLevel": 1520, "model": {"defaultPowerBIDataSourceVersion": "powerBI_V3", "tables": [{"name": "Table1", "columns": [{"name": "Columnl", "dataType": "dateTime"}], "partitions": [{"name": "None", "source": {"type": "m"}}]}]}}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/derive_bim-request'
+        description: Payload
+      tags:
+        - Design-time
+
+  /db_to_pbi.deploy_dataset:
+    post:
+      summary: "- Deploy a Tabular Model (.bim file) to Power BI workspace as a Push Dataset"
+      operationId: deploy_dataset
+      description: Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a Tabular Model (.bim) file.
+      responses:
+        "200":
+          description: Return the dataset_id that just been created or updated
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/deploy_dataset-request'
+        description: Payload
+      tags:
+        - Deployment-time
+        
+  /db_to_pbi.push_data:
+    post:
+      summary: "- Push new data to a Power BI Push Dataset"
+      operationId: push_data
+      responses:
+        "200":
+          description: No error
+          content:
+            application/json:
+              schema:
+                type: object
+                example: null
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/push_data-request'
+        description: Payload
+      description: |-
+        Push all ResultSets of a Stored Procedure - data for multiple tables into a Power BI Push Dataset.
+
+        The first result set of the stored procedure must be used to indicate the corresponding Power BI table name in Push Dataset for all subsequent result sets, and (optional) the Sequence Number for the corresponding table if you need to enable the **X-PowerBI-PushData-SequenceNumber** feature - a Power BI build-in mechanism to guarantee which rows have been successfully pushed.
+      tags:
+        - Run-time
+    
+externalDocs:
+  url: 'https://github.com/DataBooster/PyWebApi#powerbi-data-pusher'
+  description: Documentation
+
+components:
+  schemas:
+    _sp:
+      type: object
+      properties: &sp
+        sp_url:
+          type: string
+          format: url
+          example: http://localhost/dbwebapi/oradev/my_app/schema.package_for_pbi.test_dataset/json?NamingCase=Pascal
+        sp_args:
+          type: object
+          example: {}
+      description: https://github.com/DataBooster/DbWebApi/wiki
+        
+    derive_bim-request:
+      type: object
+      required:
+        - sp_url
+        - sp_args
+      properties:
+        <<: *sp
+        dataset_name:
+          type: string
+          example: PushDatasetTest1
+        timeout:
+          type: number
+          example: 180
+      description: derive_bim request payload
+
+    deploy_dataset-request:
+      required:
+        - model_bim
+        - dataset_name
+      properties:
+        model_bim:
+          type: string
+          example: \\network_server\share_folder\test_model.bim
+        dataset_name:
+          type: string
+          example: PushDatasetTest1
+        workspace:
+          type: string
+          example: Power BI Workspace1
+      description: deploy_dataset request payload
+
+    push_data-request:
+      required:
+        - sp_url
+        - sp_args
+        - dataset_name
+      properties:
+        <<: *sp
+        dataset_name:
+          type: string
+          example: PushDatasetTest1
+        workspace:
+          type: string
+          example: Power BI Workspace1
+        timeout:
+          type: number
+          example: 180
+      description: push_data request payload
+
+servers:
+  - description: Please update the base URL to your actual path.
+    url: http://localhost/PyWebApi/pys/test_app/utilities/powerbi_pusher

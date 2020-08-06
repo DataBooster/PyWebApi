@@ -8,7 +8,7 @@
 """
 
 import os
-from bottle import route, request, response, abort
+from bottle import route, request, response, abort, error, make_default_app_wrapper
 from pywebapi import RequestArguments, execute, cors, MediaTypeFormatterManager
 from json_fmtr import JsonFormatter
 
@@ -65,6 +65,27 @@ def execute_module_level_function(app_id:str, module_func:str):
         return fmt_result
     else:
         abort(401, f"Current user ({repr(user_name)}) does not have permission to execute the requested {repr(module_func)}.")
+
+
+@error(401)
+@error(500)
+def error_handler(err):
+    try:
+        if err.exception:
+            err_msg = str(err.exception)
+            resp_error = {"ExceptionType": type(err.exception).__name__}
+        else:
+            err_msg = err.body if err.body else str(err)
+            resp_error = {}
+        resp_error["ExceptionMessage"] = err_msg
+        if err.traceback:
+            resp_error["StackTrace"] = err.traceback
+
+        media_types = request.get_header('Accept', 'application/json')
+        return _mediatype_formatter_manager.respond_as(resp_error, media_types, response.headers.dict)
+    except:
+        default_error_handler = make_default_app_wrapper('default_error_handler')
+        return default_error_handler(err)
 
 
 

@@ -28,7 +28,7 @@
     <Compile Include="mdx_task.py" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="deploy.bat" />
+    <None Include="deploy.bat" />
     <Content Include="pywebapi.pth">
       <Publish>True</Publish>
     </Content>

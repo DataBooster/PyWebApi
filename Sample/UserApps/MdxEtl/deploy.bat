@@ -6,7 +6,7 @@ IF "%~1"=="" (
 	SET "DESTINATION=%~1"
 )
 
-RoboCopy . "%DESTINATION%" /s /purge /xf *.pyproj *.sql *.pck deploy.bat /xd __pycache__
+RoboCopy . "%DESTINATION%" /s /purge /xf *.pyproj *.sql *.pck *.bak deploy.bat /xd __pycache__
 
 SETLOCAL EnableDelayedExpansion EnableExtensions
 FOR /f "delims=" %%i in ('dir pywintypes??.dll /s /b') DO (
