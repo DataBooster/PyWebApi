@@ -13,6 +13,10 @@ info:
     name: MIT
     url: 'https://github.com/DataBooster/PyWebApi/blob/master/LICENSE'
 
+externalDocs:
+  url: 'https://github.com/DataBooster/PyWebApi#powerbi-data-pusher'
+  description: Documentation
+
 tags:
   - name: Design-time
   - name: Deployment-time
@@ -21,12 +25,21 @@ tags:
 paths:
   /db_to_pbi.derive_bim:
     post:
-      summary: "- Derive Tabular Model from ResultSets of a Stored Procedure"
+      summary: "Derive Tabular Model from ResultSets of a Stored Procedure."
       operationId: derive_bim
       description: |-
         Generate and download a **Tabular Model (.bim file)** based on ResultSets of a Stored Procedure (https://github.com/DataBooster/DbWebApi/wiki#http-response) as sample data for all tables to be created in a Power BI dataset.
 
         The first result set of the stored procedure must be used to indicate the corresponding Power BI table name for all subsequent result sets.
+      tags:
+        - Design-time
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/derive_bim-request'
+        description: Payload
       responses:
         "200":
           description: Download the tabular model (.bim) file
@@ -35,21 +48,25 @@ paths:
               schema:
                 type: object
                 example: {"name": "PushDatasetName", "compatibilityLevel": 1520, "model": {"defaultPowerBIDataSourceVersion": "powerBI_V3", "tables": [{"name": "Table1", "columns": [{"name": "Columnl", "dataType": "dateTime"}], "partitions": [{"name": "None", "source": {"type": "m"}}]}]}}
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
+
+  /db_to_pbi.deploy_dataset:
+    post:
+      summary: "Deploy a Tabular Model (.bim file) to Power BI workspace as a Push Dataset."
+      operationId: deploy_dataset
+      description: Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a Tabular Model (.bim) file.
+      tags:
+        - Deployment-time
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/derive_bim-request'
+              $ref: '#/components/schemas/deploy_dataset-request'
         description: Payload
-      tags:
-        - Design-time
-
-  /db_to_pbi.deploy_dataset:
-    post:
-      summary: "- Deploy a Tabular Model (.bim file) to Power BI workspace as a Push Dataset"
-      operationId: deploy_dataset
-      description: Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a Tabular Model (.bim) file.
       responses:
         "200":
           description: Return the dataset_id that just been created or updated
@@ -58,28 +75,21 @@ paths:
               schema:
                 type: string
                 format: uuid
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/deploy_dataset-request'
-        description: Payload
-      tags:
-        - Deployment-time
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
         
   /db_to_pbi.push_data:
     post:
-      summary: "- Push new data to a Power BI Push Dataset"
+      summary: "Push new data to a Power BI Push Dataset."
       operationId: push_data
-      responses:
-        "200":
-          description: No error
-          content:
-            application/json:
-              schema:
-                type: object
-                example: null
+      description: |-
+        Push all ResultSets of a Stored Procedure - data for multiple tables into a Power BI Push Dataset.
+
+        The first result set of the stored procedure must be used to indicate the corresponding Power BI table name in Push Dataset for all subsequent result sets, and (optional) the Sequence Number for the corresponding table if you need to enable the **X-PowerBI-PushData-SequenceNumber** feature - a Power BI build-in mechanism to guarantee which rows have been successfully pushed.
+      tags:
+        - Run-time
       requestBody:
         required: true
         content:
@@ -87,22 +97,42 @@ paths:
             schema:
               $ref: '#/components/schemas/push_data-request'
         description: Payload
-      description: |-
-        Push all ResultSets of a Stored Procedure - data for multiple tables into a Power BI Push Dataset.
-
-        The first result set of the stored procedure must be used to indicate the corresponding Power BI table name in Push Dataset for all subsequent result sets, and (optional) the Sequence Number for the corresponding table if you need to enable the **X-PowerBI-PushData-SequenceNumber** feature - a Power BI build-in mechanism to guarantee which rows have been successfully pushed.
-      tags:
-        - Run-time
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                example: null
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
     
-externalDocs:
-  url: 'https://github.com/DataBooster/PyWebApi#powerbi-data-pusher'
-  description: Documentation
-
 components:
+
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error-response'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error-response'
+
   schemas:
-    _sp:
+    _sp-base:
       type: object
-      properties: &sp
+      required:
+        - sp_url
+        - sp_args
+      properties:
         sp_url:
           type: string
           format: url
@@ -113,21 +143,20 @@ components:
       description: https://github.com/DataBooster/DbWebApi/wiki
         
     derive_bim-request:
-      type: object
-      required:
-        - sp_url
-        - sp_args
-      properties:
-        <<: *sp
-        dataset_name:
-          type: string
-          example: PushDatasetTest1
-        timeout:
-          type: number
-          example: 180
-      description: derive_bim request payload
+      allOf:
+        - $ref: '#/components/schemas/_sp-base'
+        - type: object
+          properties:
+            dataset_name:
+              type: string
+              example: PushDatasetTest1
+            timeout:
+              type: number
+              example: 180
+          description: derive_bim request payload
 
     deploy_dataset-request:
+      type: object
       required:
         - model_bim
         - dataset_name
@@ -144,22 +173,34 @@ components:
       description: deploy_dataset request payload
 
     push_data-request:
+      allOf:
+        - $ref: '#/components/schemas/_sp-base'
+        - type: object
+          required:
+            - dataset_name
+          properties:
+            dataset_name:
+              type: string
+              example: PushDatasetTest1
+            workspace:
+              type: string
+              example: Power BI Workspace1
+            timeout:
+              type: number
+              example: 180
+          description: push_data request payload
+
+    error-response:
+      type: object
       required:
-        - sp_url
-        - sp_args
-        - dataset_name
+        - ExceptionMessage
       properties:
-        <<: *sp
-        dataset_name:
+        ExceptionMessage:
           type: string
-          example: PushDatasetTest1
-        workspace:
+        ExceptionType:
           type: string
-          example: Power BI Workspace1
-        timeout:
-          type: number
-          example: 180
-      description: push_data request payload
+        StackTrace:
+          type: string
 
 servers:
   - description: Please update the base URL to your actual path.
