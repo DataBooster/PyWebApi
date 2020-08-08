@@ -29,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="deploy.bat" />
+    <None Include="mdxreader.swagger.yaml" />
     <Content Include="pywebapi.pth">
       <Publish>True</Publish>
     </Content>

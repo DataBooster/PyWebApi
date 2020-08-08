@@ -1,0 +1,133 @@
+openapi: 3.0.0
+info:
+  description: Services Grouping dynamically integrates a group of RESTful services as a virtual service through a descriptive JSON.
+  version: 1.0.0
+  title: Services Grouping
+  contact:
+    name: PyWebApi
+    url: 'https://github.com/DataBooster/PyWebApi'
+  license:
+    name: MIT
+    url: 'https://github.com/DataBooster/PyWebApi/blob/master/LICENSE'
+
+externalDocs:
+  url: 'https://github.com/DataBooster/PyWebApi#services-grouping'
+  description: Wiki
+
+tags:
+  - name: Main
+
+paths:
+  /rest_grouping.start:
+    post:
+      summary: Call a group of RESTful services.
+      operationId: start
+      description: |-
+        Load the task tree of service group from a descriptive JSON, Execute all tasks and task groups in the specified order (serial/parallel) and assemble their results into a tree structure corresponding to the input payload.
+        
+        Please refer to <https://github.com/DataBooster/PyWebApi#services-grouping> for details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/start-request'
+        description: Payload
+      responses:
+        "200":
+          description: Return the grouped results
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
+      tags:
+        - Main
+
+components:
+
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error-response'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error-response'
+
+  schemas:
+    start-request:
+      type: object
+      required:
+        - rest
+      properties:
+        rest:
+          type: object
+          example: {
+            "rest": {
+              "[+++]": [
+                {
+                  "(://)": "http://service1",
+                  "(...)": {"svc1-arg1": "arg1 of service1 payload ..." },
+                  "(:!!)": 600
+                },
+                {
+                  "(://)": "http://service2",
+                  "(.|.)": {"svc2-arg1": "arg1 of service2 payload ..." },
+                  "(:!!)": 600
+                },
+                {
+                  "[###]": [
+                    {
+                      "(://)": "http://service3",
+                      "(...)": {"svc3-arg1": "arg1 of service3 payload ..." },
+                      "(:!!)": 1800
+                    },
+                    {
+                      "(://)": "http://service4",
+                      "(...)": {"svc4-arg1": "arg1 of service4 payload ..." },
+                      "(:!!)": 1800
+                    },
+                    {
+                      "(://)": "http://service5",
+                      "(...)": {"svc5-arg1": "arg1 of service5 payload ..." },
+                      "(:!!)": 1800
+                    }
+                  ]
+                },
+                {
+                  "(://)": "http://service6",
+                  "(...)": {"svc6-arg1": "arg1 of service6 payload ..." },
+                  "(:!!)": 600
+                }
+              ]
+            }
+          }
+
+          description: The descriptive JSON of a service group.
+
+    error-response:
+      type: object
+      required:
+        - ExceptionMessage
+      properties:
+        ExceptionMessage:
+          type: string
+        ExceptionType:
+          type: string
+        StackTrace:
+          type: string
+
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/DataBooster/ServicesGrouping/1.0.0
+  - description: Please update the base URL to your actual path.
+    url: http://localhost/PyWebApi/pys/test_app/utilities/services_grouping

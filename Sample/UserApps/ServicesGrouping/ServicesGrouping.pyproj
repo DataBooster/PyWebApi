@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="deploy.bat" />
+    <None Include="services_grouping.swagger.yaml" />
     <Content Include="pywebapi.pth" />
     <Content Include="requirements.txt" />
   </ItemGroup>

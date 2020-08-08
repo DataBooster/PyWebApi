@@ -1,0 +1,139 @@
+openapi: 3.0.0
+info:
+  description: |-
+    This service implements a common end-to-end MDX ETL process:
+
+    **db->mdx->db**
+
+    1.  Call a stored procedure to obtain a group of MDX queries generated from the database; 
+    2.  Concurrently execute this group of MDX queries and pass the query results to the corresponding stored procedures;
+    3.  (optional) Once all concurrent tasks get completed, a summary level post-processing stored procedure is called.
+  version: 1.0.0
+  title: MDX ETL
+  contact:
+    name: PyWebApi
+    url: 'https://github.com/DataBooster/PyWebApi'
+  license:
+    name: MIT
+    url: 'https://github.com/DataBooster/PyWebApi/blob/master/LICENSE'
+
+externalDocs:
+  url: 'https://github.com/DataBooster/PyWebApi#mdx-etl'
+  description: Wiki
+
+tags:
+  - name: Main
+
+paths:
+  /db_mdx_db.start:
+    post:
+      summary: Start a **db->mdx->db** end-to-end MDX ETL process.
+      operationId: start
+      description: |-
+        Reads all parallel/series MDX task streams from a database stored procedure, generates the descriptive JSON about services grouping for them and runs the whole process. The output of the stored procedure can specify the next similar stored procedure to repeat the similar process, or specify a post-process stored procedure to do some summary processing to end the entire chain.
+
+        In essence, what the outputs of task_sp will drive which tasks will be performed by the MDX ETL and how they will be executed in the entire process:
+
+        * The resultset is used to specify what MDX queries and corresponding tasks need to be executed in parallel;
+        * A special named output parameter (OUT_POST_SP with OUT_POST_SP_ARGS) can be used to chain-invoke another similar process if needed;
+        * Any other output parameters will be pipelined to all subtasks and post-processing stored procedures as part of their input parameters if the names match.        
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/start-request'
+        description: Payload
+      responses:
+        "200":
+          description: Return the final results
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
+      tags:
+        - Main
+
+components:
+
+  responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error-response'
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error-response'
+
+  schemas:
+    start-request:
+      type: object
+      required:
+        - task_sp_url
+        - sp_args
+        - mdx_conn_str
+      properties:
+        task_sp_url:
+          type: string
+          format: url
+          example: "http://dbwebapi.dev.com/oradev/your_schema.mdx_etl_demo.get_mdx_tasks/json?NamingCase=None"
+          description: A valid DbWebApi URL of the stored procedure, which lists all task flows for the MDX ETL process.
+        sp_args:
+          type: object
+          example: {"inParam1": "2020-08-06", "inParam2": "test from fiddler"}
+          description: A JSON dictionary to be passed to stored procedure as input parameters.
+        mdx_conn_str:
+            type: string
+            example: "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600;"
+            description: The ADOMD connection string for every MDX task.
+        timeout:
+            type: number
+            default: 180
+            example: 180
+            description: Stop waiting for any response after a given number of seconds.
+        db_type:
+            type: string
+            default: oracle
+            example: oracle
+        notify_url:
+            type: string
+            format: url
+            example: (optional)
+            description: Send a notification to somewhere when above process get completed or an error is encountered.
+        notify_args:
+            type: object
+            example: {}
+            description: |-
+              This is a JSON dictionary. In general, any items it carries will be passed to the notification service as input arguments. However, if we want to include detailed result data and/or error information in the notification, then what parameter name(s) does the notification service use to receive them? We make a convention to use two special keys in this dictionary to indicate these two particular parameter names:
+              
+              '[=]' key - the value of this special key indicates the parameter name through which the notification service will receive detailed result data. (this is optional) If not specified, detailed result data will not be sent to the notification service;
+              
+              '[!]' key - the value of this special key indicates the parameter name through which the notification service will receive detailed error information. (this is optional) If not specified, detailed error information will not be sent to the notification service; in this case, the notification itself cannot tell whether the process has completed successfully or encountered any errors, then the notification service may require some other channel to know whether the process succeeded or failed.
+
+    error-response:
+      type: object
+      required:
+        - ExceptionMessage
+      properties:
+        ExceptionMessage:
+          type: string
+        ExceptionType:
+          type: string
+        StackTrace:
+          type: string
+
+servers:
+# Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/DataBooster/MDX-ETL/1.0.0
+  - description: Please update the base URL to your actual path.
+    url: http://localhost/PyWebApi/pys/test_app/utilities/mdx_etl

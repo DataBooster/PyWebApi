@@ -15,7 +15,7 @@ info:
 
 externalDocs:
   url: 'https://github.com/DataBooster/PyWebApi#powerbi-data-pusher'
-  description: Documentation
+  description: Wiki
 
 tags:
   - name: Design-time
@@ -28,7 +28,7 @@ paths:
       summary: "Derive Tabular Model from ResultSets of a Stored Procedure."
       operationId: derive_bim
       description: |-
-        Generate and download a **Tabular Model (.bim file)** based on ResultSets of a Stored Procedure (https://github.com/DataBooster/DbWebApi/wiki#http-response) as sample data for all tables to be created in a Power BI dataset.
+        Generate and download a **Tabular Model (.bim file)** based on [ResultSets of a Stored Procedure](https://github.com/DataBooster/DbWebApi/wiki#http-response) as sample data for all tables to be created in a Power BI dataset.
 
         The first result set of the stored procedure must be used to indicate the corresponding Power BI table name for all subsequent result sets.
       tags:
@@ -69,7 +69,7 @@ paths:
         description: Payload
       responses:
         "200":
-          description: Return the dataset_id that just been created or updated
+          description: Return the dataset_id that just been created or updated.
           content:
             application/json:
               schema:
@@ -137,22 +137,28 @@ components:
           type: string
           format: url
           example: http://localhost/dbwebapi/oradev/my_app/schema.package_for_pbi.test_dataset/json?NamingCase=Pascal
+          description: URL or the stored procedure
         sp_args:
           type: object
-          example: {}
-      description: https://github.com/DataBooster/DbWebApi/wiki
+          default: {}
+          description: Payload of the stored procedure
+      description: <https://github.com/DataBooster/DbWebApi/wiki>
         
     derive_bim-request:
       allOf:
         - $ref: '#/components/schemas/_sp-base'
         - type: object
           properties:
-            dataset_name:
+            dataset_name: &dataset_name
               type: string
+              default: (same as the stored procedure name)
               example: PushDatasetTest1
-            timeout:
+              description: The name of Push Dataset. If this argument is omitted, the name of the stored procedure will be passed as the name of the dataset.
+            timeout: &timeout
               type: number
-              example: 180
+              default: &timeout_default 180
+              example: *timeout_default
+              description: Stop waiting for the stored procedure's response after a given number of seconds.
           description: derive_bim request payload
 
     deploy_dataset-request:
@@ -164,12 +170,16 @@ components:
         model_bim:
           type: string
           example: \\network_server\share_folder\test_model.bim
+          description: This argument can be a JSON object, a JSON string, or a network path of the .bim file that the server can read.
         dataset_name:
           type: string
           example: PushDatasetTest1
-        workspace:
+          description: The name of Power BI Push Dataset.
+        workspace: &workspace
           type: string
+          default: null
           example: Power BI Workspace1
+          description: Power BI workspace
       description: deploy_dataset request payload
 
     push_data-request:
@@ -179,15 +189,9 @@ components:
           required:
             - dataset_name
           properties:
-            dataset_name:
-              type: string
-              example: PushDatasetTest1
-            workspace:
-              type: string
-              example: Power BI Workspace1
-            timeout:
-              type: number
-              example: 180
+            dataset_name: *dataset_name
+            workspace: *workspace
+            timeout: *timeout
           description: push_data request payload
 
     error-response:
