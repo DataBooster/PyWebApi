@@ -140,8 +140,7 @@ components:
           type: string
 
 servers:
-# Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/DataBooster/MdxReader/1.0.0
-  - description: Please update the base URL to your actual path.
+  - description: Please update the mock-up URL to your actual path.
+    url: https://virtserver.swaggerhub.com/DataBooster/PyWebApi/MdxReader/1.0.0
+  - description: Please update the local-test base URL to your actual path.
     url: http://localhost/PyWebApi/pys/test_app/utilities/mdxreader

@@ -92,32 +92,62 @@ components:
           example: {"inParam1": "2020-08-06", "inParam2": "test from fiddler"}
           description: A JSON dictionary to be passed to stored procedure as input parameters.
         mdx_conn_str:
-            type: string
-            example: "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600;"
-            description: The ADOMD connection string for every MDX task.
+          type: string
+          example: "Provider=MSOLAP;Data Source=The_OLAP;Initial Catalog=The_Cube;Integrated Security=SSPI;Format=Tabular;Connect Timeout=3600;"
+          description: The ADOMD connection string for every MDX task.
         timeout:
-            type: number
-            default: 180
-            example: 180
-            description: Stop waiting for any response after a given number of seconds.
+          type: number
+          default: 180
+          example: 180
+          description: Stop waiting for any response after a given number of seconds.
+        mdx_column:
+          type: string
+          default: MDX_QUERY
+          example: MDX_QUERY
+          description: The name of the column in the resultset, which is used to specify the MDX query to be run.
+        column_map_column:
+          type: string
+          default: COLUMN_MAPPING
+          example: COLUMN_MAPPING
+          description: The name of the column in the resultset, which is used to specify the name mapping for certain columns (other columns not specified in the mapping dictionary will be returned as is. If a column header is mapped to an empty name, the corresponding column will be filtered out from the return). This is especially useful when passing the entire result of MDX directly to a stored procedure in a database. It allows you to map MDX column names to input parameter names of the stored procedure.
+        callback_sp_column:
+          type: string
+          default: CALLBACK_SP
+          example: CALLBACK_SP
+          description: The name of the output parameter, which is used to specify another stored procedure name for the MDX query result data to be pipelined to.
+        callback_args_column:
+          type: string
+          default: CALLBACK_ARGS
+          example: CALLBACK_ARGS
+          description: The name of the output parameter, which is used to specify some additional arguments for the CALLBACK_SP.
         db_type:
-            type: string
-            default: oracle
-            example: oracle
+          type: string
+          default: oracle
+          example: oracle
+        post_sp_outparam:
+          type: string
+          default: OUT_POST_SP
+          example: OUT_POST_SP
+          description: The name of the output parameter, which is used to specify the name of post-processing stored procedure.
+        post_sp_args_outparam:
+          type: string
+          default: OUT_POST_SP_ARGS
+          example: OUT_POST_SP_ARGS
+          description:  The name of the output parameter, which is used to specify arguments for the post-processing stored procedure.
         notify_url:
-            type: string
-            format: url
-            example: (optional)
-            description: Send a notification to somewhere when above process get completed or an error is encountered.
+          type: string
+          format: url
+          example: (optional)
+          description: Send a notification to somewhere when above process get completed or an error is encountered.
         notify_args:
-            type: object
-            example: {}
-            description: |-
-              This is a JSON dictionary. In general, any items it carries will be passed to the notification service as input arguments. However, if we want to include detailed result data and/or error information in the notification, then what parameter name(s) does the notification service use to receive them? We make a convention to use two special keys in this dictionary to indicate these two particular parameter names:
+          type: object
+          example: {}
+          description: |-
+            This is a JSON dictionary. In general, any items it carries will be passed to the notification service as input arguments. However, if we want to include detailed result data and/or error information in the notification, then what parameter name(s) does the notification service use to receive them? We make a convention to use two special keys in this dictionary to indicate these two particular parameter names:
               
-              '[=]' key - the value of this special key indicates the parameter name through which the notification service will receive detailed result data. (this is optional) If not specified, detailed result data will not be sent to the notification service;
+            '[=]' key - the value of this special key indicates the parameter name through which the notification service will receive detailed result data. (this is optional) If not specified, detailed result data will not be sent to the notification service;
               
-              '[!]' key - the value of this special key indicates the parameter name through which the notification service will receive detailed error information. (this is optional) If not specified, detailed error information will not be sent to the notification service; in this case, the notification itself cannot tell whether the process has completed successfully or encountered any errors, then the notification service may require some other channel to know whether the process succeeded or failed.
+            '[!]' key - the value of this special key indicates the parameter name through which the notification service will receive detailed error information. (this is optional) If not specified, detailed error information will not be sent to the notification service; in this case, the notification itself cannot tell whether the process has completed successfully or encountered any errors, then the notification service may require some other channel to know whether the process succeeded or failed.
 
     error-response:
       type: object
@@ -132,8 +162,7 @@ components:
           type: string
 
 servers:
-# Added by API Auto Mocking Plugin
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/DataBooster/MDX-ETL/1.0.0
-  - description: Please update the base URL to your actual path.
+  - description: Please update the mock-up URL to your actual path.
+    url: https://virtserver.swaggerhub.com/DataBooster/PyWebApi/MDX-ETL/1.0.0
+  - description: Please update the local-test base URL to your actual path.
     url: http://localhost/PyWebApi/pys/test_app/utilities/mdx_etl

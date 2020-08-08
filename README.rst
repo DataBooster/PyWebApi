@@ -400,6 +400,12 @@ Sample User Apps/Modules/Scripts
                                }
             }
 
+    **Please refer to**:
+
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml&docExpansion=full>`__
+
+    -   `mdxreader.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml>`__
+
         |
 
 ----
@@ -562,6 +568,13 @@ Sample User Apps/Modules/Scripts
 
         #.  Each sub-unit within a group (enclosed by a pair of square brackets ``[`` ``]``) must be a callable unit ``{ }`` as above.
 
+
+    **Please refer to**:
+
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full>`__
+
+    -   `services_grouping.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml>`__
+
     |
 
 ----
@@ -642,6 +655,13 @@ Sample User Apps/Modules/Scripts
 
     *(For the SQL Server example, it will be prepared later when the first SQL Server audience needs it.)*
 
+
+    **Please refer to**:
+
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml&docExpansion=full>`__
+
+    -   `mdx_etl.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml>`__
+
 |
 
 ----
@@ -675,6 +695,13 @@ Sample User Apps/Modules/Scripts
     #.  Starting from the second resultset, every resultset is pushed to the corresponding table in the Power BI dataset. 
         And all the column names (after applying `DbWebApi property-naming-convention <https://github.com/DataBooster/DbWebApi#property-naming-convention>`__) in the resultset match the column names in the destination table.
 
+	|
+
+    **Please refer to**:
+
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml>`__
+
+    -   `powerbi_pusher.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml>`__
 
 |
 
