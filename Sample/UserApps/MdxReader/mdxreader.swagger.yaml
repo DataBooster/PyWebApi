@@ -86,6 +86,11 @@ components:
           type: string
           default: DictOfList
           example: SqlTvp
+          enum:
+            - ListOfList
+            - DictOfList
+            - ListOfDict
+            - SqlTvp
           description: See <https://github.com/DataBooster/PyWebApi#mdx-reader> for details.
 
         column_mapping:
@@ -114,7 +119,7 @@ components:
         notify_url:
           type: string
           format: url
-          example: (optional)
+          example: http://...(optional)
           description: We may need to send a notification to somewhere when above process get completed or an error is encountered. This argument allows you to specify the URL of the notification destination (it must also be a RESTful service).
 
         notify_args:

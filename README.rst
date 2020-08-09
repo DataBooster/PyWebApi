@@ -571,7 +571,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full&withCredentials=true>`__
 
     -   `services_grouping.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml>`__
 

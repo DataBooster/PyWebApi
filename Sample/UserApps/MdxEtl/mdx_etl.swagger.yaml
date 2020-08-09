@@ -122,8 +122,11 @@ components:
           description: The name of the output parameter, which is used to specify some additional arguments for the CALLBACK_SP.
         db_type:
           type: string
-          default: oracle
+          default: Oracle
           example: oracle
+          enum:
+            - Oracle
+            - SqlServer
         post_sp_outparam:
           type: string
           default: OUT_POST_SP
@@ -137,7 +140,7 @@ components:
         notify_url:
           type: string
           format: url
-          example: (optional)
+          example: http://...(optional)
           description: Send a notification to somewhere when above process get completed or an error is encountered.
         notify_args:
           type: object
