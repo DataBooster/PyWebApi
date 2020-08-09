@@ -402,7 +402,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml&docExpansion=full>`__
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `mdxreader.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml>`__
 
@@ -571,7 +571,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full>`__
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `services_grouping.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml>`__
 
@@ -658,7 +658,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml&docExpansion=full>`__
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `mdx_etl.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml>`__
 
@@ -699,7 +699,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml>`__
+    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `powerbi_pusher.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml>`__
 

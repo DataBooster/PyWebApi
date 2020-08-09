@@ -42,7 +42,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/start-request'
+              $ref: '#/components/schemas/start'
         description: Payload
       responses:
         "200":
@@ -75,7 +75,7 @@ components:
             $ref: '#/components/schemas/error-response'
 
   schemas:
-    start-request:
+    start:
       type: object
       required:
         - task_sp_url

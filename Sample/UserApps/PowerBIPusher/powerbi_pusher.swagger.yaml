@@ -38,7 +38,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/derive_bim-request'
+              $ref: '#/components/schemas/derive_bim'
         description: Payload
       responses:
         "200":
@@ -65,7 +65,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/deploy_dataset-request'
+              $ref: '#/components/schemas/deploy_dataset'
         description: Payload
       responses:
         "200":
@@ -95,7 +95,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/push_data-request'
+              $ref: '#/components/schemas/push_data'
         description: Payload
       responses:
         "200":
@@ -144,7 +144,7 @@ components:
           description: Payload of the stored procedure
       description: <https://github.com/DataBooster/DbWebApi/wiki>
         
-    derive_bim-request:
+    derive_bim:
       allOf:
         - $ref: '#/components/schemas/_sp-base'
         - type: object
@@ -161,7 +161,7 @@ components:
               description: Stop waiting for the stored procedure's response after a given number of seconds.
           description: derive_bim request payload
 
-    deploy_dataset-request:
+    deploy_dataset:
       type: object
       required:
         - model_bim
@@ -182,7 +182,7 @@ components:
           description: Power BI workspace
       description: deploy_dataset request payload
 
-    push_data-request:
+    push_data:
       allOf:
         - $ref: '#/components/schemas/_sp-base'
         - type: object
