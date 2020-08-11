@@ -143,5 +143,17 @@ def push_data(sp_url:str, sp_args:dict=None, dataset_name:str=None, workspace:st
     #return pd_mgmt.get_sequence_numbers(table_names, dataset_name, workspace)
 
 
+def get_seq_num(table_names:list, dataset_name:str, workspace:str=None):
+    access_token = get_accesstoken()
+    pd_mgmt = PushDatasetsMgmt(access_token)
+    return pd_mgmt.get_sequence_numbers(table_names, dataset_name, workspace)
+
+
+def truncate(table_names:list, dataset_name:str, workspace:str=None):
+    access_token = get_accesstoken()
+    pd_mgmt = PushDatasetsMgmt(access_token)
+    pd_mgmt.truncate_tables(table_names, dataset_name, workspace)
+
+
 
 __version__ = "0.1a0.dev1"

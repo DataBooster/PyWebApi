@@ -3,7 +3,7 @@ info:
   description: >-
     Power BI Data Pusher acts as a data pump to read multiple resultsets from
     database stored procedure and push them into multiple tables in Power BI
-    Push Datasets. It provides 3 simple functions:
+    Push Datasets. It provides 3 main functions:
   version: 1.0.0
   title: Power BI Data Pusher
   contact:
@@ -109,7 +109,59 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         default:
           $ref: '#/components/responses/ServerError'
-    
+
+  /db_to_pbi.get_seq_num:
+    post:
+      summary: "Get all current sequence numbers of specified (or all) tables."
+      operationId: get_seq_num
+      description: Discover the current sequence numbers which are stored with the specified list of tables in a Power BI Push Dataset.
+      tags:
+        - Run-time
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/table_list'
+        description: Payload
+      responses:
+        "200":
+          description: Return a list of table names with associated sequence numbers.
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
+  
+  /db_to_pbi.truncate:
+    post:
+      summary: "Truncate specified (or all) tables."
+      operationId: truncate
+      description: Removes all rows from specified (or all) tables in a Power BI Push Dataset.
+      tags:
+        - Run-time
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/table_list'
+        description: Payload
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/ServerError'
+
 components:
 
   responses:
@@ -149,7 +201,7 @@ components:
         - $ref: '#/components/schemas/_sp-base'
         - type: object
           properties:
-            dataset_name: &dataset_name
+            dataset_name: &dataset_name_sp
               type: string
               default: (same as the stored procedure name)
               example: PushDatasetTest1
@@ -171,7 +223,7 @@ components:
           type: string
           example: \\network_server\share_folder\test_model.bim
           description: This argument can be a JSON object, a JSON string, or a network path of the .bim file that the server can read.
-        dataset_name:
+        dataset_name: &dataset_name
           type: string
           example: PushDatasetTest1
           description: The name of Power BI Push Dataset.
@@ -189,10 +241,26 @@ components:
           required:
             - dataset_name
           properties:
-            dataset_name: *dataset_name
+            dataset_name: *dataset_name_sp
             workspace: *workspace
             timeout: *timeout
           description: push_data request payload
+
+    table_list:
+      type: object
+      required:
+        - table_names
+        - dataset_name
+      properties:
+        table_names:
+          type: array
+          items:
+            type: string
+            description: table name
+          example: null
+          description: An array of table names. *(null indicates all tables in the Power BI Push Dataset)*
+        dataset_name: *dataset_name
+        workspace: *workspace
 
     error-response:
       type: object

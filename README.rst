@@ -689,7 +689,7 @@ Sample User Apps/Modules/Scripts
     the data transfer from the relational database to the Power BI Push Dataset.
     Not only at runtime, a simple xcopy-like call can complete the entire process. 
     Moreover, the initial metadata can be derived from resultsets of the stored procedure, which also saves the design time of Power BI data modeling
-    - manual intervention is to add some measures and create relationships between Power BI tables.
+    - *manual intervention is to add some measures and create relationships between Power BI tables*.
 
     In order to reduce the complexity of configuration, the stored procedure here acts as the metadata source and data source of the destination Power BI dataset. 
     Two conventions need to be followed:
