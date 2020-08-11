@@ -402,7 +402,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `mdxreader.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxReader/mdxreader.swagger.yaml>`__
 
@@ -571,7 +571,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full&withCredentials=true>`__
 
     -   `services_grouping.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml>`__
 
@@ -658,7 +658,7 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `mdx_etl.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml>`__
 
@@ -682,6 +682,15 @@ Sample User Apps/Modules/Scripts
 
     .. image:: docs/powerbi-data-pusher.png
 
+    Here we focus on the scenario where the Power BI data comes from a database, to make the entire end-to-end solution as simple as possible.
+    The general idea is to map multiple resultsets of a stored procedure in database to multiple tables in a Power BI dataset, 
+    every column (may be an alias) in the resultset is matched to a column in the Power BI table by name.
+    The straightforward mapping from a stored procedure resultset to a Power BI dataset facilitates 
+    the data transfer from the relational database to the Power BI Push Dataset.
+    Not only at runtime, a simple xcopy-like call can complete the entire process. 
+    Moreover, the initial metadata can be derived from resultsets of the stored procedure, which also saves the design time of Power BI data modeling
+    - manual intervention is to add some measures and create relationships between Power BI tables.
+
     In order to reduce the complexity of configuration, the stored procedure here acts as the metadata source and data source of the destination Power BI dataset. 
     Two conventions need to be followed:
 
@@ -695,11 +704,11 @@ Sample User Apps/Modules/Scripts
     #.  Starting from the second resultset, every resultset is pushed to the corresponding table in the Power BI dataset. 
         And all the column names (after applying `DbWebApi property-naming-convention <https://github.com/DataBooster/DbWebApi#property-naming-convention>`__) in the resultset match the column names in the destination table.
 
-	|
+    |
 
     **Please refer to**:
 
-    -   `Swagger UI <https://petstore.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml&defaultModelRendering=model&defaultModelExpandDepth=2&withCredentials=true>`__
 
     -   `powerbi_pusher.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml>`__
 

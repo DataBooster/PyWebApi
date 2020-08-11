@@ -137,7 +137,7 @@ components:
           type: string
           format: url
           example: http://localhost/dbwebapi/oradev/my_app/schema.package_for_pbi.test_dataset/json?NamingCase=Pascal
-          description: URL or the stored procedure
+          description: URL of the stored procedure
         sp_args:
           type: object
           default: {}
