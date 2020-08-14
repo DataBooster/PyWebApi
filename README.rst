@@ -704,6 +704,11 @@ Sample User Apps/Modules/Scripts
     #.  Starting from the second resultset, every resultset is pushed to the corresponding table in the Power BI dataset. 
         And all the column names (after applying `DbWebApi property-naming-convention <https://github.com/DataBooster/DbWebApi#property-naming-convention>`__) in the resultset match the column names in the destination table.
 
+    Graphically, any stored procedure with the structure shown in the following figure can be used to push data directly from the relational database into a Power BI Push Dataset:
+
+    .. image:: docs/sp-for-pbi.png
+
+
     |
 
     **Please refer to**:
