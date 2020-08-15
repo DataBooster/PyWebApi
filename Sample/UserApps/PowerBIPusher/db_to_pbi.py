@@ -96,7 +96,7 @@ def derive_bim(sp_url:str, sp_args:dict=None, dataset_name:str=None, timeout:flo
     return bim
 
 
-def deploy_dataset(model_bim:Mapping, dataset_name:str, workspace:str=None):
+def deploy_dataset(model_bim:Mapping, dataset_name:str=None, workspace:str=None):
     """Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ ``.bim`` file.
     """
     if isinstance(model_bim, str):
@@ -109,7 +109,9 @@ def deploy_dataset(model_bim:Mapping, dataset_name:str, workspace:str=None):
         raise ValueError(f"model_bim argument is not a valid JSON")
 
     if not dataset_name:
-        raise ValueError(f"dataset_name argument is missing")
+        dataset_name = model_bim.get("name")
+        if not dataset_name:
+            raise ValueError(f"dataset_name argument is missing")
 
     access_token = get_accesstoken()
 
