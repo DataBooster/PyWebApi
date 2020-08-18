@@ -1,7 +1,7 @@
 @Echo off
 CD /d "%~dp0"
 IF "%~1"=="" (
-	SET "DESTINATION=..\..\PyWebApi.IIS\user-script-root\utilities\mdx_etl"
+	SET "DESTINATION=..\..\PyWebApi.IIS\user-script-root\samples\mdx_etl"
 ) ELSE (
 	SET "DESTINATION=%~1"
 )

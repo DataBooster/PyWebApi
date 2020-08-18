@@ -166,4 +166,4 @@ components:
 
 servers:
   - description: (Please update the local-test base URL to your actual path)
-    url: http://localhost/PyWebApi/pys/test_app/utilities/mdx_etl
+    url: http://localhost/PyWebApi/pys/test_app/samples/mdx_etl

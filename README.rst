@@ -177,15 +177,15 @@ Deploy User Modules/Scripts:
     Copy the user module and its dependent files to a planned path directory under `USER_SCRIPT_ROOT <user-script-root_>`_ in the server.
     This path (relative to `USER_SCRIPT_ROOT <user-script-root_>`_) determines what URL path the client should use to call the functions.
 
-        For example, if we copy the module mdx_task (``mdx_task.py`` and all dependent files) to the relative path ``utilities\mdxreader\`` (in Windows) or ``utilities/mdxreader/`` (in UNIX) under `USER_SCRIPT_ROOT <user-script-root_>`_,
-        then the client should use ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdxreader/mdx_task.run_query`` to invoke the ``run_query`` function of the ``mdx_task`` module.
+        For example, if we copy the module mdx_task (``mdx_task.py`` and all dependent files) to the relative path ``samples\mdxreader\`` (in Windows) or ``samples/mdxreader/`` (in UNIX) under `USER_SCRIPT_ROOT <user-script-root_>`_,
+        then the client should use ``http://ourteam.company.com/PyWebApi/pys/etl/samples/mdxreader/mdx_task.run_query`` to invoke the ``run_query`` function of the ``mdx_task`` module.
 
         Breakdown:
 
         -   ``/PyWebApi`` -- the virtual/application directory (ApplicationPath) installed in IIS, and it's also the value of the appSettings item `SCRIPT_NAME <script-name_>`_ in ``web.config``;
         -   ``/pys/`` -- the static segment in ``@route(path='/pys/<app_id>/<module_func:path>', ...)``;
         -   ``etl`` -- matched by the ``<app_id>`` wildcard;
-        -   ``utilities/mdxreader/`` -- the relative path where the user module is located;
+        -   ``samples/mdxreader/`` -- the relative path where the user module is located;
         -   ``mdx_task`` -- the user module (``mdx_task.py``);
         -   ``run_query`` -- the module-level function to be invoked;
 
@@ -222,7 +222,7 @@ Deploy User Modules/Scripts:
 
         {
             "app_id": "etl",
-            "action": "utilities/mdxreader/mdx_task.run_query",
+            "action": "samples/mdxreader/mdx_task.run_query",
             "account": "user id/name or group account/role"
         }
 
@@ -595,7 +595,7 @@ Sample User Apps/Modules/Scripts
 
     Let's use an example to explain in detail.
 
-    1.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/utilities/mdx_etl/db_mdx_db.start``
+    1.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/samples/mdx_etl/db_mdx_db.start``
         with a JSON payload:
 
         .. code-block:: JSON

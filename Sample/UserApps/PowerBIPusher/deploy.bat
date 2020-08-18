@@ -1,7 +1,7 @@
 @Echo off
 CD /d "%~dp0"
 IF "%~1"=="" (
-	SET "DESTINATION=..\..\PyWebApi.IIS\user-script-root\utilities\powerbi_pusher"
+	SET "DESTINATION=..\..\PyWebApi.IIS\user-script-root\samples\powerbi_pusher"
 ) ELSE (
 	SET "DESTINATION=%~1"
 )

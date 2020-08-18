@@ -146,4 +146,4 @@ components:
 
 servers:
   - description: (Please update the local-test base URL to your actual path)
-    url: http://localhost/PyWebApi/pys/test_app/utilities/mdxreader
+    url: http://localhost/PyWebApi/pys/test_app/samples/mdxreader

@@ -13,6 +13,6 @@ Goto:eof
 Echo:
 Echo Usage:
 Echo:
-Echo     publish-samples destination_directory
+Echo     deploy-samples destination_directory
 Echo:
-Echo     The destination directory for publishing is required to exist.
+Echo     The destination directory for deploying is required to exist.
