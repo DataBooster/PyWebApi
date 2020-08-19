@@ -1,5 +1,5 @@
-env\Lib\site-packages
-env\Lib\site-packages\win32
-env\Lib\site-packages\win32\lib
+.venv\Lib\site-packages
+.venv\Lib\site-packages\win32
+.venv\Lib\site-packages\win32\lib
 
-#copy pywintypes??.dll from env\Lib\site-packages\pywin32_system32 to env\Lib\site-packages\win32\lib
+#copy pywintypes??.dll from .venv\Lib\site-packages\pywin32_system32 to .venv\Lib\site-packages\win32\lib

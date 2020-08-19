@@ -85,7 +85,7 @@ Sample PyWebApi Server (for IIS)
           <system.webServer>
             <handlers>
               <add name="PythonHandler" path="*" verb="*" modules="FastCgiModule"
-                   scriptProcessor="D:\wwwroot\PyWebApi\env\Scripts\python.exe|D:\wwwroot\PyWebApi\env\Lib\site-packages\wfastcgi.py"
+                   scriptProcessor="D:\wwwroot\PyWebApi\.venv\Scripts\python.exe|D:\wwwroot\PyWebApi\.venv\Lib\site-packages\wfastcgi.py"
                    resourceType="Unspecified" requireAccess="Script"/>
             </handlers>
           </system.webServer>
@@ -205,11 +205,11 @@ Deploy User Modules/Scripts:
 
     ::
 
-        env\Lib\site-packages
-        env\Lib\site-packages\win32
-        env\Lib\site-packages\win32\lib
+        .venv\Lib\site-packages
+        .venv\Lib\site-packages\win32
+        .venv\Lib\site-packages\win32\lib
         
-        #copy pywintypes??.dll from env\Lib\site-packages\pywin32_system32 to env\Lib\site-packages\win32\lib
+        #copy pywintypes??.dll from .venv\Lib\site-packages\pywin32_system32 to .venv\Lib\site-packages\win32\lib
 
 
 #.  **Grant Permissions**

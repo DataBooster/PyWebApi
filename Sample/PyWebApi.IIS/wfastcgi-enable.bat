@@ -1,3 +1,10 @@
 @Echo off
 CD /d "%~dp0"
-env\Scripts\wfastcgi-enable
+
+IF "%~1"=="" (
+	SET VENV=.venv
+) ELSE (
+	SET "VENV=%~1"
+)
+
+%VENV%\Scripts\wfastcgi-enable
