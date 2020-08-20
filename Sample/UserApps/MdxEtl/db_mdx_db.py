@@ -26,7 +26,7 @@ def _full_url(relative_url:str) -> str:
     return urljoin(request.url, relative_url)
 
 _url_mdx_reader = _full_url("../mdxreader/mdx_task.run_query")
-_url_svc_grp = _full_url("../services_grouping/rest_grouping.start")
+_url_svc_grp = _full_url("../servicesgrouping/rest_grouping.start")
 
 
 def _notify(result, error=None, notify_url:str=None, notify_args:dict=None) -> bool:

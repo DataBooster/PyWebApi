@@ -29,7 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="deploy.bat" />
-    <None Include="powerbi_pusher.swagger.yaml" />
+    <None Include="powerbipusher.swagger.yaml" />
     <Content Include="pywebapi.pth" />
     <Content Include="requirements.txt" />
   </ItemGroup>
