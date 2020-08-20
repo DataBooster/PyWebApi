@@ -391,4 +391,4 @@ forward-only stream into a Python context manager and read the data into the exp
 
 
 
-__version__ = "0.1a9"
+__version__ = "0.1a10"

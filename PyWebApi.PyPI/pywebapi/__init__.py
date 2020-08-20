@@ -27,4 +27,4 @@ from .func import execute, ModuleImporter, RequestArguments
 from .fmtr import MediaTypeFormatter, MediaTypeFormatterManager
 
 
-__version__ = "0.1a5"
+__version__ = "0.1a6"
