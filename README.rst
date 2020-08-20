@@ -2,12 +2,12 @@
 PyWebApi
 ########
 
-PyWebApi is a micro-framework for Python RESTfulization. It turns Python(3+) modules/scripts into Web API (RESTful Service) out of the box.
+PyWebApi is a magic wand for Python RESTfulization. It turns any Python module level functions into Web API (RESTful Services) out of the box.
 
 The repository provides:
 
-#.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making PyWebApi Server.
-#.  A sample `PyWebApi Server (for IIS) <Sample PyWebApi Server (for IIS)_>`__. It can be easily customized to your own PyWebApi Server.
+#.  A library package **pywebapi** (https://pypi.org/project/pywebapi) for making the PyWebApi Server.
+#.  A sample `PyWebApi Server (for IIS) <Sample PyWebApi Server (for IIS)_>`__. It can be customized to your own PyWebApi Server easily.
 #.  Some sample `user-apps/user-modules/user-scripts <Sample User Apps/Modules/Scripts_>`__:
 
     +   `MdxReader <mdx-reader_>`__
