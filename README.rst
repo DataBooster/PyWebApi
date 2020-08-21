@@ -571,9 +571,9 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml&docExpansion=full&defaultModelsExpandDepth=-1&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/ServicesGrouping/servicesgrouping.swagger.yaml&docExpansion=full&defaultModelsExpandDepth=-1&withCredentials=true>`__
 
-    -   `services_grouping.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/services_grouping.swagger.yaml>`__
+    -   `servicesgrouping.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/ServicesGrouping/servicesgrouping.swagger.yaml>`__
 
     |
 
@@ -595,7 +595,7 @@ Sample User Apps/Modules/Scripts
 
     Let's use an example to explain in detail.
 
-    1.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/samples/mdx_etl/db_mdx_db.start``
+    1.  An HTTP client sends a POST request to ``http://ourteam.company.com/PyWebApi/pys/etl/samples/mdxetl/db_mdx_db.start``
         with a JSON payload:
 
         .. code-block:: JSON
@@ -658,9 +658,9 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&defaultModelsExpandDepth=-1&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/MdxEtl/mdxetl.swagger.yaml&docExpansion=full&defaultModelRendering=model&defaultModelExpandDepth=2&defaultModelsExpandDepth=-1&withCredentials=true>`__
 
-    -   `mdx_etl.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/mdx_etl.swagger.yaml>`__
+    -   `mdxetl.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/MdxEtl/mdxetl.swagger.yaml>`__
 
 |
 
@@ -713,9 +713,9 @@ Sample User Apps/Modules/Scripts
 
     **Please refer to**:
 
-    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml&defaultModelRendering=model&defaultModelExpandDepth=2&defaultModelsExpandDepth=-1&withCredentials=true>`__
+    -   `Swagger UI <https://validator.swagger.io/?url=https://raw.githubusercontent.com/DataBooster/PyWebApi/master/Sample/UserApps/PowerBIPusher/powerbipusher.swagger.yaml&defaultModelRendering=model&defaultModelExpandDepth=2&defaultModelsExpandDepth=-1&withCredentials=true>`__
 
-    -   `powerbi_pusher.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/powerbi_pusher.swagger.yaml>`__
+    -   `powerbipusher.swagger.yaml <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/powerbipusher.swagger.yaml>`__
 
 |
 
