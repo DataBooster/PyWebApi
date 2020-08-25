@@ -18,7 +18,7 @@ from urllib.parse import urlparse
 from collections.abc import Mapping
 from json import loads as json_decode
 from simple_rest_call import rest
-from authorization import get_accesstoken
+from pbi_authorization import get_accesstoken
 from powerbi_push_datasets import PushDatasetsMgmt, derive_bim_from_resultsets
 
 

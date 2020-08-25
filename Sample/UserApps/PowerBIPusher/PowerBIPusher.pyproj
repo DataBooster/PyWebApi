@@ -23,8 +23,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="authorization.py" />
     <Compile Include="db_to_pbi.py" />
+    <Compile Include="pbi_authorization.py" />
     <Compile Include="pbi_config.py" />
   </ItemGroup>
   <ItemGroup>

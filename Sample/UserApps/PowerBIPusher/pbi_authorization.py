@@ -38,4 +38,4 @@ def get_accesstoken():
             raise Exception(response['error_description'])
 
     except Exception as ex:
-        raise Exception('Error retrieving Access token\n' + str(ex))
+        raise Exception('Error retrieving access token\n' + str(ex))

@@ -708,6 +708,7 @@ Sample User Apps/Modules/Scripts
 
     .. image:: docs/sp-for-pbi.png
 
+    *In order to access Power BI REST APIs, you need to ask your organization's Azure administrator to obtain TENANT_ID, CLIENT_ID and CLIENT_SECRET, and then set them in* `pbi_config.py <https://github.com/DataBooster/PyWebApi/blob/master/Sample/UserApps/PowerBIPusher/pbi_config.py>`_.
 
     |
 
