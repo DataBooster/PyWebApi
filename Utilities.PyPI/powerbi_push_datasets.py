@@ -29,9 +29,9 @@ and its product documentation: https://github.com/DataBooster/PyWebApi#powerbi-d
 
 import re
 from collections import Iterable
-from collections.abc import MutableMapping
-from urllib.parse import urljoin, quote
+from collections.abc import Mapping, MutableMapping
 from datetime import datetime, date, time, timedelta
+from urllib.parse import urljoin, quote
 from simple_rest_call import rest
 from json import loads as json_decode
 
@@ -42,7 +42,7 @@ def is_uuid(name:str) -> bool:
     return True if _uuid_pattern.fullmatch(name) else False
 
 
-def invoke_powerbi_rest(access_token: str, http_method:str, rest_path:str, request_payload:dict=None, organization:str='myorg', api_version:str='v1.0', **kwargs):
+def invoke_powerbi_rest(access_token: str, http_method:str, rest_path:str, request_payload:Mapping=None, organization:str='myorg', api_version:str='v1.0', **kwargs):
     """Executes a REST call to the Power BI service, with the specified URL and body.
 
     :param access_token: The authentication access token for the Power BI REST call.
@@ -65,7 +65,7 @@ def invoke_powerbi_rest(access_token: str, http_method:str, rest_path:str, reque
     explicit_headers = kwargs.get('headers', {})
     if isinstance(explicit_headers, str):
         explicit_headers = json_decode(explicit_headers)
-    if not isinstance(explicit_headers, MutableMapping):
+    if not isinstance(explicit_headers, Mapping):
         explicit_headers = {}
 
     headers = {'Pragma': 'no-cache', 'Cache-Control': 'no-cache', 'Authorization': 'Bearer ' + access_token, 'Accept': 'application/json'}
@@ -75,7 +75,7 @@ def invoke_powerbi_rest(access_token: str, http_method:str, rest_path:str, reque
     return rest(full_url(rest_path, organization, api_version), request_payload, http_method, error_extractor=lambda x: x['error']['message'], **kwargs)
 
 
-def convert_bim_to_push_dataset(model_bim:MutableMapping, dataset_name:str, default_mode:str="Push") -> dict:
+def convert_bim_to_push_dataset(model_bim:Mapping, dataset_name:str, default_mode:str="Push") -> dict:
     """Convert a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file) into a Push Dataset Model supported by Power BI Service.
 All properties not supported by Power BI Push Datasets will be filtered out of the output model.
 
@@ -85,15 +85,15 @@ All properties not supported by Power BI Push Datasets will be filtered out of t
     :return: A Push Dataset Model (request body of https://docs.microsoft.com/en-us/rest/api/power-bi/pushdatasets/datasets_postdatasetingroup) that can be directly used to create a new dataset in Power BI Service.
     """
 
-    def find_tables_dict(model_bim:MutableMapping) -> MutableMapping:
-        if not isinstance(model_bim, MutableMapping):
+    def find_tables_dict(model_bim:Mapping) -> Mapping:
+        if not isinstance(model_bim, Mapping):
             return None
 
         if "tables" in model_bim:
             return model_bim
 
         for value in model_bim.values():
-            if isinstance(value, MutableMapping):
+            if isinstance(value, Mapping):
                 return find_tables_dict(value)
 
         return None
@@ -175,7 +175,7 @@ def derive_bim_from_resultsets(result_sets:list, table_names:list, dataset_name:
             raise ValueError(f"unable to detect metadata for {repr(table_names)} table from an empty result")
 
         first_row = result_set[0]
-        if not isinstance(first_row, MutableMapping):
+        if not isinstance(first_row, Mapping):
             raise ValueError(f"invalid row data for {repr(table_names)} table")
 
         columns = []
@@ -375,7 +375,7 @@ class PushDatasetsMgmt(object):
             return set()
 
 
-    def _create_dataset(self, dataset_name:str, dataset_properties:MutableMapping, default_retention_policy, group_id:str=None) -> str:
+    def _create_dataset(self, dataset_name:str, dataset_properties:Mapping, default_retention_policy, group_id:str=None) -> str:
         if group_id:
             rest_path = f"groups/{group_id}/datasets"
         else:
@@ -388,7 +388,7 @@ class PushDatasetsMgmt(object):
 
         return resp['id']
 
-    def _update_table(self, table_bim:MutableMapping, dataset_id:str, group_id:str=None):
+    def _update_table(self, table_bim:Mapping, dataset_id:str, group_id:str=None):
         table_name = quote(table_bim["name"])
 
         if group_id:
@@ -401,7 +401,7 @@ class PushDatasetsMgmt(object):
         return resp["name"]
 
 
-    def deploy_dataset(self, model_bim:MutableMapping, dataset_name:str, workspace:str=None, default_mode:str="Push", default_retention_policy:str='basicFIFO') -> str:
+    def deploy_dataset(self, model_bim:Mapping, dataset_name:str, workspace:str=None, default_mode:str="Push", default_retention_policy:str='basicFIFO') -> str:
         """Create a pushable dataset (or update the metadata and schema for existing tables) in Power BI Service by a `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file).
 
     :param model_bim: The JSON of the `Tabular Model <https://github.com/otykier/TabularEditor/wiki/Power-BI-Desktop-Integration>`__ (.bim file).
@@ -432,7 +432,10 @@ class PushDatasetsMgmt(object):
 
 
     def push_rows(self, row_list:list, table_name:str, sequence_number:int, dataset_name:str, workspace:str=None):
-        if not row_list or not isinstance(row_list, Iterable):
+        if not row_list:
+            return
+
+        if not isinstance(row_list, Iterable) or not isinstance(row_list[0], Mapping) or not row_list[0]:
             raise TypeError("row_list argument requires a list of objects")
 
         if table_name:
@@ -564,4 +567,4 @@ class PushDatasetsMgmt(object):
 
 
 
-__version__ = "0.1a4"
+__version__ = "0.1a5"

@@ -17,11 +17,11 @@ The repository provides:
 
 #.  Some utility PyPI packages:
 
-    +   **dbdatareader** (https://pypi.org/project/dbdatareader/) - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
-    +   **simple-rest-call** (https://pypi.org/project/simple-rest-call/) - wraps `Requests <https://requests.readthedocs.io/>`__ into a simple call
-    +   **task-grouping** (https://pypi.org/project/task-grouping/) - organizes a group of tasks with serial/parallel structure, 
+    +   `dbdatareader <https://pypi.org/project/dbdatareader/>`_ - Data Reader for .NET `IDataReader <https://docs.microsoft.com/en-us/dotnet/api/system.data.idatareader>`_
+    +   `simple-rest-call <https://pypi.org/project/simple-rest-call/>`_ - wraps `Requests <https://requests.readthedocs.io/>`__ into a simple call
+    +   `task-grouping <https://pypi.org/project/task-grouping/>`_ - organizes a group of tasks with serial/parallel structure, 
         carries the arguments for each task unit to run, and assembles all the results into the corresponding tree structure.
-    +   **powerbi-push-datasets** (https://pypi.org/project/powerbi-push-datasets/) - Power BI Push Datasets Mgmt 
+    +   `powerbi-push-datasets <https://pypi.org/project/powerbi-push-datasets/>`_ - Power BI Push Datasets Mgmt 
 
 |
 
